@@ -312,7 +312,7 @@ export const Dashboard = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 shrink-0">
           <Button
             variant="outline"
             size="md"
@@ -326,23 +326,41 @@ export const Dashboard = () => {
             </span>
             <span>{isRefreshing ? 'Refreshing...' : 'Refresh Telemetry'}</span>
           </Button>
-          <Link to="/simulator">
-            <Button size="md" icon={PlayCircle} className="shadow-lg shadow-gw-cyan/10">
-              Start Simulation
+          <Link to="/workspace">
+            <Button size="md" icon={PlayCircle} className="shadow-lg shadow-gw-cyan/20 font-bold">
+              START NEW ALLOCATION
             </Button>
           </Link>
-          <Link to="/math-explorer">
-            <Button size="md" variant="secondary" icon={BookOpen}>
-              Math Explorer
+          <Link to="/scenarios">
+            <Button size="md" variant="secondary" icon={Layers}>
+              Scenarios
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* ----------------- 2. DATABASE PERSISTENCE STATUS BANNER ----------------- */}
-      <div className="p-3.5 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/70 flex items-start sm:items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-2.5 text-gw-text-secondary">
-          <Database className="w-4 h-4 shrink-0 text-gw-cyan" />
+      {/* ----------------- 2. DOMINANT NEXT-ACTION GUIDANCE BANNER ----------------- */}
+      <div className="p-4 rounded-xl bg-gradient-to-r from-gw-cyan/15 via-gw-bg-secondary to-gw-blue/10 border border-gw-cyan/35 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg shadow-gw-cyan/5">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-gw-cyan font-bold text-sm">
+            <Cpu className="w-4 h-4" />
+            <span>Ready for Allocation Synthesis</span>
+          </div>
+          <p className="text-xs text-gw-text-secondary leading-relaxed max-w-2xl">
+            Execute the 7-step guided workflow: select flights & gates, review restriction density, compute exact Rook Polynomials and Inclusion-Exclusion sums, and export verified schedules.
+          </p>
+        </div>
+        <Link to="/workspace" className="shrink-0">
+          <Button size="md" icon={ArrowRight} className="w-full sm:w-auto shadow-md shadow-gw-cyan/20 font-semibold">
+            START NEW ALLOCATION
+          </Button>
+        </Link>
+      </div>
+
+      {/* ----------------- 3. DATABASE PERSISTENCE STATUS BANNER ----------------- */}
+      <div className="p-3.5 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="flex items-start sm:items-center gap-2.5 text-gw-text-secondary leading-relaxed">
+          <Database className="w-4 h-4 shrink-0 text-gw-cyan mt-0.5 sm:mt-0" />
           <span>
             <strong className="text-gw-text">Authoritative Storage Layer:</strong> SQLite / SQLAlchemy database synchronized with FastAPI backend (
             <span className="text-gw-cyan font-mono font-medium">{flights.total}</span> flights,{' '}
@@ -350,8 +368,8 @@ export const Dashboard = () => {
             <span className="text-gw-warning font-mono font-medium">{simulations.total}</span> scenarios registered).
           </span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <Badge variant="cyan" size="sm" className="hidden sm:inline-flex">
+        <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+          <Badge variant="cyan" size="sm" className="inline-flex">
             Database Synchronized
           </Badge>
           <Badge variant="default" size="sm" className="font-mono text-[10px]">
@@ -527,12 +545,12 @@ export const Dashboard = () => {
             </h2>
 
             {/* Target Scenario Selector */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gw-text-secondary font-mono">Target Scenario:</span>
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+              <span className="text-xs text-gw-text-secondary font-mono shrink-0">Target Scenario:</span>
               <select
                 value={selectedSimId}
                 onChange={(e) => handleSimulationChange(e.target.value)}
-                className="bg-gw-bg-secondary border border-[#1e3a5f] rounded-lg px-2.5 py-1 text-xs text-gw-text font-mono focus:border-gw-cyan focus:outline-none cursor-pointer"
+                className="bg-gw-bg-secondary border border-[#1e3a5f] rounded-lg px-2.5 py-1 text-xs text-gw-text font-mono focus:border-gw-cyan focus:outline-none cursor-pointer max-w-[240px] truncate"
               >
                 {simulationOptions.map((opt) => (
                   <option key={opt.value} value={opt.value} className="bg-gw-bg-secondary text-gw-text">
@@ -595,7 +613,7 @@ export const Dashboard = () => {
                         Exact Integer
                       </Badge>
                     </div>
-                    <div className="gw-formula-box text-xs font-mono py-2 text-gw-success">
+                    <div className="gw-formula-box text-xs break-all font-mono py-2 text-gw-success">
                       N = Σ [(-1)ᵏ · rₖ · (n - k)!] = {math.exact_valid_assignments.toLocaleString()}
                     </div>
                     <p className="text-[11px] text-gw-text-secondary leading-relaxed">
@@ -607,7 +625,7 @@ export const Dashboard = () => {
 
                 {/* Combinatorial Breakdown Visualization */}
                 <div className="pt-2 border-t border-[#1e3a5f]/40 flex flex-col sm:flex-row items-center justify-between gap-6">
-                  <div className="w-full sm:w-48 h-36 relative">
+                  <div className="w-full sm:w-48 h-36 relative shrink-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
@@ -1030,7 +1048,7 @@ export const Dashboard = () => {
           <span className="text-xs text-gw-text-secondary font-mono">8 Subsystems</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {quickModules.map((mod) => {
             const Icon = mod.icon
             return (

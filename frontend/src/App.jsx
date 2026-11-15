@@ -11,6 +11,10 @@ import AllocationSimulator from './pages/AllocationSimulator'
 import Analytics from './pages/Analytics'
 import MathExplorer from './pages/MathExplorer'
 import About from './pages/About'
+import AllocationWorkspace from './pages/AllocationWorkspace'
+import ScenarioManagement from './pages/ScenarioManagement'
+import ReportsHub from './pages/ReportsHub'
+import SystemSettings from './pages/SystemSettings'
 import NotFound from './pages/NotFound'
 
 function App() {
@@ -26,10 +30,14 @@ function App() {
           <Route path="/flights" element={<FlightManagement />} />
           <Route path="/gates" element={<GateManagement />} />
           <Route path="/restrictions" element={<RestrictionMatrix />} />
+          <Route path="/workspace" element={<AllocationWorkspace />} />
+          <Route path="/scenarios" element={<ScenarioManagement />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/reports" element={<ReportsHub />} />
           <Route path="/calculation" element={<CalculationEngine />} />
           <Route path="/simulator" element={<AllocationSimulator />} />
-          <Route path="/analytics" element={<Analytics />} />
           <Route path="/math-explorer" element={<MathExplorer />} />
+          <Route path="/settings" element={<SystemSettings />} />
           <Route path="/about" element={<About />} />
         </Route>
 

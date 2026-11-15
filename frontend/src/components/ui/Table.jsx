@@ -7,10 +7,11 @@ export const Table = ({
   emptyMessage = 'No records found',
   className = '',
   loading = false,
+  minWidth = 'min-w-[640px]',
 }) => {
   return (
     <div className={`w-full overflow-x-auto rounded-xl border border-[#1e3a5f]/60 bg-gw-card/50 ${className}`}>
-      <table className="w-full text-left text-sm text-gw-text">
+      <table className={`w-full text-left text-sm text-gw-text ${minWidth}`}>
         <thead className="bg-gw-bg-secondary/70 text-xs uppercase tracking-wider text-gw-text-secondary border-b border-[#1e3a5f]/60">
           <tr>
             {columns.map((col, idx) => (

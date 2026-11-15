@@ -140,14 +140,14 @@ export const LandingPage = () => {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link to="/math-explorer" className="hidden sm:inline-block">
-            <Button size="sm" variant="ghost" icon={BookOpen}>
-              Math Explorer
+          <Link to="/dashboard" className="hidden sm:inline-block">
+            <Button size="sm" variant="ghost">
+              Operations Dashboard
             </Button>
           </Link>
-          <Link to="/simulator">
-            <Button size="sm" icon={ArrowRight}>
-              Launch Simulator
+          <Link to="/workspace">
+            <Button size="sm" icon={Sparkles} className="shadow-lg shadow-gw-cyan/15">
+              Allocation Workspace
             </Button>
           </Link>
         </div>
@@ -178,13 +178,18 @@ export const LandingPage = () => {
             </p>
 
             <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
-              <Link to="/simulator">
-                <Button size="lg" icon={ArrowRight} className="shadow-lg shadow-gw-cyan/10">
-                  Launch Simulator
+              <Link to="/workspace">
+                <Button size="lg" icon={Sparkles} className="shadow-lg shadow-gw-cyan/20">
+                  Open Allocation Workspace
+                </Button>
+              </Link>
+              <Link to="/dashboard">
+                <Button size="lg" variant="secondary" icon={ArrowRight}>
+                  Operations Dashboard
                 </Button>
               </Link>
               <Link to="/math-explorer">
-                <Button size="lg" variant="secondary" icon={BookOpen}>
+                <Button size="lg" variant="ghost" icon={BookOpen}>
                   Explore Mathematics
                 </Button>
               </Link>

@@ -383,7 +383,7 @@ export const FlightManagement = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
           <Button
             variant="outline"
             size="md"
@@ -466,39 +466,152 @@ export const FlightManagement = () => {
         </div>
       </Card>
 
-      {/* -------------------- 3. FLIGHTS TABLE -------------------- */}
-      <Table
-        columns={columns}
-        data={filteredFlights}
-        keyExtractor={(item) => item.id}
-        emptyMessage={
-          searchTerm || statusFilter !== 'ALL' || terminalFilter !== 'ALL' ? (
-            <div className="py-8 text-center space-y-2">
-              <p className="text-sm font-semibold text-gw-text">No matching flights found</p>
-              <p className="text-xs text-gw-text-secondary">Try adjusting your search criteria or filters.</p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSearchTerm('')
-                  setStatusFilter('ALL')
-                  setTerminalFilter('ALL')
-                }}
-              >
-                Clear Filters
-              </Button>
+      {/* -------------------- 3. FLIGHTS TABLE (DESKTOP/TABLET) & CARDS (MOBILE) -------------------- */}
+      <div className="hidden sm:block">
+        <Table
+          columns={columns}
+          data={filteredFlights}
+          keyExtractor={(item) => item.id}
+          emptyMessage={
+            searchTerm || statusFilter !== 'ALL' || terminalFilter !== 'ALL' ? (
+              <div className="py-8 text-center space-y-2">
+                <p className="text-sm font-semibold text-gw-text">No matching flights found</p>
+                <p className="text-xs text-gw-text-secondary">Try adjusting your search criteria or filters.</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSearchTerm('')
+                    setStatusFilter('ALL')
+                    setTerminalFilter('ALL')
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            ) : (
+              <div className="py-8 text-center space-y-2">
+                <p className="text-sm font-semibold text-gw-text">No flights registered</p>
+                <p className="text-xs text-gw-text-secondary">Click "Add New Flight" to register flights for the simulation.</p>
+                <Button size="sm" icon={Plus} onClick={handleOpenAddModal}>
+                  Add First Flight
+                </Button>
+              </div>
+            )
+          }
+        />
+      </div>
+
+      {/* Mobile Flight Cards (sm:hidden) */}
+      <div className="block sm:hidden space-y-3">
+        {isLoading ? (
+          <div className="p-8 text-center text-gw-text-secondary bg-gw-card/50 rounded-xl border border-[#1e3a5f]/60">
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-4 h-4 border-2 border-gw-cyan border-t-transparent rounded-full animate-spin" />
+              <span>Loading flights...</span>
             </div>
-          ) : (
-            <div className="py-8 text-center space-y-2">
-              <p className="text-sm font-semibold text-gw-text">No flights registered</p>
-              <p className="text-xs text-gw-text-secondary">Click "Add New Flight" to register flights for the simulation.</p>
-              <Button size="sm" icon={Plus} onClick={handleOpenAddModal}>
-                Add First Flight
-              </Button>
-            </div>
-          )
-        }
-      />
+          </div>
+        ) : filteredFlights.length === 0 ? (
+          <div className="p-6 text-center space-y-3 bg-gw-card/50 rounded-xl border border-[#1e3a5f]/60">
+            <p className="text-sm font-semibold text-gw-text">No matching flights found</p>
+            <p className="text-xs text-gw-text-secondary">Try adjusting your search criteria or filters.</p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setSearchTerm('')
+                setStatusFilter('ALL')
+                setTerminalFilter('ALL')
+              }}
+            >
+              Clear Filters
+            </Button>
+          </div>
+        ) : (
+          filteredFlights.map((flight) => {
+            const statusVariant =
+              flight.status === 'Boarding'
+                ? 'cyan'
+                : flight.status === 'Delayed'
+                ? 'error'
+                : flight.status === 'Arrived'
+                ? 'success'
+                : 'default'
+
+            return (
+              <Card key={flight.id} className="p-4 space-y-3 border-[#1e3a5f]/80">
+                {/* Header: Flight number, Airline, Status */}
+                <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-[#1e3a5f]/40">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 rounded-lg bg-gw-cyan/10 text-gw-cyan border border-gw-cyan/20">
+                      <Plane className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-sm font-bold text-gw-cyan">{flight.flightNumber}</span>
+                        <span className="font-mono text-[11px] text-gw-text-secondary">({flight.id})</span>
+                      </div>
+                      <div className="text-xs font-medium text-gw-text">{flight.airline}</div>
+                    </div>
+                  </div>
+                  <Badge variant={statusVariant} size="sm" dot>
+                    {flight.status}
+                  </Badge>
+                </div>
+
+                {/* Details Grid */}
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 rounded-lg bg-gw-bg-secondary/60 border border-[#1e3a5f]/40 space-y-0.5">
+                    <span className="text-[10px] text-gw-text-secondary uppercase">Schedule</span>
+                    <div className="font-mono font-medium text-gw-text flex items-center gap-1">
+                      <Clock className="w-3 h-3 text-gw-cyan shrink-0" />
+                      <span>{flight.arrivalTime} → {flight.departureTime}</span>
+                    </div>
+                  </div>
+
+                  <div className="p-2 rounded-lg bg-gw-bg-secondary/60 border border-[#1e3a5f]/40 space-y-0.5">
+                    <span className="text-[10px] text-gw-text-secondary uppercase">Terminal & Pax</span>
+                    <div className="font-mono font-medium text-gw-text flex items-center gap-1.5">
+                      <span className="px-1.5 py-0.5 rounded bg-gw-bg-tertiary border border-[#1e3a5f] text-[11px]">
+                        {flight.terminal}
+                      </span>
+                      <span className="text-gw-text-secondary">{flight.passengerCapacity} pax</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Aircraft Type info */}
+                <div className="text-xs text-gw-text-secondary flex items-center justify-between px-1">
+                  <span>Aircraft:</span>
+                  <span className="font-medium text-gw-text">{flight.aircraftType}</span>
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex items-center gap-2 pt-2 border-t border-[#1e3a5f]/40">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    icon={Edit2}
+                    className="flex-1 justify-center text-xs h-9"
+                    onClick={() => handleOpenEditModal(flight)}
+                  >
+                    Edit Flight
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    icon={Trash2}
+                    className="flex-1 justify-center text-xs h-9 text-gw-error hover:bg-gw-error/10 hover:text-gw-error"
+                    onClick={() => handleOpenDeleteModal(flight)}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </Card>
+            )
+          })
+        )}
+      </div>
 
       {/* Storage & Architecture Notice */}
       <div className="p-3.5 rounded-xl bg-gw-bg-secondary/40 border border-[#1e3a5f]/50 flex items-center justify-between text-xs text-gw-text-secondary">

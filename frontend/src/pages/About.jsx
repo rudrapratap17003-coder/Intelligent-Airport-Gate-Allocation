@@ -123,7 +123,7 @@ export const About = () => {
               R(B, x) = r₀ + r₁x + r₂x² + ... + rₙxⁿ
             </div>
             <p className="text-xs text-gw-text-secondary leading-relaxed">
-              Where $r_k$ is the exact number of ways to place $k$ non-attacking rooks on forbidden cells. Computed in $\mathcal{O}(n \cdot 2^n)$ via row-based dynamic programming with bitmask state.
+              Where $r_k$ is the exact number of ways to place $k$ non-attacking rooks on forbidden cells. Computed in O(n · 2ⁿ) via row-based dynamic programming with bitmask state.
             </p>
           </Card>
 

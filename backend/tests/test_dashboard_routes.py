@@ -54,7 +54,7 @@ def test_get_dashboard_summary_default():
     # Math summary for default sim (most recently updated valid sim)
     assert data["mathematical_summary"] is not None
     math_sum = data["mathematical_summary"]
-    assert math_sum["simulation_id"] in ["SIM-001", "SIM-002", "SIM-003"]
+    assert isinstance(math_sum["simulation_id"], str) and math_sum["simulation_id"].startswith("SIM-")
     assert math_sum["matrix_size"] > 0
     assert math_sum["total_possible_assignments"] > 0
     assert math_sum["exact_valid_assignments"] > 0

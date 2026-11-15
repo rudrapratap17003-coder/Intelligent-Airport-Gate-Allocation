@@ -292,7 +292,7 @@ export const Analytics = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 shrink-0">
           {activeTab === 'analytics' && (
             <Button
               variant="outline"
@@ -317,10 +317,10 @@ export const Analytics = () => {
       </div>
 
       {/* ----------------- TAB SWITCHER ----------------- */}
-      <div className="flex items-center gap-2 border-b border-[#1e3a5f]/50 pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-[#1e3a5f]/50 pb-3">
         <button
           onClick={() => handleTabChange('analytics')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+          className={`flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
             activeTab === 'analytics'
               ? 'bg-gw-cyan/15 text-gw-cyan border border-gw-cyan/30 shadow-lg shadow-gw-cyan/5 font-semibold'
               : 'text-gw-text-secondary hover:text-gw-text hover:bg-gw-bg-secondary'
@@ -331,7 +331,7 @@ export const Analytics = () => {
         </button>
         <button
           onClick={() => handleTabChange('compare')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+          className={`flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
             activeTab === 'compare'
               ? 'bg-gw-cyan/15 text-gw-cyan border border-gw-cyan/30 shadow-lg shadow-gw-cyan/5 font-semibold'
               : 'text-gw-text-secondary hover:text-gw-text hover:bg-gw-bg-secondary'
@@ -389,7 +389,7 @@ export const Analytics = () => {
               <Database className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
+          <div className="flex flex-wrap items-baseline gap-2">
             <span className="text-2xl font-extrabold font-mono text-gw-text">
               {overview?.total_flights || 0}
             </span>
@@ -436,7 +436,7 @@ export const Analytics = () => {
               <TrendingUp className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
+          <div className="flex flex-wrap items-baseline gap-1.5">
             <span className="text-2xl font-extrabold font-mono text-gw-success">
               {overview?.feasible_simulations_count || 0}
             </span>
@@ -462,7 +462,7 @@ export const Analytics = () => {
               <Percent className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="flex items-baseline gap-1.5 text-xs font-mono">
+          <div className="flex flex-wrap items-baseline gap-1.5 text-xs font-mono">
             <span className="text-gw-text-secondary">Hi:</span>
             <strong className="text-gw-cyan text-base">
               {overview?.highest_feasibility ? `${overview.highest_feasibility.feasibility_percentage.toFixed(1)}%` : '—'}
@@ -495,10 +495,10 @@ export const Analytics = () => {
           </Badge>
         </div>
 
-        <div className="h-72 w-full pt-2">
+        <div className="h-64 sm:h-72 w-full pt-2">
           {comparativeChartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={comparativeChartData} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
+              <BarChart data={comparativeChartData} margin={{ top: 10, right: 10, left: -10, bottom: 20 }}>
                 <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} />
                 <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} domain={[0, 100]} unit="%" />
                 <Tooltip
@@ -544,12 +544,12 @@ export const Analytics = () => {
           </div>
 
           {/* Scenario Selector Dropdown */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-gw-text-secondary font-mono">Inspecting:</span>
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+            <span className="text-xs text-gw-text-secondary font-mono shrink-0">Inspecting:</span>
             <select
               value={selectedSimId}
               onChange={(e) => setSelectedSimId(e.target.value)}
-              className="bg-gw-bg-secondary border border-[#1e3a5f] rounded-lg px-3 py-1.5 text-xs text-gw-text font-mono focus:border-gw-cyan focus:outline-none cursor-pointer"
+              className="bg-gw-bg-secondary border border-[#1e3a5f] rounded-lg px-3 py-1.5 text-xs text-gw-text font-mono focus:border-gw-cyan focus:outline-none cursor-pointer w-full sm:w-auto max-w-full sm:max-w-xs truncate"
             >
               {overview?.simulations?.map((s) => (
                 <option key={s.id} value={s.id} className="bg-gw-bg-secondary text-gw-text">

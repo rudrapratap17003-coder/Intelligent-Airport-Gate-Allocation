@@ -1,31 +1,44 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard,
   Plane,
   DoorClosed,
   Grid3X3,
-  Calculator,
-  PlayCircle,
+  Sparkles,
+  Layers,
   BarChart3,
+  FileText,
   BookOpen,
+  Calculator,
+  Settings,
   Info,
   ChevronLeft,
   ChevronRight,
   X
 } from 'lucide-react'
 
-export const navItems = [
-  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { name: 'Flight Management', path: '/flights', icon: Plane },
-  { name: 'Gate Management', path: '/gates', icon: DoorClosed },
-  { name: 'Restriction Matrix', path: '/restrictions', icon: Grid3X3 },
-  { name: 'Calculation Engine', path: '/calculation', icon: Calculator },
-  { name: 'Allocation Simulator', path: '/simulator', icon: PlayCircle },
-  { name: 'Analytics & Compare', path: '/analytics', icon: BarChart3 },
-  { name: 'Math Explorer', path: '/math-explorer', icon: BookOpen },
-  { name: 'Project Info', path: '/about', icon: Info },
+export const primaryNavItems = [
+  { name: 'Overview', path: '/dashboard', icon: LayoutDashboard },
+  { name: 'Flights', path: '/flights', icon: Plane },
+  { name: 'Gates', path: '/gates', icon: DoorClosed },
+  { name: 'Restrictions', path: '/restrictions', icon: Grid3X3 },
+  { name: 'Allocation Workspace', path: '/workspace', icon: Sparkles, badge: 'Guided' },
+  { name: 'Scenarios', path: '/scenarios', icon: Layers },
+  { name: 'Analytics', path: '/analytics', icon: BarChart3 },
+  { name: 'Reports', path: '/reports', icon: FileText },
 ]
+
+export const secondaryNavItems = [
+  { name: 'Mathematics Explorer', path: '/math-explorer', icon: BookOpen },
+  { name: 'Mathematical Engine', path: '/calculation', icon: Calculator },
+  { name: 'System Settings', path: '/settings', icon: Settings },
+  { name: 'Help & Documentation', path: '/about', icon: Info },
+]
+
+export const allNavItems = [...primaryNavItems, ...secondaryNavItems]
+// Backward compatibility
+export const navItems = allNavItems
 
 export const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen, setMobileOpen }) => {
   return (
@@ -43,30 +56,28 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen, setMobileOpen
         className={`
           fixed top-0 bottom-0 left-0 z-50 h-screen bg-gw-bg-secondary border-r border-[#1e3a5f]/60
           transition-all duration-300 flex flex-col justify-between
-          ${/* Desktop width rules */ ''}
           ${isCollapsed ? 'lg:w-20' : 'lg:w-64'}
-          ${/* Mobile slide-in rules */ ''}
           ${mobileOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0'}
         `}
       >
         {/* Brand Header */}
-        <div>
-          <div className="h-16 flex items-center px-4 border-b border-[#1e3a5f]/60 justify-between">
+        <div className="flex-1 overflow-y-auto">
+          <div className="h-16 flex items-center px-4 border-b border-[#1e3a5f]/60 justify-between sticky top-0 bg-gw-bg-secondary z-10">
             <NavLink
               to="/"
               onClick={() => setMobileOpen?.(false)}
               className="flex items-center gap-3 overflow-hidden group"
             >
               <div className="w-10 h-10 rounded-xl bg-gw-cyan/10 border border-gw-cyan/30 flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
-                <Plane className="w-6 h-6 text-gw-cyan rotate-[-45deg]" />
+                <Plane className="w-5 h-5 text-gw-cyan rotate-[-45deg]" />
               </div>
               {(!isCollapsed || mobileOpen) && (
                 <div className="flex flex-col min-w-0">
-                  <span className="font-bold text-lg text-gw-text tracking-tight font-sans truncate">
+                  <span className="font-bold text-base text-gw-text tracking-tight font-sans truncate">
                     Gate<span className="text-gw-cyan">Wise</span>
                   </span>
-                  <span className="text-[10px] text-gw-text-secondary uppercase tracking-widest font-mono">
-                    Discrete Math
+                  <span className="text-[10px] text-gw-text-secondary uppercase tracking-wider font-mono">
+                    Decision Support
                   </span>
                 </div>
               )}
@@ -92,9 +103,14 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen, setMobileOpen
             </button>
           </div>
 
-          {/* Navigation Items */}
-          <nav className="p-3 space-y-1.5 overflow-y-auto max-h-[calc(100vh-140px)]">
-            {navItems.map((item) => {
+          {/* Primary Navigation */}
+          <nav className="p-3 space-y-1">
+            {(!isCollapsed || mobileOpen) && (
+              <div className="px-3 pt-2 pb-1 text-[10px] uppercase font-mono tracking-wider text-gw-text-secondary/70">
+                Core Operations
+              </div>
+            )}
+            {primaryNavItems.map((item) => {
               const Icon = item.icon
               return (
                 <NavLink
@@ -102,7 +118,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen, setMobileOpen
                   to={item.path}
                   onClick={() => setMobileOpen?.(false)}
                   className={({ isActive }) => `
-                    flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group relative
+                    flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all group relative
                     ${isActive
                       ? 'bg-gw-cyan/15 text-gw-cyan border border-gw-cyan/35 font-semibold shadow-inner shadow-gw-cyan/5'
                       : 'text-gw-text-secondary hover:text-gw-text hover:bg-white/[0.04]'
@@ -111,10 +127,54 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen, setMobileOpen
                   `}
                   title={isCollapsed && !mobileOpen ? item.name : undefined}
                 >
-                  <Icon className="w-5 h-5 shrink-0 transition-transform group-hover:scale-105" />
-                  {(!isCollapsed || mobileOpen) && <span className="truncate">{item.name}</span>}
+                  <Icon className="w-4 h-4 shrink-0 transition-transform group-hover:scale-105" />
+                  {(!isCollapsed || mobileOpen) && (
+                    <div className="flex items-center justify-between flex-1 min-w-0">
+                      <span className="truncate">{item.name}</span>
+                      {item.badge && (
+                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-gw-cyan/20 text-gw-cyan border border-gw-cyan/30">
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   {/* Desktop Hover Tooltip (when collapsed) */}
+                  {isCollapsed && !mobileOpen && (
+                    <div className="absolute left-full ml-3 px-2.5 py-1 bg-gw-card border border-[#1e3a5f] rounded-md text-xs font-medium text-gw-text whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl">
+                      {item.name}
+                    </div>
+                  )}
+                </NavLink>
+              )
+            })}
+
+            {/* Secondary Navigation Section */}
+            {(!isCollapsed || mobileOpen) && (
+              <div className="px-3 pt-4 pb-1 text-[10px] uppercase font-mono tracking-wider text-gw-text-secondary/70 border-t border-[#1e3a5f]/40 mt-3">
+                Resources & Engines
+              </div>
+            )}
+            {secondaryNavItems.map((item) => {
+              const Icon = item.icon
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setMobileOpen?.(false)}
+                  className={({ isActive }) => `
+                    flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all group relative
+                    ${isActive
+                      ? 'bg-gw-cyan/15 text-gw-cyan border border-gw-cyan/35 font-semibold shadow-inner shadow-gw-cyan/5'
+                      : 'text-gw-text-secondary hover:text-gw-text hover:bg-white/[0.04]'
+                    }
+                    ${isCollapsed && !mobileOpen ? 'justify-center' : ''}
+                  `}
+                  title={isCollapsed && !mobileOpen ? item.name : undefined}
+                >
+                  <Icon className="w-4 h-4 shrink-0 transition-transform group-hover:scale-105" />
+                  {(!isCollapsed || mobileOpen) && <span className="truncate">{item.name}</span>}
+
                   {isCollapsed && !mobileOpen && (
                     <div className="absolute left-full ml-3 px-2.5 py-1 bg-gw-card border border-[#1e3a5f] rounded-md text-xs font-medium text-gw-text whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-xl">
                       {item.name}
@@ -127,13 +187,13 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen, setMobileOpen
         </div>
 
         {/* Ops Footer Telemetry */}
-        <div className="p-3 border-t border-[#1e3a5f]/60 bg-gw-bg/40">
-          <div className={`flex items-center ${isCollapsed && !mobileOpen ? 'justify-center' : 'gap-3 px-2'} py-1.5`}>
-            <div className="w-2.5 h-2.5 rounded-full bg-gw-success animate-pulse shrink-0" />
+        <div className="p-3 border-t border-[#1e3a5f]/60 bg-gw-bg/40 shrink-0">
+          <div className={`flex items-center ${isCollapsed && !mobileOpen ? 'justify-center' : 'gap-2.5 px-2'} py-1.5`}>
+            <div className="w-2 h-2 rounded-full bg-gw-success animate-pulse shrink-0" />
             {(!isCollapsed || mobileOpen) && (
               <div className="flex flex-col min-w-0">
-                <span className="text-xs font-medium text-gw-text truncate">Aviation Ops Core</span>
-                <span className="text-[10px] text-gw-text-secondary font-mono">v1.0 • Standby</span>
+                <span className="text-xs font-medium text-gw-text truncate">Discrete Math Core</span>
+                <span className="text-[10px] text-gw-text-secondary font-mono">SQLite • Synchronized</span>
               </div>
             )}
           </div>

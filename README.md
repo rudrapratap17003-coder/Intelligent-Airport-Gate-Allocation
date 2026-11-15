@@ -73,33 +73,37 @@ $$\text{Feasibility Rate} = \left(\frac{N}{n!}\right) \times 100\%$$
 
 ## 4. Key Features & Modules
 
-1. **Live Operations Dashboard (`/dashboard`)**:
-   - Real-time fleet, terminal gate, and simulation statistics.
-   - Authoritative aggregate mathematical feasibility metrics.
-   - Comprehensive system activity audit trail.
-2. **Flight Management (`/flights`)**:
-   - Master aircraft registry with search, filtering, and CRUD operations.
-3. **Gate Management (`/gates`)**:
+1. **Guided Allocation Workspace (`/workspace`)**:
+   - Integrated 7-step guided decision workflow: Select Flights $\to$ Select Gates $\to$ Configure Restriction Grid $\to$ Compute Rook & PIE $\to$ Generate Allocations $\to$ Verify & Audit $\to$ Export Reports.
+2. **Live Operations Dashboard (`/dashboard`)**:
+   - Real-time fleet, terminal gate, and active scenario metrics.
+   - Live aggregate mathematical feasibility indicators and audit activity trail.
+3. **Flight Operations Registry (`/flights`)**:
+   - Master aircraft registry with search, filtering, CRUD operations, and responsive mobile cards.
+4. **Gate Management (`/gates`)**:
    - Terminal gate registry with aircraft size restrictions and status controls.
-4. **Restriction Matrix (`/restrictions`)**:
-   - Interactive $n \times n$ binary restriction grid with cell toggling and density telemetry.
-5. **Step-by-Step Calculation Engine (`/calculation`)**:
+5. **Restriction Matrix (`/matrix`)**:
+   - Interactive $n \times n$ binary restriction grid with cell toggling, density telemetry, and sample pattern presets.
+6. **Step-by-Step Calculation Engine (`/calculations`)**:
    - 5-step pedagogical walkthrough: Board Formulation $\to$ Factorial Permutations $\to$ Rook Polynomial Derivation $\to$ PIE Alternating Sums $\to$ Feasibility Verdict.
-   - Auto-play stepper controls with algebraic term breakdowns.
-6. **Allocation Simulator & Interactive Visualization (`/simulator`)**:
+7. **Allocation Simulator & Interactive Visualization (`/simulator` & `/bipartite`)**:
    - Backtracking permutation generator with early branch pruning.
    - Independent conflict detection auditing every single flight-gate assignment.
    - Interactive SVG bipartite assignment diagram with hover-highlighting and matrix overlay.
-7. **Mathematical Analytics & Scenario Comparison (`/analytics`)**:
-   - Combinatorial telemetry workspace evaluating coefficient histograms.
-   - Scenario Comparison System comparing up to 6 scenarios with difference matrix ($M_1 - M_2$) analysis and automated rule-based insights.
-8. **Interactive Mathematics Explorer (`/math-explorer`)**:
-   - Real-time ad-hoc restriction sandbox with preset templates (Derangements, Bottlenecks, Upper Triangular).
-   - Non-attacking chess rook placement simulator with live row/column collision alerts.
-   - Permutation theory explorer ($1 \le n \le 8$) with factorial growth tables.
-9. **Report Export System (`/export`)**:
-   - Streaming CSV downloads for flights, gates, restriction matrices, and allocation plans.
-   - Publication-grade printable academic HTML reports with print stylesheet styling.
+8. **Mathematical Analytics (`/analytics`)**:
+   - Combinatorial telemetry workspace evaluating coefficient histograms, density heatmaps, and constraint distributions.
+9. **Scenario Management & Comparison (`/scenarios` & `/comparison`)**:
+   - Full lifecycle scenario management (create, duplicate, edit, delete).
+   - Multi-scenario comparison comparing up to 6 scenarios with difference matrix ($M_1 - M_2$) analysis and automated rule-based insights.
+10. **Interactive Mathematics Explorer (`/math-explorer`)**:
+    - Real-time ad-hoc restriction sandbox with preset templates (Derangements, Bottlenecks, Upper Triangular).
+    - Non-attacking chess rook placement simulator with live row/column collision alerts.
+    - Permutation theory explorer ($1 \le n \le 8$) with factorial growth tables.
+11. **Reports & Export Hub (`/reports`)**:
+    - Direct binary PDF reports generated server-side with ReportLab, including formula boxes, matrix tables, and allocation plans.
+    - Streaming CSV exports for master flights, gates, restriction matrices, mathematical derivations, and allocations.
+12. **System Settings & Health (`/settings`)**:
+    - Live system diagnostics, API connectivity monitoring, and database health metrics.
 
 ---
 

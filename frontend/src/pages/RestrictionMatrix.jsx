@@ -286,12 +286,13 @@ export const RestrictionMatrix = () => {
               Binary Board B
             </Badge>
           </div>
-          <p className="text-sm text-gw-text-secondary">
-            Define which flights are restricted from using specific airport gates.
+          <p className="text-sm text-gw-text-secondary leading-relaxed">
+            A restricted pairing means that a particular flight cannot be assigned to a particular gate in the current mathematical model.
+            The binary matrix B assigns 0 to available pairings and 1 to forbidden cells.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
           <Button
             variant="outline"
             size="md"
@@ -301,9 +302,9 @@ export const RestrictionMatrix = () => {
             Validate Matrix
           </Button>
 
-          <Link to="/simulator">
-            <Button variant="secondary" size="md" icon={Layers}>
-              Simulation Registry
+          <Link to="/workspace">
+            <Button size="md" icon={Grid3X3} className="shadow-lg shadow-gw-cyan/10">
+              Allocation Workspace
             </Button>
           </Link>
         </div>
