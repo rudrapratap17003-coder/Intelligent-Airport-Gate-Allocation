@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+/* GateWise — Global Aviation Theme Styles */
+
+@theme {
+  --color-gw-bg: #081421;
+  --color-gw-bg-secondary: #102236;
+  --color-gw-bg-tertiary: #0c1b2c;
+  --color-gw-card: #142A40;
+  --color-gw-card-hover: #18344e;
+  --color-gw-border: #1e3a5f;
+  --color-gw-border-subtle: rgba(30, 58, 95, 0.45);
+  --color-gw-cyan: #24C8E8;
+  --color-gw-blue: #4389FF;
+  --color-gw-success: #22C55E;
+  --color-gw-warning: #F59E0B;
+  --color-gw-error: #EF4444;
+  --color-gw-text: #F1F5F9;
+  --color-gw-text-secondary: #94A3B8;
+  --color-gw-text-muted: #64748B;
+
+  --shadow-gw-card: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(30, 58, 95, 0.5);
+  --shadow-gw-elevated: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(36, 200, 232, 0.15);
+  --shadow-gw-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(30, 58, 95, 0.7);
+}
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  font-family: 'Inter', 'Manrope', system-ui, -apple-system, sans-serif;
+  background-color: #081421;
+  color: #F1F5F9;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Typography Scale Utilities */
+.gw-page-heading {
+  font-size: 1.5rem; /* 24px */
+  font-weight: 700;
+  line-height: 2rem;
+  letter-spacing: -0.025em;
+  color: #F1F5F9;
+}
+@media (min-width: 640px) {
+  .gw-page-heading {
+    font-size: 1.875rem; /* 30px */
+    line-height: 2.25rem;
+  }
+}
+
+.gw-section-heading {
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  line-height: 1.75rem;
+  letter-spacing: -0.015em;
+  color: #F1F5F9;
+}
+
+.gw-card-heading {
+  font-size: 0.9375rem; /* 15px */
+  font-weight: 600;
+  line-height: 1.25rem;
+  letter-spacing: -0.01em;
+  color: #F1F5F9;
+}
+
+.gw-caption {
+  font-size: 0.75rem; /* 12px */
+  font-weight: 500;
+  line-height: 1rem;
+  color: #94A3B8;
+  letter-spacing: 0.025em;
+}
+
+/* Mathematical Formula Render Box */
+.gw-formula-box {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background-color: #0c1b2c;
+  border: 1px solid rgba(36, 200, 232, 0.25);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: #24C8E8;
+  font-size: 0.875rem;
+  overflow-x: auto;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #081421;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e3a5f;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #24C8E8;
+}

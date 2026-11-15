@@ -1,0 +1,296 @@
+{
+  "3x3_sparse": {
+    "name": "3x3 Sparse Board (SIM-002 variant)",
+    "size": 3,
+    "density": "22.2% (2/9)",
+    "total_possible": 6,
+    "exact_valid": 3,
+    "t_rook_ms": 0.14770007692277431,
+    "t_pie_ms": 0.21159998141229153,
+    "t_audit_batch_ms": 0.0771000050008297,
+    "t_audit_per_alloc_ms": 0.025700001666943233,
+    "t_workflow_ms": 0.22870022803544998,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 0.21009985357522964,
+        "generated_count": 3,
+        "complete": true,
+        "has_more": false
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 0.1441999338567257,
+        "generated_count": 3,
+        "complete": true,
+        "has_more": false
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 0.11709984391927719,
+        "generated_count": 3,
+        "complete": true,
+        "has_more": false
+      }
+    }
+  },
+  "3x3_dense": {
+    "name": "3x3 Dense Board",
+    "size": 3,
+    "density": "66.7% (6/9)",
+    "total_possible": 6,
+    "exact_valid": 1,
+    "t_rook_ms": 0.06160000339150429,
+    "t_pie_ms": 0.12230011634528637,
+    "t_audit_batch_ms": 0.13449997641146183,
+    "t_audit_per_alloc_ms": 0.13449997641146183,
+    "t_workflow_ms": 0.18809991888701916,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 0.17080013640224934,
+        "generated_count": 1,
+        "complete": true,
+        "has_more": false
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 0.1385000068694353,
+        "generated_count": 1,
+        "complete": true,
+        "has_more": false
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 0.18660002388060093,
+        "generated_count": 1,
+        "complete": true,
+        "has_more": false
+      }
+    }
+  },
+  "6x6_sim001": {
+    "name": "6x6 SIM-001 Benchmark (Standard)",
+    "size": 6,
+    "density": "13.9% (5/36)",
+    "total_possible": 720,
+    "exact_valid": 309,
+    "t_rook_ms": 0.18119998276233673,
+    "t_pie_ms": 0.32560015097260475,
+    "t_audit_batch_ms": 5.712799960747361,
+    "t_audit_per_alloc_ms": 0.05712799960747361,
+    "t_workflow_ms": 9.9113998003304,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 0.34149992279708385,
+        "generated_count": 10,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 0.7363001350313425,
+        "generated_count": 50,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 1.1353001464158297,
+        "generated_count": 100,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_309": {
+        "limit": 309,
+        "time_ms": 3.4785999450832605,
+        "generated_count": 309,
+        "complete": true,
+        "has_more": false
+      }
+    }
+  },
+  "6x6_dense": {
+    "name": "6x6 Dense Board (50% forbidden)",
+    "size": 6,
+    "density": "50.0% (18/36)",
+    "total_possible": 720,
+    "exact_valid": 36,
+    "t_rook_ms": 0.8588000200688839,
+    "t_pie_ms": 0.8954000659286976,
+    "t_audit_batch_ms": 1.9360999576747417,
+    "t_audit_per_alloc_ms": 0.053780554379853934,
+    "t_workflow_ms": 3.8558999076485634,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 1.0547998826950788,
+        "generated_count": 10,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 1.2097000144422054,
+        "generated_count": 36,
+        "complete": true,
+        "has_more": false
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 1.2885001488029957,
+        "generated_count": 36,
+        "complete": true,
+        "has_more": false
+      }
+    }
+  },
+  "8x8_sparse": {
+    "name": "8x8 Sparse Board (Diagonal)",
+    "size": 8,
+    "density": "12.5% (8/64)",
+    "total_possible": 40320,
+    "exact_valid": 14833,
+    "t_rook_ms": 1.278699841350317,
+    "t_pie_ms": 1.464799977838993,
+    "t_audit_batch_ms": 6.911200005561113,
+    "t_audit_per_alloc_ms": 0.06911200005561113,
+    "t_workflow_ms": 12.935500126332045,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 1.6665998846292496,
+        "generated_count": 10,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 1.793100032955408,
+        "generated_count": 50,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 2.4978001601994038,
+        "generated_count": 100,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_309": {
+        "limit": 309,
+        "time_ms": 5.640899995341897,
+        "generated_count": 309,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_500": {
+        "limit": 500,
+        "time_ms": 9.087600046768785,
+        "generated_count": 500,
+        "complete": false,
+        "has_more": true
+      }
+    }
+  },
+  "8x8_dense": {
+    "name": "8x8 Dense Board (Checkerboard 50%)",
+    "size": 8,
+    "density": "50.0% (32/64)",
+    "total_possible": 40320,
+    "exact_valid": 576,
+    "t_rook_ms": 6.537599954754114,
+    "t_pie_ms": 5.924900062382221,
+    "t_audit_batch_ms": 7.217699894681573,
+    "t_audit_per_alloc_ms": 0.07217699894681573,
+    "t_workflow_ms": 17.761100083589554,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 6.731499917805195,
+        "generated_count": 10,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 7.518999977037311,
+        "generated_count": 50,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 7.909600157290697,
+        "generated_count": 100,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_309": {
+        "limit": 309,
+        "time_ms": 12.435000156983733,
+        "generated_count": 309,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_500": {
+        "limit": 500,
+        "time_ms": 14.259099960327148,
+        "generated_count": 500,
+        "complete": false,
+        "has_more": true
+      }
+    }
+  },
+  "10x10_sparse": {
+    "name": "10x10 Sparse Board (10 restrictions)",
+    "size": 10,
+    "density": "10.0% (10/100)",
+    "total_possible": 3628800,
+    "exact_valid": 1334961,
+    "t_rook_ms": 8.349599782377481,
+    "t_pie_ms": 7.920300122350454,
+    "t_audit_batch_ms": 9.149600053206086,
+    "t_audit_per_alloc_ms": 0.09149600053206086,
+    "t_workflow_ms": 23.596199927851558,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 8.50740005262196,
+        "generated_count": 10,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 8.728999877348542,
+        "generated_count": 50,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 9.68260015361011,
+        "generated_count": 100,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_309": {
+        "limit": 309,
+        "time_ms": 14.653400052338839,
+        "generated_count": 309,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_500": {
+        "limit": 500,
+        "time_ms": 20.20739996805787,
+        "generated_count": 500,
+        "complete": false,
+        "has_more": true
+      }
+    }
+  }
+}

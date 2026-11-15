@@ -1,0 +1,359 @@
+{
+  "3x3_sparse": {
+    "name": "3x3 Sparse Board (SIM-002 variant)",
+    "size": 3,
+    "density": "22.2% (2/9)",
+    "total_possible": 6,
+    "exact_valid": 3,
+    "t_rook_ms": 0.06450014188885689,
+    "mem_rook_bytes": 46075,
+    "t_pie_ms": 0.09610014967620373,
+    "mem_pie_bytes": 45300,
+    "t_math_pipeline_ms": 0.14899997040629387,
+    "t_audit_legacy_ms": 0.08219992741942406,
+    "t_audit_opt_ms": 0.05959998816251755,
+    "t_audit_per_alloc_ms": 0.019866662720839184,
+    "t_workflow_opt_ms": 0.2389999572187662,
+    "mem_workflow_bytes": 49976,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 0.15540001913905144,
+        "peak_mem_bytes": 81146,
+        "generated_count": 3,
+        "complete": true,
+        "has_more": false
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 0.1829999964684248,
+        "peak_mem_bytes": 100266,
+        "generated_count": 3,
+        "complete": true,
+        "has_more": false
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 0.15350012108683586,
+        "peak_mem_bytes": 61122,
+        "generated_count": 3,
+        "complete": true,
+        "has_more": false
+      }
+    }
+  },
+  "3x3_dense": {
+    "name": "3x3 Dense Board",
+    "size": 3,
+    "density": "66.7% (6/9)",
+    "total_possible": 6,
+    "exact_valid": 1,
+    "t_rook_ms": 0.16000005416572094,
+    "mem_rook_bytes": 39150,
+    "t_pie_ms": 0.22369995713233948,
+    "mem_pie_bytes": 64377,
+    "t_math_pipeline_ms": 0.2484000287950039,
+    "t_audit_legacy_ms": 0.02450007013976574,
+    "t_audit_opt_ms": 0.024300068616867065,
+    "t_audit_per_alloc_ms": 0.024300068616867065,
+    "t_workflow_opt_ms": 0.2313998993486166,
+    "mem_workflow_bytes": 47136,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 0.17070001922547817,
+        "peak_mem_bytes": 71534,
+        "generated_count": 1,
+        "complete": true,
+        "has_more": false
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 0.19669998437166214,
+        "peak_mem_bytes": 88998,
+        "generated_count": 1,
+        "complete": true,
+        "has_more": false
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 0.1901998184621334,
+        "peak_mem_bytes": 63438,
+        "generated_count": 1,
+        "complete": true,
+        "has_more": false
+      }
+    }
+  },
+  "6x6_sim001": {
+    "name": "6x6 SIM-001 Benchmark (Standard)",
+    "size": 6,
+    "density": "13.9% (5/36)",
+    "total_possible": 720,
+    "exact_valid": 309,
+    "t_rook_ms": 0.20239991135895252,
+    "mem_rook_bytes": 92577,
+    "t_pie_ms": 0.22380007430911064,
+    "mem_pie_bytes": 58218,
+    "t_math_pipeline_ms": 0.5189001094549894,
+    "t_audit_legacy_ms": 5.39719988591969,
+    "t_audit_opt_ms": 2.9673001263290644,
+    "t_audit_per_alloc_ms": 0.029673001263290644,
+    "t_workflow_opt_ms": 5.191800184547901,
+    "mem_workflow_bytes": 302032,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 0.37610018625855446,
+        "peak_mem_bytes": 223774,
+        "generated_count": 10,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 0.5310999695211649,
+        "peak_mem_bytes": 330726,
+        "generated_count": 50,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 0.6343999411910772,
+        "peak_mem_bytes": 325060,
+        "generated_count": 100,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_309": {
+        "limit": 309,
+        "time_ms": 1.5575999859720469,
+        "peak_mem_bytes": 645644,
+        "generated_count": 309,
+        "complete": true,
+        "has_more": false
+      }
+    }
+  },
+  "6x6_dense": {
+    "name": "6x6 Dense Board (50% forbidden)",
+    "size": 6,
+    "density": "50.0% (18/36)",
+    "total_possible": 720,
+    "exact_valid": 36,
+    "t_rook_ms": 0.901699997484684,
+    "mem_rook_bytes": 172220,
+    "t_pie_ms": 0.9725999552756548,
+    "mem_pie_bytes": 187680,
+    "t_math_pipeline_ms": 2.0143999718129635,
+    "t_audit_legacy_ms": 1.738700084388256,
+    "t_audit_opt_ms": 1.0829998645931482,
+    "t_audit_per_alloc_ms": 0.030083329572031896,
+    "t_workflow_opt_ms": 2.6131998747587204,
+    "mem_workflow_bytes": 251016,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 0.9802998974919319,
+        "peak_mem_bytes": 275414,
+        "generated_count": 10,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 1.3204999268054962,
+        "peak_mem_bytes": 358150,
+        "generated_count": 36,
+        "complete": true,
+        "has_more": false
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 1.1533999349921942,
+        "peak_mem_bytes": 299038,
+        "generated_count": 36,
+        "complete": true,
+        "has_more": false
+      }
+    }
+  },
+  "8x8_sparse": {
+    "name": "8x8 Sparse Board (Diagonal)",
+    "size": 8,
+    "density": "12.5% (8/64)",
+    "total_possible": 40320,
+    "exact_valid": 14833,
+    "t_rook_ms": 1.5757998917251825,
+    "mem_rook_bytes": 500769,
+    "t_pie_ms": 1.7019999213516712,
+    "mem_pie_bytes": 302100,
+    "t_math_pipeline_ms": 3.5625998862087727,
+    "t_audit_legacy_ms": 5.807500099763274,
+    "t_audit_opt_ms": 3.580999793484807,
+    "t_audit_per_alloc_ms": 0.03580999793484807,
+    "t_workflow_opt_ms": 8.08649999089539,
+    "mem_workflow_bytes": 349774,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 1.8668998964130878,
+        "peak_mem_bytes": 585544,
+        "generated_count": 10,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 2.0202999003231525,
+        "peak_mem_bytes": 417328,
+        "generated_count": 50,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 1.9323001615703106,
+        "peak_mem_bytes": 588620,
+        "generated_count": 100,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_309": {
+        "limit": 309,
+        "time_ms": 2.756600035354495,
+        "peak_mem_bytes": 773462,
+        "generated_count": 309,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_500": {
+        "limit": 500,
+        "time_ms": 3.8654999807476997,
+        "peak_mem_bytes": 1628972,
+        "generated_count": 500,
+        "complete": false,
+        "has_more": true
+      }
+    }
+  },
+  "8x8_dense": {
+    "name": "8x8 Dense Board (Checkerboard 50%)",
+    "size": 8,
+    "density": "50.0% (32/64)",
+    "total_possible": 40320,
+    "exact_valid": 576,
+    "t_rook_ms": 7.190899923443794,
+    "mem_rook_bytes": 1129508,
+    "t_pie_ms": 7.963299984112382,
+    "mem_pie_bytes": 1088231,
+    "t_math_pipeline_ms": 15.210600104182959,
+    "t_audit_legacy_ms": 6.09400006942451,
+    "t_audit_opt_ms": 3.2689999788999557,
+    "t_audit_per_alloc_ms": 0.03268999978899956,
+    "t_workflow_opt_ms": 12.952500022947788,
+    "mem_workflow_bytes": 834722,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 8.095599943771958,
+        "peak_mem_bytes": 921120,
+        "generated_count": 10,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 7.857799995690584,
+        "peak_mem_bytes": 1037757,
+        "generated_count": 50,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 8.141699945554137,
+        "peak_mem_bytes": 1025872,
+        "generated_count": 100,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_309": {
+        "limit": 309,
+        "time_ms": 9.189300006255507,
+        "peak_mem_bytes": 2050805,
+        "generated_count": 309,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_500": {
+        "limit": 500,
+        "time_ms": 11.087900027632713,
+        "peak_mem_bytes": 2588621,
+        "generated_count": 500,
+        "complete": false,
+        "has_more": true
+      }
+    }
+  },
+  "10x10_sparse": {
+    "name": "10x10 Sparse Board (10 restrictions)",
+    "size": 10,
+    "density": "10.0% (10/100)",
+    "total_possible": 3628800,
+    "exact_valid": 1334961,
+    "t_rook_ms": 7.458799984306097,
+    "mem_rook_bytes": 2673366,
+    "t_pie_ms": 8.41120001859963,
+    "mem_pie_bytes": 3309438,
+    "t_math_pipeline_ms": 16.81019994430244,
+    "t_audit_legacy_ms": 7.868999848142266,
+    "t_audit_opt_ms": 4.4212001375854015,
+    "t_audit_per_alloc_ms": 0.044212001375854015,
+    "t_workflow_opt_ms": 16.19629980996251,
+    "mem_workflow_bytes": 2513280,
+    "generation": {
+      "limit_10": {
+        "limit": 10,
+        "time_ms": 8.516400121152401,
+        "peak_mem_bytes": 3063856,
+        "generated_count": 10,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_50": {
+        "limit": 50,
+        "time_ms": 8.755299961194396,
+        "peak_mem_bytes": 3473734,
+        "generated_count": 50,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_100": {
+        "limit": 100,
+        "time_ms": 8.7782999034971,
+        "peak_mem_bytes": 3195574,
+        "generated_count": 100,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_309": {
+        "limit": 309,
+        "time_ms": 10.52809995599091,
+        "peak_mem_bytes": 4002550,
+        "generated_count": 309,
+        "complete": false,
+        "has_more": true
+      },
+      "limit_500": {
+        "limit": 500,
+        "time_ms": 12.28870009072125,
+        "peak_mem_bytes": 5029798,
+        "generated_count": 500,
+        "complete": false,
+        "has_more": true
+      }
+    }
+  }
+}
