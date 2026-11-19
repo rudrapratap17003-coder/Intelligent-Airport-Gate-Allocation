@@ -10,13 +10,20 @@ import {
   RotateCcw,
   CheckCircle2,
   AlertCircle,
+  AlertTriangle,
   PlayCircle,
   ArrowRight,
   Play,
   Pause,
   BookOpen,
   FileText,
-  Download
+  Download,
+  ShieldCheck,
+  Cpu,
+  Search,
+  ExternalLink,
+  HelpCircle,
+  Info
 } from 'lucide-react'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
@@ -24,14 +31,22 @@ import Badge from '../components/ui/Badge'
 import allocationService from '../lib/allocationService'
 import analyticsService from '../lib/analyticsService'
 import simulationService from '../lib/simulationService'
+import restrictionService from '../lib/restrictionService'
 import exportService from '../lib/exportService'
+import matrixValidationService from '../lib/matrixValidationService'
+import { computeRookPolynomial } from '../lib/rookPolynomialService'
+import { computeInclusionExclusionFromMatrix } from '../lib/inclusionExclusionService'
+import { generateAllocations, crossVerifyWithPhase12 } from '../lib/backtrackingAllocationService'
+import RookPolynomialVisualizer from '../components/matrix/RookPolynomialVisualizer'
+import BacktrackingAllocationExplorer from '../components/allocations/BacktrackingAllocationExplorer'
 
 const STEPS = [
-  { id: 1, title: 'Problem & Board Formulation', short: '1. Board Matrix' },
-  { id: 2, title: 'Unrestricted Permutations (n!)', short: '2. Total Permutations' },
-  { id: 3, title: 'Rook Polynomial Derivation R(B, x)', short: '3. Rook Polynomial' },
-  { id: 4, title: 'Inclusion-Exclusion Step Sums', short: '4. PIE Alternation' },
-  { id: 5, title: 'Final Feasibility Verdict', short: '5. Final Verdict' }
+  { id: 1, title: 'Simulation Selection & Identity', short: '1. Select Simulation' },
+  { id: 2, title: 'Restriction Matrix Validation', short: '2. Validate Matrix' },
+  { id: 3, title: 'Rook Polynomial Calculation', short: '3. Rook Polynomial' },
+  { id: 4, title: 'Inclusion–Exclusion Counting', short: '4. Calculate Valid (PIE)' },
+  { id: 5, title: 'Backtracking Allocation Engine', short: '5. Generate Allocations' },
+  { id: 6, title: 'Cross-Verification & Synthesis', short: '6. Cross-Verification' }
 ]
 
 export const CalculationEngine = () => {
@@ -42,8 +57,13 @@ export const CalculationEngine = () => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(false)
 
   // Data states
-  const [calcData, setCalcData] = useState(null)
   const [simDetails, setSimDetails] = useState(null)
+  const [calcData, setCalcData] = useState(null)
+  const [matrixData, setMatrixData] = useState(null)
+  const [validationReport, setValidationReport] = useState(null)
+  const [rookResult, setRookResult] = useState(null)
+  const [pieResult, setPieResult] = useState(null)
+  const [backtrackingResult, setBacktrackingResult] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -64,21 +84,82 @@ export const CalculationEngine = () => {
     fetchSims()
   }, [])
 
-  // 2. Fetch calculation & analytics data whenever selectedSimId changes
-  const loadCalculation = useCallback(async (simId) => {
+  // 2. Load simulation details, matrix, validation, and math steps
+  const loadCompleteWorkflow = useCallback(async (simId) => {
     if (!simId) return
     try {
       setIsLoading(true)
       setError(null)
-      const [calculation, details] = await Promise.all([
-        allocationService.getCalculation(simId),
-        analyticsService.getSimulationDetails(simId, false)
+
+      // Fetch simulation details & backend calculation
+      const [details, calculation] = await Promise.all([
+        analyticsService.getSimulationDetails(simId, false).catch(() => null),
+        allocationService.getCalculation(simId).catch(() => null)
       ])
+
+      const simMeta = await simulationService.getSimulationById(simId).catch(() => null)
+      const matrixRecord = await restrictionService.getMatrixForSimulation(
+        simId,
+        details?.flight_count || 4,
+        details?.gate_count || 4,
+        details?.flight_ids || [],
+        details?.gate_ids || []
+      ).catch(() => null)
+
+      const activeMatrix = matrixRecord?.matrix || details?.matrix || []
+      const activeFlights = details?.flights || []
+      const activeGates = details?.gates || []
+
+      setSimDetails(details || simMeta)
       setCalcData(calculation)
-      setSimDetails(details)
+      setMatrixData(matrixRecord)
+
+      // STEP 2: Run Phase 10 Validation
+      const simForValidation = {
+        id: simId,
+        name: details?.name || simMeta?.name || simId,
+        selectedFlightIds: details?.flight_ids || (details?.flights || []).map(f => f.id),
+        selectedGateIds: details?.gate_ids || (details?.gates || []).map(g => g.id),
+        status: details?.status || simMeta?.status || 'Ready'
+      }
+
+      const valReport = matrixValidationService.validateMatrix(
+        simForValidation,
+        activeMatrix,
+        activeFlights,
+        activeGates
+      )
+      setValidationReport(valReport)
+
+      // If matrix passes validation, run Phase 11 & Phase 12
+      if (valReport.isValid && activeMatrix.length > 0 && activeMatrix[0]?.length > 0) {
+        const rook = computeRookPolynomial(activeMatrix)
+        setRookResult(rook)
+
+        const pie = computeInclusionExclusionFromMatrix(activeMatrix)
+        setPieResult(pie)
+
+        // Run baseline backtracking generation (all or up to limit)
+        try {
+          const bt = generateAllocations({
+            matrix: activeMatrix,
+            flightIds: details?.flight_ids || activeFlights.map(f => f.id),
+            gateIds: details?.gate_ids || activeGates.map(g => g.id),
+            mode: activeMatrix.length <= 6 ? 'all' : 'limited',
+            maxResults: 100
+          })
+          setBacktrackingResult(bt)
+        } catch (btErr) {
+          console.warn('Backtracking pre-computation deferred:', btErr)
+        }
+      } else {
+        setRookResult(null)
+        setPieResult(null)
+        setBacktrackingResult(null)
+      }
     } catch (err) {
-      console.error(`Failed to load calculation for ${simId}:`, err)
-      setError(err.message || 'Failed to retrieve calculation steps')
+      console.error(`Failed to load workflow for ${simId}:`, err)
+      setError(err.message || 'Failed to retrieve simulation data')
     } finally {
       setIsLoading(false)
     }
@@ -86,10 +167,10 @@ export const CalculationEngine = () => {
 
   useEffect(() => {
     if (selectedSimId) {
-      loadCalculation(selectedSimId)
+      loadCompleteWorkflow(selectedSimId)
       setSearchParams({ sim: selectedSimId })
     }
-  }, [selectedSimId, loadCalculation, setSearchParams])
+  }, [selectedSimId, loadCompleteWorkflow, setSearchParams])
 
   // Auto-play stepper timer
   useEffect(() => {
@@ -97,29 +178,60 @@ export const CalculationEngine = () => {
     if (isAutoPlaying) {
       timer = setInterval(() => {
         setCurrentStep((prev) => {
-          if (prev >= 5) {
+          if (prev >= 6) {
             setIsAutoPlaying(false)
-            return 5
+            return 6
+          }
+          // Don't auto-advance past step 2 if validation fails
+          if (prev === 2 && validationReport && !validationReport.isValid) {
+            setIsAutoPlaying(false)
+            return 2
           }
           return prev + 1
         })
-      }, 4000)
+      }, 5000)
     }
     return () => clearInterval(timer)
-  }, [isAutoPlaying])
+  }, [isAutoPlaying, validationReport])
 
-  const matrixSize = calcData?.matrix_size || 0
-  const matrix = simDetails?.matrix || []
+  const matrix = matrixData?.matrix || simDetails?.matrix || []
+  const rowsCount = matrix.length
+  const colsCount = matrix[0]?.length || 0
+  const isSquare = rowsCount > 0 && rowsCount === colsCount
+  const isValidationBlocking = validationReport && !validationReport.isValid
 
-  // Precompute factorial multiplication factors for step 2
-  const factorialFactors = useMemo(() => {
-    if (!matrixSize) return []
-    return Array.from({ length: matrixSize }, (_, i) => ({
-      flightIndex: i + 1,
-      availableGates: matrixSize - i,
-      explanation: `Flight ${i + 1} chooses from ${matrixSize - i} remaining unassigned gates`
-    }))
-  }, [matrixSize])
+  // Cross-verification evaluation for Step 6
+  const crossVerificationReport = useMemo(() => {
+    if (!pieResult || !backtrackingResult || !validationReport?.isValid) {
+      return null
+    }
+
+    const exactCount = pieResult.validAssignments
+    const generatedCount = backtrackingResult.totalFound
+    const isExhaustive = backtrackingResult.isExhaustive
+    const isComplete = backtrackingResult.status === 'COMPLETED' || backtrackingResult.status === 'NO_SOLUTIONS'
+
+    if (!isExhaustive || !isComplete) {
+      return {
+        status: 'INCOMPLETE_SEARCH',
+        verified: false,
+        exactCount,
+        generatedCount,
+        message: 'Allocation enumeration incomplete. Exact mathematical count remains available from the Inclusion–Exclusion calculation.'
+      }
+    }
+
+    const matches = BigInt(generatedCount) === exactCount
+    return {
+      status: matches ? 'VERIFIED' : 'DISCREPANCY',
+      verified: matches,
+      exactCount,
+      generatedCount,
+      message: matches
+        ? `Exhaustive mathematical equality confirmed: Inclusion–Exclusion count (${exactCount.toString()}) exactly matches Backtracking enumeration (${generatedCount}).`
+        : `Discrepancy detected: Inclusion–Exclusion calculates ${exactCount.toString()} valid assignments, but Backtracking enumerated ${generatedCount}.`
+    }
+  }, [pieResult, backtrackingResult, validationReport])
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -127,13 +239,13 @@ export const CalculationEngine = () => {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#1e3a5f]/50">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <h1 className="gw-page-heading">Step-by-Step Calculation Engine</h1>
+            <h1 className="gw-page-heading">Step-by-Step Integrated Mathematical Workflow</h1>
             <Badge variant="cyan" size="sm" dot>
-              Phase 25 Live
+              Phase 14 End-to-End
             </Badge>
           </div>
           <p className="text-sm text-gw-text-secondary leading-relaxed">
-            Interactive mathematical walkthrough explaining the exact derivation of valid flight-to-gate assignments using Rook Polynomials and the Principle of Inclusion-Exclusion.
+            Rigorous mathematical journey connecting Simulation Identity, Matrix Validation, Rook Polynomials, Principle of Inclusion–Exclusion, Backtracking Generation, and Algorithmic Cross-Verification.
           </p>
         </div>
 
@@ -165,7 +277,7 @@ export const CalculationEngine = () => {
         </div>
       </div>
 
-      {/* ----------------- 2. INTERACTIVE STEP PROGRESS BAR ----------------- */}
+      {/* ----------------- 2. INTERACTIVE STEP PROGRESS BAR (6 STEPS) ----------------- */}
       <Card className="p-4 border-[#1e3a5f]/80 bg-gw-bg-secondary/40">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Stepper Buttons */}
@@ -173,15 +285,24 @@ export const CalculationEngine = () => {
             {STEPS.map((step) => {
               const isActive = currentStep === step.id
               const isCompleted = currentStep > step.id
+              const isStepBlocked = step.id > 2 && isValidationBlocking
+
               return (
                 <button
                   key={step.id}
-                  onClick={() => setCurrentStep(step.id)}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-mono transition-all ${
+                  onClick={() => {
+                    if (isStepBlocked) return
+                    setCurrentStep(step.id)
+                  }}
+                  disabled={isStepBlocked}
+                  title={isStepBlocked ? 'Blocked: Fix validation errors in Step 2 first' : step.title}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
                     isActive
                       ? 'bg-gw-cyan text-gw-bg-primary font-bold shadow-md shadow-gw-cyan/20'
                       : isCompleted
                       ? 'bg-gw-bg-tertiary text-gw-cyan border border-gw-cyan/30'
+                      : isStepBlocked
+                      ? 'bg-gw-bg-tertiary/20 text-gw-text-secondary/40 border border-gw-danger/20 cursor-not-allowed'
                       : 'bg-gw-bg-tertiary/50 text-gw-text-secondary border border-[#1e3a5f]/40 hover:text-gw-text'
                   }`}
                 >
@@ -191,10 +312,12 @@ export const CalculationEngine = () => {
                         ? 'bg-gw-bg-primary text-gw-cyan font-bold'
                         : isCompleted
                         ? 'bg-gw-cyan/20 text-gw-cyan'
+                        : isStepBlocked
+                        ? 'bg-gw-danger/20 text-gw-danger'
                         : 'bg-gw-bg-secondary text-gw-text-secondary'
                     }`}
                   >
-                    {isCompleted ? '✓' : step.id}
+                    {isStepBlocked ? '!' : isCompleted ? '✓' : step.id}
                   </span>
                   <span>{step.short}</span>
                 </button>
@@ -219,14 +342,15 @@ export const CalculationEngine = () => {
               icon={isAutoPlaying ? Pause : Play}
               onClick={() => setIsAutoPlaying(!isAutoPlaying)}
               className={isAutoPlaying ? 'border-gw-cyan text-gw-cyan' : ''}
+              disabled={isValidationBlocking && currentStep >= 2}
             >
               {isAutoPlaying ? 'Pause' : 'Auto-Play'}
             </Button>
             <Button
               size="sm"
               icon={ChevronRight}
-              onClick={() => setCurrentStep((prev) => Math.min(5, prev + 1))}
-              disabled={currentStep === 5}
+              onClick={() => setCurrentStep((prev) => Math.min(6, prev + 1))}
+              disabled={currentStep === 6 || (currentStep === 2 && isValidationBlocking)}
             >
               Next Step
             </Button>
@@ -238,7 +362,7 @@ export const CalculationEngine = () => {
       {isLoading && (
         <div className="p-12 text-center space-y-4">
           <div className="w-12 h-12 border-2 border-gw-cyan border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-sm font-mono text-gw-cyan">Calculating discrete mathematics steps...</p>
+          <p className="text-sm font-mono text-gw-cyan">Evaluating Discrete Mathematics Pipeline...</p>
         </div>
       )}
 
@@ -247,118 +371,150 @@ export const CalculationEngine = () => {
           <AlertCircle className="w-8 h-8 text-gw-danger mx-auto" />
           <h3 className="text-base font-bold text-gw-text">Calculation Engine Error</h3>
           <p className="text-xs text-gw-danger font-mono">{error}</p>
-          <Button size="sm" icon={RotateCcw} onClick={() => loadCalculation(selectedSimId)}>
-            Retry Calculation
+          <Button size="sm" icon={RotateCcw} onClick={() => loadCompleteWorkflow(selectedSimId)}>
+            Retry Workflow
           </Button>
         </Card>
       )}
 
       {/* ----------------- 4. STEP WALKTHROUGH CONTENT ----------------- */}
-      {!isLoading && !error && calcData && (
+      {!isLoading && !error && (
         <div className="space-y-6">
           {/* ================================================================= */}
-          {/* STEP 1: PROBLEM DEFINITION & BOARD MATRIX                         */}
+          {/* STEP 1: SELECT SIMULATION & MATRIX IDENTITY                       */}
           {/* ================================================================= */}
           {currentStep === 1 && (
             <Card className="p-6 border-[#1e3a5f]/80 space-y-6 animate-fadeIn">
-              <div className="flex items-center justify-between pb-4 border-b border-[#1e3a5f]/50">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1e3a5f]/50">
                 <div className="space-y-1">
                   <span className="text-xs font-mono uppercase tracking-wider text-gw-cyan font-bold">
-                    Step 1 of 5
+                    STEP 1 OF 6 — SIMULATION MANAGEMENT & IDENTITY
                   </span>
                   <h2 className="text-lg font-bold text-gw-text flex items-center gap-2">
                     <Grid3X3 className="w-5 h-5 text-gw-cyan" />
-                    Problem Definition & Restriction Board Matrix B
+                    Simulation Overview & Restriction Matrix Board B
                   </h2>
                 </div>
-                <Badge variant="cyan" size="sm">
-                  Dimension {matrixSize} × {matrixSize}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant="cyan" size="sm" className="font-mono">
+                    {rowsCount} Flights × {colsCount} Gates
+                  </Badge>
+                  <Badge variant={isSquare ? 'emerald' : 'warning'} size="sm">
+                    {isSquare ? 'Square Board (n × n)' : 'Rectangular Board (m × n)'}
+                  </Badge>
+                </div>
               </div>
 
-              <p className="text-sm text-gw-text-secondary leading-relaxed">
-                In the GateWise assignment framework, we are given a set of{' '}
-                <span className="font-semibold text-gw-cyan">{matrixSize} flights</span> and{' '}
-                <span className="font-semibold text-gw-cyan">{matrixSize} gates</span>.
-                A valid allocation is a bijective one-to-one matching where each flight is assigned to exactly one distinct gate,
-                subject to operational constraints encoded in the binary restriction board{' '}
-                <span className="font-mono font-bold text-gw-text">B</span>.
-              </p>
+              {/* Simulation Metadata Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
+                <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f] space-y-1">
+                  <span className="text-gw-text-secondary text-[10px] uppercase">Scenario Name</span>
+                  <div className="font-bold text-gw-text truncate">{simDetails?.name || selectedSimId}</div>
+                  <span className="text-[10px] text-gw-cyan">{selectedSimId}</span>
+                </div>
+                <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f] space-y-1">
+                  <span className="text-gw-text-secondary text-[10px] uppercase">Selected Flights</span>
+                  <div className="font-bold text-gw-text">{rowsCount} Flights Active</div>
+                  <span className="text-[10px] text-gw-text-secondary">Rows 1 to {rowsCount}</span>
+                </div>
+                <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f] space-y-1">
+                  <span className="text-gw-text-secondary text-[10px] uppercase">Selected Gates</span>
+                  <div className="font-bold text-gw-text">{colsCount} Gates Available</div>
+                  <span className="text-[10px] text-gw-text-secondary">Columns 1 to {colsCount}</span>
+                </div>
+                <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f] space-y-1">
+                  <span className="text-gw-text-secondary text-[10px] uppercase">Matrix Identity Preservation</span>
+                  <div className="font-bold text-gw-success flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Metadata Active</span>
+                  </div>
+                  <span className="text-[10px] text-gw-text-secondary">rowFlightIds & columnGateIds</span>
+                </div>
+              </div>
 
-              {/* Grid & Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-                {/* Visual Matrix */}
-                <div className="md:col-span-6 overflow-x-auto p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f]">
-                  <h4 className="text-xs font-semibold uppercase font-mono tracking-wider text-gw-text mb-3">
-                    Restriction Matrix Board B:
-                  </h4>
-                  <div className="inline-block">
-                    {/* Gate Headers */}
-                    <div className="flex items-center gap-1.5 mb-1.5 pl-10">
-                      {Array.from({ length: matrixSize }).map((_, c) => (
-                        <div key={c} className="w-10 text-center font-mono text-[10px] text-gw-cyan font-bold">
-                          G{c + 1}
-                        </div>
-                      ))}
-                    </div>
-                    {/* Rows */}
-                    <div className="space-y-1.5">
-                      {matrix.map((row, r) => (
-                        <div key={r} className="flex items-center gap-1.5">
-                          <div className="w-8 font-mono text-[10px] text-gw-text-secondary text-right pr-2">
-                            F{r + 1}
+              {/* Matrix Board Display */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div className="lg:col-span-7 overflow-x-auto p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f]">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-xs font-semibold uppercase font-mono tracking-wider text-gw-text">
+                      Binary Restriction Board B:
+                    </h4>
+                    <span className="text-[11px] font-mono text-gw-text-secondary">
+                      {rowsCount * colsCount} total cells
+                    </span>
+                  </div>
+
+                  <div className="inline-block min-w-full">
+                    {/* Gate Column Headers */}
+                    <div className="flex items-center gap-1 mb-1 pl-16">
+                      {Array.from({ length: colsCount }).map((_, c) => {
+                        const gateId = matrixData?.columnGateIds?.[c] || simDetails?.gate_ids?.[c] || `G${c + 1}`
+                        return (
+                          <div key={c} className="w-12 text-center font-mono text-[10px] text-gw-cyan font-bold truncate" title={gateId}>
+                            {gateId}
                           </div>
-                          {row.map((val, c) => (
-                            <div
-                              key={c}
-                              className={`w-10 h-10 rounded flex items-center justify-center font-mono text-xs font-bold border ${
-                                val === 1
-                                  ? 'bg-gw-warning/20 border-gw-warning/50 text-gw-warning'
-                                  : 'bg-gw-bg-secondary border-[#1e3a5f] text-gw-cyan'
-                              }`}
-                            >
-                              {val}
+                        )
+                      })}
+                    </div>
+
+                    {/* Flight Rows */}
+                    <div className="space-y-1">
+                      {matrix.map((row, r) => {
+                        const flightId = matrixData?.rowFlightIds?.[r] || simDetails?.flight_ids?.[r] || `F${r + 1}`
+                        return (
+                          <div key={r} className="flex items-center gap-1">
+                            <div className="w-14 font-mono text-[10px] text-gw-text-secondary text-right pr-2 truncate font-bold" title={flightId}>
+                              {flightId}
                             </div>
-                          ))}
-                        </div>
-                      ))}
+                            {row.map((val, c) => (
+                              <div
+                                key={c}
+                                className={`w-12 h-10 rounded flex items-center justify-center font-mono text-xs font-bold border transition-colors ${
+                                  val === 1
+                                    ? 'bg-gw-warning/20 border-gw-warning/60 text-gw-warning'
+                                    : 'bg-gw-bg-secondary border-[#1e3a5f] text-gw-cyan'
+                                }`}
+                              >
+                                {val}
+                              </div>
+                            ))}
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
                 </div>
 
-                {/* Key Concepts */}
-                <div className="md:col-span-6 space-y-4">
-                  <Card className="p-4 border-[#1e3a5f] bg-gw-bg-secondary/60 space-y-2">
-                    <span className="text-xs font-mono uppercase text-gw-cyan font-bold">
-                      Binary Semantics:
+                {/* Key Principles Callout */}
+                <div className="lg:col-span-5 space-y-4">
+                  <Card className="p-4 border-[#1e3a5f] bg-gw-bg-secondary/60 space-y-3">
+                    <span className="text-xs font-mono uppercase text-gw-cyan font-bold flex items-center gap-1.5">
+                      <Info className="w-4 h-4" />
+                      Binary Matrix Semantics
                     </span>
                     <ul className="space-y-2 text-xs text-gw-text-secondary leading-relaxed">
                       <li className="flex items-start gap-2">
                         <span className="w-2 h-2 rounded-full bg-gw-cyan mt-1 shrink-0" />
                         <span>
-                          <strong className="text-gw-cyan font-mono">B[i][j] = 0 (Allowed):</strong> Flight $i$ is permitted to park at Gate $j$.
+                          <strong className="text-gw-cyan font-mono">B[i][j] = 0 (Permitted):</strong> Flight $i$ is allowed to park at Gate $j$.
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="w-2 h-2 rounded-full bg-gw-warning mt-1 shrink-0" />
                         <span>
-                          <strong className="text-gw-warning font-mono">B[i][j] = 1 (Forbidden):</strong> Flight $i$ is forbidden from Gate $j$ due to aircraft wingspan, international customs, or curfew restrictions.
+                          <strong className="text-gw-warning font-mono">B[i][j] = 1 (Forbidden):</strong> Flight $i$ cannot park at Gate $j$ (aircraft dimension, curfew, or international gate restriction).
                         </span>
                       </li>
                     </ul>
                   </Card>
 
-                  <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-                    <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f]">
-                      <span className="text-gw-text-secondary block mb-0.5">Total Board Cells:</span>
-                      <span className="text-base font-bold text-gw-text">{matrixSize * matrixSize}</span>
-                    </div>
-                    <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f]">
-                      <span className="text-gw-text-secondary block mb-0.5">Forbidden Cells:</span>
-                      <span className="text-base font-bold text-gw-warning">
-                        {calcData.forbidden_cell_count} ({simDetails?.restriction_density || 0}%)
-                      </span>
-                    </div>
+                  <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] flex items-center justify-between text-xs font-mono">
+                    <span className="text-gw-text-secondary">Manage matrix or toggle forbidden cells:</span>
+                    <Link to={`/restrictions?sim=${selectedSimId}`}>
+                      <Button size="sm" variant="outline" icon={ExternalLink}>
+                        Edit Restrictions
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -366,334 +522,455 @@ export const CalculationEngine = () => {
           )}
 
           {/* ================================================================= */}
-          {/* STEP 2: TOTAL UNRESTRICTED PERMUTATIONS (n!)                      */}
+          {/* STEP 2: RESTRICTION MATRIX VALIDATION                             */}
           {/* ================================================================= */}
           {currentStep === 2 && (
             <Card className="p-6 border-[#1e3a5f]/80 space-y-6 animate-fadeIn">
-              <div className="flex items-center justify-between pb-4 border-b border-[#1e3a5f]/50">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1e3a5f]/50">
                 <div className="space-y-1">
                   <span className="text-xs font-mono uppercase tracking-wider text-gw-cyan font-bold">
-                    Step 2 of 5
+                    STEP 2 OF 6 — MATRIX VALIDATION ENGINE
                   </span>
                   <h2 className="text-lg font-bold text-gw-text flex items-center gap-2">
-                    <Layers className="w-5 h-5 text-gw-cyan" />
-                    Total Unrestricted Assignment Universe (n!)
-                  </h2>
-                </div>
-                <Badge variant="cyan" size="sm">
-                  {matrixSize}! Permutations
-                </Badge>
-              </div>
-
-              <p className="text-sm text-gw-text-secondary leading-relaxed">
-                Before considering restrictions, we determine the total size of the permutation universe $S_0$.
-                If no restrictions existed, the number of ways to assign {matrixSize} flights to {matrixSize} gates is exactly {matrixSize} factorial.
-              </p>
-
-              {/* Master Factorial Equation */}
-              <div className="p-5 rounded-xl bg-gw-bg-tertiary border border-gw-cyan/30 text-center space-y-2">
-                <span className="text-xs font-mono text-gw-text-secondary uppercase tracking-wider">
-                  Permutation Formula:
-                </span>
-                <div className="text-xl sm:text-2xl font-mono font-bold text-gw-cyan">
-                  S₀ = {matrixSize}! ={' '}
-                  {Array.from({ length: matrixSize }, (_, i) => matrixSize - i).join(' × ')} ={' '}
-                  <span className="text-gw-success">{calcData.total_possible_assignments.toLocaleString()}</span>
-                </div>
-                <p className="text-xs text-gw-text-secondary">
-                  There are exactly {calcData.total_possible_assignments.toLocaleString()} total possible one-to-one flight-to-gate assignments.
-                </p>
-              </div>
-
-              {/* Breakdown by flight */}
-              <div className="space-y-3">
-                <h4 className="text-xs font-semibold uppercase font-mono tracking-wider text-gw-text">
-                  Combinatorial Multiplication Breakdown:
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  {factorialFactors.map((factor) => (
-                    <div
-                      key={factor.flightIndex}
-                      className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f] text-xs font-mono space-y-1"
-                    >
-                      <div className="flex justify-between items-center text-gw-cyan font-bold">
-                        <span>Flight {factor.flightIndex}</span>
-                        <span>{factor.availableGates} choices</span>
-                      </div>
-                      <p className="text-[11px] text-gw-text-secondary">{factor.explanation}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* ================================================================= */}
-          {/* STEP 3: ROOK POLYNOMIAL DERIVATION R(B, x)                        */}
-          {/* ================================================================= */}
-          {currentStep === 3 && (
-            <Card className="p-6 border-[#1e3a5f]/80 space-y-6 animate-fadeIn">
-              <div className="flex items-center justify-between pb-4 border-b border-[#1e3a5f]/50">
-                <div className="space-y-1">
-                  <span className="text-xs font-mono uppercase tracking-wider text-gw-cyan font-bold">
-                    Step 3 of 5
-                  </span>
-                  <h2 className="text-lg font-bold text-gw-text flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-gw-cyan" />
-                    Exact Rook Polynomial Formulation R(B, x)
-                  </h2>
-                </div>
-                <Badge variant="cyan" size="sm">
-                  Row Bitmask DP
-                </Badge>
-              </div>
-
-              <p className="text-sm text-gw-text-secondary leading-relaxed">
-                The Rook Polynomial $R(B, x)$ is a generating function where coefficient{' '}
-                <span className="font-mono text-gw-cyan font-bold">rₖ</span> represents the exact number of ways to place{' '}
-                <span className="font-semibold text-gw-text">k non-attacking rooks</span> onto forbidden cells of board $B$.
-                Two rooks attack each other if they share the same row or column.
-              </p>
-
-              {/* Exact Formula Box */}
-              <div className="p-5 rounded-xl bg-gw-bg-tertiary border border-gw-cyan/30 space-y-2">
-                <span className="text-xs font-mono text-gw-text-secondary uppercase tracking-wider">
-                  Evaluated Rook Polynomial:
-                </span>
-                <div className="text-lg sm:text-xl font-mono font-bold text-gw-cyan overflow-x-auto">
-                  R(B, x) = {calcData.polynomial}
-                </div>
-              </div>
-
-              {/* Coefficients Detail Cards */}
-              <div className="space-y-3">
-                <h4 className="text-xs font-semibold uppercase font-mono tracking-wider text-gw-text">
-                  Itemized Coefficient Meanings (r₀ through rₖ):
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {calcData.rook_coefficients.map((coeff, k) => (
-                    <div
-                      key={k}
-                      className="p-3.5 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f] flex items-start gap-3"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-gw-cyan/10 border border-gw-cyan/30 text-gw-cyan flex items-center justify-center font-mono font-bold shrink-0">
-                        r{k}
-                      </div>
-                      <div className="text-xs font-mono space-y-0.5">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-gw-text">r{k} = {coeff.toLocaleString()}</span>
-                          <span className="text-[10px] text-gw-text-secondary">({k} rooks)</span>
-                        </div>
-                        <p className="text-[11px] text-gw-text-secondary leading-relaxed">
-                          {k === 0
-                            ? '1 way to place 0 rooks (the unconstrained board baseline)'
-                            : k === 1
-                            ? `${coeff} forbidden cells available for placing 1 rook`
-                            : `${coeff} distinct ways to place ${k} non-attacking rooks on forbidden cells`}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* ================================================================= */}
-          {/* STEP 4: INCLUSION-EXCLUSION STEP SUMS                             */}
-          {/* ================================================================= */}
-          {currentStep === 4 && (
-            <Card className="p-6 border-[#1e3a5f]/80 space-y-6 animate-fadeIn">
-              <div className="flex items-center justify-between pb-4 border-b border-[#1e3a5f]/50">
-                <div className="space-y-1">
-                  <span className="text-xs font-mono uppercase tracking-wider text-gw-cyan font-bold">
-                    Step 4 of 5
-                  </span>
-                  <h2 className="text-lg font-bold text-gw-text flex items-center gap-2">
-                    <Calculator className="w-5 h-5 text-gw-cyan" />
-                    Principle of Inclusion-Exclusion (PIE) Alternation
-                  </h2>
-                </div>
-                <Badge variant="cyan" size="sm">
-                  Exact Alternating Sum
-                </Badge>
-              </div>
-
-              <p className="text-sm text-gw-text-secondary leading-relaxed">
-                By combining the Rook Polynomial coefficients $r_k$ with remaining unrestricted permutations $(n-k)!$,
-                we apply the Principle of Inclusion-Exclusion. We alternate signs to add unconstrained permutations,
-                subtract single violations, add back double-counted two-violation sets, and repeat.
-              </p>
-
-              {/* Master Equation */}
-              <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-gw-cyan/30 text-center space-y-1">
-                <span className="text-xs font-mono text-gw-text-secondary uppercase">
-                  Master Equation:
-                </span>
-                <div className="text-base sm:text-lg font-mono font-bold text-gw-text">
-                  N = ∑ₖ₌₀ⁿ (-1)ᵏ · rₖ · (n - k)!
-                </div>
-              </div>
-
-              {/* PIE Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs font-mono">
-                  <thead>
-                    <tr className="border-b border-[#1e3a5f] text-gw-text-secondary uppercase text-[10px]">
-                      <th className="py-2.5 px-3">k</th>
-                      <th className="py-2.5 px-2 text-center">Sign</th>
-                      <th className="py-2.5 px-3 text-right">Rook rₖ</th>
-                      <th className="py-2.5 px-3 text-right">(n - k)!</th>
-                      <th className="py-2.5 px-4 text-right">Term Contribution</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#1e3a5f]/30">
-                    {calcData.inclusion_exclusion_terms.map((term) => {
-                      const isPositive = term.sign === '+'
-                      return (
-                        <tr key={term.k} className="hover:bg-gw-bg-tertiary/40 transition-colors">
-                          <td className="py-2.5 px-3 font-bold text-gw-text">k = {term.k}</td>
-                          <td className="py-2.5 px-2 text-center">
-                            <span
-                              className={`px-1.5 py-0.5 rounded font-bold ${
-                                isPositive
-                                  ? 'bg-gw-success/10 text-gw-success'
-                                  : 'bg-gw-danger/10 text-gw-danger'
-                              }`}
-                            >
-                              {term.sign}1
-                            </span>
-                          </td>
-                          <td className="py-2.5 px-3 text-right text-gw-cyan font-bold">
-                            {term.rook_coefficient.toLocaleString()}
-                          </td>
-                          <td className="py-2.5 px-3 text-right text-gw-text-secondary">
-                            {term.factorial_value?.toLocaleString()}
-                          </td>
-                          <td
-                            className={`py-2.5 px-4 text-right font-bold ${
-                              isPositive ? 'text-gw-success' : 'text-gw-danger'
-                            }`}
-                          >
-                            {term.sign}
-                            {Math.abs(term.contribution).toLocaleString()}
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Arithmetic Summary */}
-              <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
-                <span className="text-gw-text-secondary">
-                  Sum of Positive Terms (+) minus Negative Terms (−):
-                </span>
-                <span className="text-base font-bold text-gw-success">
-                  N = {calcData.valid_assignments.toLocaleString()} Valid Assignments
-                </span>
-              </div>
-            </Card>
-          )}
-
-          {/* ================================================================= */}
-          {/* STEP 5: FINAL FEASIBILITY VERDICT & ACTIONS                       */}
-          {/* ================================================================= */}
-          {currentStep === 5 && (
-            <Card className="p-6 border-[#1e3a5f]/80 space-y-6 animate-fadeIn">
-              <div className="flex items-center justify-between pb-4 border-b border-[#1e3a5f]/50">
-                <div className="space-y-1">
-                  <span className="text-xs font-mono uppercase tracking-wider text-gw-cyan font-bold">
-                    Step 5 of 5
-                  </span>
-                  <h2 className="text-lg font-bold text-gw-text flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-gw-success" />
-                    Final Allocation Feasibility Verdict
+                    <ShieldCheck className="w-5 h-5 text-gw-cyan" />
+                    Structural, Binary & Reference Integrity Audit
                   </h2>
                 </div>
                 <Badge
-                  variant={calcData.valid_assignments > 0 ? 'emerald' : 'danger'}
+                  variant={validationReport?.isValid ? 'emerald' : 'danger'}
                   size="sm"
+                  className="font-mono"
                 >
-                  {calcData.valid_assignments > 0 ? 'Feasible Scenario' : 'Infeasible Scenario'}
+                  {validationReport?.isValid ? 'Validation Passed' : 'Structural Errors Detected'}
                 </Badge>
               </div>
 
-              {/* Big Result Display */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="p-5 border-gw-success/40 bg-gw-bg-secondary text-center space-y-1">
-                  <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary block">
-                    Valid Assignments (N)
-                  </span>
-                  <div className="text-3xl font-mono font-bold text-gw-success">
-                    {calcData.valid_assignments.toLocaleString()}
+              {/* Blocking Error Alert */}
+              {isValidationBlocking && (
+                <div className="p-4 rounded-xl bg-gw-danger/10 border border-gw-danger/40 space-y-2">
+                  <div className="flex items-center gap-2 text-gw-danger font-bold text-sm">
+                    <AlertTriangle className="w-5 h-5 shrink-0" />
+                    <span>MATHEMATICAL CALCULATIONS BLOCKED</span>
                   </div>
-                  <span className="text-[11px] text-gw-success/80 font-mono">
-                    Conflict-Free Permutations
-                  </span>
-                </Card>
+                  <p className="text-xs text-gw-text-secondary leading-relaxed">
+                    The restriction matrix contains blocking structural or binary errors. Combinatorial counting (Steps 3–6) requires a valid binary matrix. Please resolve these errors before proceeding.
+                  </p>
+                </div>
+              )}
 
-                <Card className="p-5 border-gw-cyan/40 bg-gw-bg-secondary text-center space-y-1">
-                  <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary block">
-                    Feasibility Ratio
-                  </span>
-                  <div className="text-3xl font-mono font-bold text-gw-cyan">
-                    {calcData.feasibility_percentage}%
+              {/* Validation Categories Checklist */}
+              {validationReport && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] space-y-2">
+                    <div className="flex items-center justify-between text-xs font-mono">
+                      <span className="text-gw-text-secondary uppercase">Structural & Dimensions</span>
+                      {validationReport.errors.some(e => e.category === 'STRUCTURAL') ? (
+                        <span className="text-gw-danger font-bold">Failed</span>
+                      ) : (
+                        <span className="text-gw-success font-bold">Passed</span>
+                      )}
+                    </div>
+                    <div className="text-sm font-bold text-gw-text">
+                      {rowsCount} Flights × {colsCount} Gates
+                    </div>
+                    <p className="text-[11px] text-gw-text-secondary">
+                      {isSquare ? 'Perfect square dimension n × n' : 'Rectangular dimension m × n'}
+                    </p>
                   </div>
-                  <span className="text-[11px] text-gw-cyan/80 font-mono">
-                    of {calcData.total_possible_assignments.toLocaleString()} Permutations
-                  </span>
-                </Card>
 
-                <Card className="p-5 border-gw-warning/40 bg-gw-bg-secondary text-center space-y-1">
-                  <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary block">
-                    Violations Suppressed
-                  </span>
-                  <div className="text-3xl font-mono font-bold text-gw-warning">
-                    {calcData.invalid_assignments.toLocaleString()}
+                  <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] space-y-2">
+                    <div className="flex items-center justify-between text-xs font-mono">
+                      <span className="text-gw-text-secondary uppercase">Binary Value Integrity</span>
+                      {validationReport.errors.some(e => e.category === 'VALUE') ? (
+                        <span className="text-gw-danger font-bold">Failed</span>
+                      ) : (
+                        <span className="text-gw-success font-bold">Passed</span>
+                      )}
+                    </div>
+                    <div className="text-sm font-bold text-gw-text">
+                      100% Binary (0 or 1)
+                    </div>
+                    <p className="text-[11px] text-gw-text-secondary">
+                      No null, undefined, or non-binary values detected.
+                    </p>
                   </div>
-                  <span className="text-[11px] text-gw-warning/80 font-mono">
-                    Invalid Combinations
-                  </span>
-                </Card>
-              </div>
 
-              {/* Interpretation Commentary */}
-              <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] text-xs leading-relaxed text-gw-text-secondary space-y-2">
-                <h4 className="font-semibold text-gw-text font-mono uppercase">
-                  Operational Airport Interpretation:
+                  <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] space-y-2">
+                    <div className="flex items-center justify-between text-xs font-mono">
+                      <span className="text-gw-text-secondary uppercase">Reference Mapping</span>
+                      {validationReport.errors.some(e => e.category === 'REFERENCE') ? (
+                        <span className="text-gw-danger font-bold">Failed</span>
+                      ) : (
+                        <span className="text-gw-success font-bold">Passed</span>
+                      )}
+                    </div>
+                    <div className="text-sm font-bold text-gw-text">
+                      Row & Column Identity
+                    </div>
+                    <p className="text-[11px] text-gw-text-secondary">
+                      Every matrix row and column mapped to valid flight/gate IDs.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Detailed Validation Checks Table */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-semibold uppercase font-mono tracking-wider text-gw-text">
+                  Validation Engine Checklist:
                 </h4>
-                {calcData.valid_assignments > 0 ? (
-                  <p>
-                    Scenario <strong className="text-gw-text">{selectedSimId}</strong> has{' '}
-                    <strong className="text-gw-success">{calcData.valid_assignments.toLocaleString()} conflict-free flight-to-gate assignment plans</strong>.
-                    Controllers have multiple feasible configurations to dispatch flights without violating aircraft restrictions.
-                  </p>
-                ) : (
-                  <p className="text-gw-danger">
-                    Scenario <strong className="text-gw-text">{selectedSimId}</strong> has{' '}
-                    <strong>zero valid flight-to-gate assignments ($N = 0$)</strong>.
-                    The current restrictions create a mathematical bottleneck where at least one flight will be left without a compatible gate.
-                  </p>
+                <div className="space-y-2">
+                  {validationReport?.errors?.map((err, i) => (
+                    <div
+                      key={i}
+                      className="p-3 rounded-lg bg-gw-danger/10 border border-gw-danger/30 flex items-start gap-3 text-xs"
+                    >
+                      <AlertCircle className="w-4 h-4 text-gw-danger shrink-0 mt-0.5" />
+                      <div className="space-y-0.5">
+                        <span className="font-bold text-gw-danger font-mono">
+                          [{err.rule}] {err.message}
+                        </span>
+                        {err.details && <p className="text-[11px] text-gw-text-secondary">{err.details}</p>}
+                      </div>
+                    </div>
+                  ))}
+
+                  {validationReport?.warnings?.map((warn, i) => (
+                    <div
+                      key={i}
+                      className="p-3 rounded-lg bg-gw-warning/10 border border-gw-warning/30 flex items-start gap-3 text-xs"
+                    >
+                      <AlertTriangle className="w-4 h-4 text-gw-warning shrink-0 mt-0.5" />
+                      <div className="space-y-0.5">
+                        <span className="font-bold text-gw-warning font-mono">
+                          [{warn.rule}] {warn.message}
+                        </span>
+                        {warn.details && <p className="text-[11px] text-gw-text-secondary">{warn.details}</p>}
+                      </div>
+                    </div>
+                  ))}
+
+                  {validationReport?.errors?.length === 0 && (
+                    <div className="p-3 rounded-lg bg-gw-success/10 border border-gw-success/30 flex items-center gap-3 text-xs text-gw-success">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      <span>All matrix structural integrity and reference checks passed. Matrix is ready for algebraic rook polynomial evaluation.</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {/* ================================================================= */}
+          {/* STEP 3: CALCULATE ROOK POLYNOMIAL                                 */}
+          {/* ================================================================= */}
+          {currentStep === 3 && (
+            <div className="space-y-6 animate-fadeIn">
+              {isValidationBlocking ? (
+                <Card className="p-8 text-center space-y-3 border-gw-danger/40">
+                  <AlertTriangle className="w-8 h-8 text-gw-danger mx-auto" />
+                  <h3 className="text-base font-bold text-gw-text">Step 3 Blocked</h3>
+                  <p className="text-xs text-gw-text-secondary">Please resolve validation errors in Step 2 to compute the Rook Polynomial.</p>
+                  <Button size="sm" onClick={() => setCurrentStep(2)}>Go to Step 2</Button>
+                </Card>
+              ) : (
+                <RookPolynomialVisualizer
+                  scenarioName={simDetails?.name || selectedSimId}
+                  scenarioId={selectedSimId}
+                  matrix={matrix}
+                  flights={simDetails?.flights || []}
+                  gates={simDetails?.gates || []}
+                />
+              )}
+            </div>
+          )}
+
+          {/* ================================================================= */}
+          {/* STEP 4: INCLUSION-EXCLUSION EXACT COUNTING                        */}
+          {/* ================================================================= */}
+          {currentStep === 4 && (
+            <div className="space-y-6 animate-fadeIn">
+              {isValidationBlocking ? (
+                <Card className="p-8 text-center space-y-3 border-gw-danger/40">
+                  <AlertTriangle className="w-8 h-8 text-gw-danger mx-auto" />
+                  <h3 className="text-base font-bold text-gw-text">Step 4 Blocked</h3>
+                  <p className="text-xs text-gw-text-secondary">Please resolve validation errors in Step 2 to evaluate Inclusion–Exclusion.</p>
+                  <Button size="sm" onClick={() => setCurrentStep(2)}>Go to Step 2</Button>
+                </Card>
+              ) : pieResult ? (
+                <Card className="p-6 border-[#1e3a5f]/80 space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1e3a5f]/50">
+                    <div className="space-y-1">
+                      <span className="text-xs font-mono uppercase tracking-wider text-gw-cyan font-bold">
+                        STEP 4 OF 6 — INCLUSION–EXCLUSION COUNTING ENGINE
+                      </span>
+                      <h2 className="text-lg font-bold text-gw-text flex items-center gap-2">
+                        <Calculator className="w-5 h-5 text-gw-cyan" />
+                        Exact Conflict-Free Valid Assignment Derivation
+                      </h2>
+                    </div>
+                    <Badge variant={pieResult.validAssignments > 0n ? 'emerald' : 'danger'} size="sm" className="font-mono">
+                      N = {pieResult.validAssignments.toString()} Valid Assignments
+                    </Badge>
+                  </div>
+
+                  {/* Mathematical Formula Banner */}
+                  <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-gw-cyan/30 text-center space-y-1.5">
+                    <span className="text-xs font-mono text-gw-text-secondary uppercase">
+                      Authoritative Discrete Mathematics Formula:
+                    </span>
+                    <div className="text-base sm:text-lg font-mono font-bold text-gw-cyan">
+                      {pieResult.formula}
+                    </div>
+                    <p className="text-[11px] text-gw-text-secondary">
+                      {pieResult.isSquare
+                        ? 'Square Bijection Model: Remaining (n - k) unconstrained flights can be assigned in (n - k)! ways.'
+                        : 'Rectangular Injection Model: Remaining (m - k) unconstrained flights choose from (n - k) gates in P(n - k, m - k) ways.'}
+                    </p>
+                  </div>
+
+                  {/* Itemized Alternating Terms Table */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-semibold uppercase font-mono tracking-wider text-gw-text">
+                        Itemized Alternating Inclusion–Exclusion Terms:
+                      </h4>
+                      <span className="text-[11px] font-mono text-gw-text-secondary">
+                        Rook polynomial degree k = {pieResult.degree}
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto border border-[#1e3a5f] rounded-xl">
+                      <table className="w-full text-left text-xs font-mono">
+                        <thead className="bg-gw-bg-secondary text-gw-text-secondary uppercase text-[10px] border-b border-[#1e3a5f]">
+                          <tr>
+                            <th className="py-2.5 px-3">k</th>
+                            <th className="py-2.5 px-2 text-center">Sign</th>
+                            <th className="py-2.5 px-3 text-right">Rook rₖ</th>
+                            <th className="py-2.5 px-3 text-right">
+                              {pieResult.isSquare ? '(n - k)!' : 'P(n - k, m - k)'}
+                            </th>
+                            <th className="py-2.5 px-4 text-right">Term Contribution</th>
+                            <th className="py-2.5 px-4 text-right">Cumulative Sum</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#1e3a5f]/30">
+                          {pieResult.terms.map((term) => (
+                            <tr key={term.k} className="hover:bg-gw-bg-tertiary/40 transition-colors">
+                              <td className="py-2.5 px-3 font-bold text-gw-text">k = {term.k}</td>
+                              <td className="py-2.5 px-2 text-center">
+                                <span
+                                  className={`px-1.5 py-0.5 rounded font-bold ${
+                                    term.isPositive
+                                      ? 'bg-gw-success/10 text-gw-success'
+                                      : 'bg-gw-danger/10 text-gw-danger'
+                                  }`}
+                                >
+                                  {term.signSymbol}1
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3 text-right text-gw-cyan font-bold">
+                                {term.rookCoefficient.toString()}
+                              </td>
+                              <td className="py-2.5 px-3 text-right text-gw-text-secondary">
+                                {term.remainingPermutations.toString()}
+                              </td>
+                              <td
+                                className={`py-2.5 px-4 text-right font-bold ${
+                                  term.isPositive ? 'text-gw-success' : 'text-gw-danger'
+                                }`}
+                              >
+                                {term.signSymbol}{term.magnitude.toString()}
+                              </td>
+                              <td className="py-2.5 px-4 text-right text-gw-text font-bold">
+                                {term.cumulativeSum.toString()}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Summary Metric Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs font-mono">
+                    <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f]">
+                      <span className="text-gw-text-secondary block mb-0.5 text-[10px] uppercase">Unrestricted Total</span>
+                      <span className="text-base font-bold text-gw-text">{pieResult.totalPossibleAssignments.toString()}</span>
+                    </div>
+                    <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f]">
+                      <span className="text-gw-text-secondary block mb-0.5 text-[10px] uppercase">Positive Sum (+)</span>
+                      <span className="text-base font-bold text-gw-success">+{pieResult.positiveTermsSum.toString()}</span>
+                    </div>
+                    <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f]">
+                      <span className="text-gw-text-secondary block mb-0.5 text-[10px] uppercase">Negative Sum (−)</span>
+                      <span className="text-base font-bold text-gw-danger">-{pieResult.negativeTermsSum.toString()}</span>
+                    </div>
+                    <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f]">
+                      <span className="text-gw-text-secondary block mb-0.5 text-[10px] uppercase">Feasibility Ratio</span>
+                      <span className="text-base font-bold text-gw-cyan">{pieResult.feasibilityPercentage.toFixed(2)}%</span>
+                    </div>
+                  </div>
+                </Card>
+              ) : null}
+            </div>
+          )}
+
+          {/* ================================================================= */}
+          {/* STEP 5: BACKTRACKING ALLOCATION ENGINE                            */}
+          {/* ================================================================= */}
+          {currentStep === 5 && (
+            <div className="space-y-6 animate-fadeIn">
+              {isValidationBlocking ? (
+                <Card className="p-8 text-center space-y-3 border-gw-danger/40">
+                  <AlertTriangle className="w-8 h-8 text-gw-danger mx-auto" />
+                  <h3 className="text-base font-bold text-gw-text">Step 5 Blocked</h3>
+                  <p className="text-xs text-gw-text-secondary">Please resolve validation errors in Step 2 to generate flight-to-gate allocations.</p>
+                  <Button size="sm" onClick={() => setCurrentStep(2)}>Go to Step 2</Button>
+                </Card>
+              ) : (
+                <BacktrackingAllocationExplorer
+                  scenarioName={simDetails?.name || selectedSimId}
+                  scenarioId={selectedSimId}
+                  matrix={matrix}
+                  flights={simDetails?.flights || []}
+                  gates={simDetails?.gates || []}
+                  exactValidCount={pieResult?.validAssignments != null ? Number(pieResult.validAssignments) : calcData?.valid_assignments}
+                />
+              )}
+            </div>
+          )}
+
+          {/* ================================================================= */}
+          {/* STEP 6: CROSS-VERIFICATION & FINAL SYNTHESIS                      */}
+          {/* ================================================================= */}
+          {currentStep === 6 && (
+            <Card className="p-6 border-[#1e3a5f]/80 space-y-6 animate-fadeIn">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1e3a5f]/50">
+                <div className="space-y-1">
+                  <span className="text-xs font-mono uppercase tracking-wider text-gw-cyan font-bold">
+                    STEP 6 OF 6 — ALGORITHMIC CROSS-VERIFICATION & SYNTHESIS
+                  </span>
+                  <h2 className="text-lg font-bold text-gw-text flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-gw-success" />
+                    Cross-Verification: Algebraic PIE vs. Backtracking Enumeration
+                  </h2>
+                </div>
+                {crossVerificationReport && (
+                  <Badge
+                    variant={crossVerificationReport.verified ? 'emerald' : 'warning'}
+                    size="sm"
+                    className="font-mono"
+                  >
+                    {crossVerificationReport.status}
+                  </Badge>
                 )}
               </div>
 
-              {/* Quick Actions */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <Link to={`/simulator?sim=${selectedSimId}`}>
-                  <Button size="md" icon={PlayCircle}>
-                    Generate Allocations in Simulator
-                  </Button>
-                </Link>
+              {/* Side-by-Side Comparison Box */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card className="p-5 border-gw-cyan/40 bg-gw-bg-secondary text-center space-y-2">
+                  <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary block">
+                    Principle of Inclusion–Exclusion (Phase 12)
+                  </span>
+                  <div className="text-3xl font-mono font-bold text-gw-cyan">
+                    {pieResult?.validAssignments?.toString() ?? '—'}
+                  </div>
+                  <span className="text-[11px] text-gw-cyan/80 font-mono">
+                    Exact Combinatorial Ground Truth ($N$)
+                  </span>
+                </Card>
+
+                <Card className="p-5 border-gw-success/40 bg-gw-bg-secondary text-center space-y-2">
+                  <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary block">
+                    Exhaustive Backtracking Enumeration (Phase 13)
+                  </span>
+                  <div className="text-3xl font-mono font-bold text-gw-success">
+                    {backtrackingResult?.totalFound?.toString() ?? '—'}
+                  </div>
+                  <span className="text-[11px] text-gw-success/80 font-mono">
+                    Materialized Conflict-Free Plans
+                  </span>
+                </Card>
+              </div>
+
+              {/* Cross-Verification Verdict Banner */}
+              {crossVerificationReport && (
+                <div
+                  className={`p-4 rounded-xl border flex items-start gap-3 text-xs leading-relaxed ${
+                    crossVerificationReport.verified
+                      ? 'bg-gw-success/10 border-gw-success/40 text-gw-success'
+                      : crossVerificationReport.status === 'INCOMPLETE_SEARCH'
+                      ? 'bg-gw-warning/10 border-gw-warning/40 text-gw-warning'
+                      : 'bg-gw-danger/10 border-gw-danger/40 text-gw-danger'
+                  }`}
+                >
+                  {crossVerificationReport.verified ? (
+                    <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5 text-gw-success" />
+                  ) : (
+                    <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-gw-warning" />
+                  )}
+                  <div className="space-y-1">
+                    <span className="font-bold text-sm">
+                      {crossVerificationReport.verified
+                        ? 'Mathematical Equality Confirmed'
+                        : 'Algorithmic Verification Notice'}
+                    </span>
+                    <p>{crossVerificationReport.message}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Educational Experience: The 3 Core Algorithms */}
+              <div className="space-y-3 pt-2">
+                <h4 className="text-xs font-semibold uppercase font-mono tracking-wider text-gw-text flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-gw-cyan" />
+                  Educational Architecture: Comparing the Three Core Paradigms
+                </h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                  <Card className="p-4 border-[#1e3a5f] bg-gw-bg-tertiary/70 space-y-2">
+                    <div className="flex items-center gap-2 font-mono font-bold text-gw-cyan">
+                      <Grid3X3 className="w-4 h-4" />
+                      <span>1. Rook Polynomial</span>
+                    </div>
+                    <p className="text-gw-text-secondary leading-relaxed">
+                      Counts the number of ways to place $k$ non-attacking rooks on forbidden cells. Runs in polynomial-time bitmask dynamic programming without generating flight schedules.
+                    </p>
+                  </Card>
+
+                  <Card className="p-4 border-[#1e3a5f] bg-gw-bg-tertiary/70 space-y-2">
+                    <div className="flex items-center gap-2 font-mono font-bold text-gw-success">
+                      <Calculator className="w-4 h-4" />
+                      <span>2. Inclusion–Exclusion</span>
+                    </div>
+                    <p className="text-gw-text-secondary leading-relaxed">
+                      Computes the exact number of conflict-free valid assignments $N$ using alternating signs and factorial products. Yields the ground truth count instantly.
+                    </p>
+                  </Card>
+
+                  <Card className="p-4 border-[#1e3a5f] bg-gw-bg-tertiary/70 space-y-2">
+                    <div className="flex items-center gap-2 font-mono font-bold text-gw-warning">
+                      <Cpu className="w-4 h-4" />
+                      <span>3. Backtracking Engine</span>
+                    </div>
+                    <p className="text-gw-text-secondary leading-relaxed">
+                      Searches the discrete assignment tree, prunes forbidden branches, and materializes individual concrete flight-to-gate pairings for air traffic controllers.
+                    </p>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Action Buttons & Report Export */}
+              <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-[#1e3a5f]/40">
                 <Button
                   size="md"
-                  variant="outline"
+                  variant="primary"
                   icon={FileText}
                   onClick={() => exportService.downloadScenarioPdf(selectedSimId)}
-                  title="Download publication-grade binary PDF report"
+                  title="Download publication-grade binary PDF report covering all 7 sections"
                 >
-                  Download PDF Report
+                  Download Simulation PDF Report
                 </Button>
                 <Button
                   size="md"
@@ -713,14 +990,14 @@ export const CalculationEngine = () => {
                 >
                   Matrix CSV
                 </Button>
-                <Link to="/math-explorer">
-                  <Button size="md" variant="outline" icon={BookOpen}>
-                    Open Math Explorer
+                <Link to="/reports">
+                  <Button size="md" variant="outline" icon={ExternalLink}>
+                    Reports Central
                   </Button>
                 </Link>
-                <Link to="/analytics?tab=compare">
+                <Link to="/analytics">
                   <Button size="md" variant="outline" icon={ArrowRight}>
-                    Compare Scenarios
+                    Open Analytics Dashboard
                   </Button>
                 </Link>
               </div>

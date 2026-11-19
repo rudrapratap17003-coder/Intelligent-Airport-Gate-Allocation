@@ -26,6 +26,7 @@ import Dropdown from '../components/ui/Dropdown'
 import Notification from '../components/ui/Notification'
 import flightService from '../lib/flightService'
 import exportService from '../lib/exportService'
+import { useToast } from '../context/ToastContext'
 
 const AIRCRAFT_TYPES = [
   { label: 'Narrow-Body (A320)', value: 'Narrow-Body (A320)' },
@@ -51,6 +52,7 @@ const TERMINAL_OPTIONS = [
 ]
 
 export const FlightManagement = () => {
+  const toast = useToast()
   const [flights, setFlights] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('ALL')
@@ -198,6 +200,7 @@ export const FlightManagement = () => {
     try {
       if (editingFlight) {
         await flightService.updateFlight(editingFlight.id, formData)
+        toast.success('Flight Updated', `Flight ${formData.flightNumber.toUpperCase()} was successfully updated.`)
         setNotification({
           type: 'success',
           title: 'Flight Updated',
@@ -205,6 +208,7 @@ export const FlightManagement = () => {
         })
       } else {
         await flightService.addFlight(formData)
+        toast.success('Flight Created', `Flight ${formData.flightNumber.toUpperCase()} added to allocation registry.`)
         setNotification({
           type: 'success',
           title: 'Flight Created',
@@ -214,6 +218,7 @@ export const FlightManagement = () => {
       setIsFormModalOpen(false)
       await loadFlights()
     } catch (err) {
+      toast.error('Operation Failed', err.message)
       setNotification({
         type: 'danger',
         title: 'Operation Failed',
@@ -228,6 +233,7 @@ export const FlightManagement = () => {
     if (!flightToDelete) return
     try {
       await flightService.deleteFlight(flightToDelete.id)
+      toast.warning('Flight Removed', `Flight ${flightToDelete.flightNumber} was deleted from registry.`)
       setNotification({
         type: 'warning',
         title: 'Flight Removed',
@@ -237,6 +243,7 @@ export const FlightManagement = () => {
       setFlightToDelete(null)
       await loadFlights()
     } catch (err) {
+      toast.error('Delete Failed', err.message || 'Cannot delete flight assigned to active simulations.')
       setNotification({
         type: 'danger',
         title: 'Delete Failed',
@@ -250,6 +257,7 @@ export const FlightManagement = () => {
   // Refresh from backend database
   const handleResetDefaults = async () => {
     await loadFlights()
+    toast.info('Database Synchronized', 'Active fleet records refreshed from SQLite database.')
     setNotification({
       type: 'info',
       title: 'Database Synchronized',

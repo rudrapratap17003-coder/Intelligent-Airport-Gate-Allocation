@@ -27,6 +27,7 @@ import Dropdown from '../components/ui/Dropdown'
 import Notification from '../components/ui/Notification'
 import gateService from '../lib/gateService'
 import exportService from '../lib/exportService'
+import { useToast } from '../context/ToastContext'
 
 const GATE_TYPES = [
   { label: 'Domestic', value: 'Domestic' },
@@ -54,6 +55,7 @@ const STATUS_OPTIONS = [
 ]
 
 export const GateManagement = () => {
+  const toast = useToast()
   const [gates, setGates] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [typeFilter, setTypeFilter] = useState('ALL')
@@ -162,10 +164,20 @@ export const GateManagement = () => {
   // Form validation
   const validateForm = () => {
     const errors = {}
-    if (!formData.gateNumber.trim()) {
+    const trimmedGateNumber = formData.gateNumber.trim().toUpperCase()
+    if (!trimmedGateNumber) {
       errors.gateNumber = 'Gate number is required (e.g. G1, A01)'
-    } else if (!/^[A-Z0-9]{1,6}$/i.test(formData.gateNumber.trim())) {
+    } else if (!/^[A-Z0-9]{1,6}$/i.test(trimmedGateNumber)) {
       errors.gateNumber = 'Gate number must be 1-6 alphanumeric characters'
+    } else {
+      // Duplicate prevention
+      const isDuplicate = editingGate
+        ? gates.some((g) => g.id !== editingGate.id && g.gateNumber.toUpperCase() === trimmedGateNumber)
+        : gates.some((g) => g.gateNumber.toUpperCase() === trimmedGateNumber)
+
+      if (isDuplicate) {
+        errors.gateNumber = `Gate number "${trimmedGateNumber}" already exists. Please choose a unique gate number.`
+      }
     }
 
     const cap = Number(formData.maxCapacity)
@@ -185,6 +197,7 @@ export const GateManagement = () => {
     try {
       if (editingGate) {
         await gateService.updateGate(editingGate.id, formData)
+        toast.success('Gate Updated', `Gate ${formData.gateNumber.toUpperCase()} properties updated.`)
         setNotification({
           type: 'success',
           title: 'Gate Updated',
@@ -192,6 +205,7 @@ export const GateManagement = () => {
         })
       } else {
         await gateService.addGate(formData)
+        toast.success('Gate Created', `Gate ${formData.gateNumber.toUpperCase()} added to airport registry.`)
         setNotification({
           type: 'success',
           title: 'Gate Created',
@@ -201,6 +215,7 @@ export const GateManagement = () => {
       setIsFormModalOpen(false)
       await loadGates()
     } catch (err) {
+      toast.error('Operation Failed', err.message)
       setNotification({
         type: 'danger',
         title: 'Operation Failed',
@@ -215,6 +230,7 @@ export const GateManagement = () => {
     if (!gateToDelete) return
     try {
       await gateService.deleteGate(gateToDelete.id)
+      toast.warning('Gate Removed', `Gate ${gateToDelete.gateNumber} was deleted from airport registry.`)
       setNotification({
         type: 'warning',
         title: 'Gate Removed',
@@ -224,6 +240,7 @@ export const GateManagement = () => {
       setGateToDelete(null)
       await loadGates()
     } catch (err) {
+      toast.error('Delete Failed', err.message || 'Cannot delete gate assigned to active simulations.')
       setNotification({
         type: 'danger',
         title: 'Delete Failed',
@@ -234,14 +251,20 @@ export const GateManagement = () => {
     }
   }
 
-  // Refresh from backend database
+  // Refresh from backend database / reset sample gates
   const handleResetDefaults = async () => {
-    await loadGates()
-    setNotification({
-      type: 'info',
-      title: 'Database Synchronized',
-      message: 'Active gate inventory refreshed from SQLite database.'
-    })
+    try {
+      await gateService.resetDefaults()
+      await loadGates()
+      toast.info('Sample Gates Restored', 'Gate inventory reset to benchmark configuration (G1 through G6).')
+      setNotification({
+        type: 'info',
+        title: 'Sample Gates Restored',
+        message: 'Gate inventory reset to benchmark configuration (G1 through G6).'
+      })
+    } catch (err) {
+      toast.error('Reset Failed', err.message || 'Failed to restore default gates.')
+    }
   }
 
   // Table columns definition

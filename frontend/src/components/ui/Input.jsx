@@ -15,7 +15,7 @@ export const Input = ({
   return (
     <div className={`w-full ${className}`}>
       {label && (
-        <label htmlFor={inputId} className="block text-xs font-medium text-gw-text-secondary uppercase tracking-wider mb-1.5">
+        <label htmlFor={inputId} className="block text-xs font-semibold text-gw-text-secondary uppercase tracking-wider mb-1.5">
           {label}
         </label>
       )}
@@ -29,18 +29,21 @@ export const Input = ({
           id={inputId}
           type={type}
           className={`
-            w-full bg-gw-bg-secondary text-gw-text text-sm rounded-lg border px-3.5 py-2 transition-all outline-none
-            placeholder:text-gw-text-secondary/50
+            w-full bg-gw-bg-secondary/90 text-gw-text text-sm rounded-lg border px-3.5 py-2.5 transition-all outline-none
+            placeholder:text-gw-text-secondary/50 min-h-[42px]
             ${Icon ? 'pl-9' : ''}
-            ${error ? 'border-gw-error focus:ring-1 focus:ring-gw-error' : 'border-[#1e3a5f] focus:border-gw-cyan focus:ring-1 focus:ring-gw-cyan'}
+            ${error
+              ? 'border-gw-error focus:ring-2 focus:ring-gw-error/30 focus:border-gw-error'
+              : 'border-[#1e3a5f] focus:border-gw-cyan focus:ring-2 focus:ring-gw-cyan/25 focus:shadow-[0_0_12px_rgba(36,200,232,0.2)]'
+            }
           `}
           {...props}
         />
       </div>
       {error ? (
-        <p className="mt-1 text-xs text-gw-error">{error}</p>
+        <p className="mt-1.5 text-xs text-gw-error font-medium">{error}</p>
       ) : helperText ? (
-        <p className="mt-1 text-xs text-gw-text-secondary">{helperText}</p>
+        <p className="mt-1.5 text-xs text-gw-text-secondary">{helperText}</p>
       ) : null}
     </div>
   )

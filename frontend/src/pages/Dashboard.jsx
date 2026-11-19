@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import {
   Plane,
   DoorClosed,
@@ -20,7 +21,11 @@ import {
   Activity,
   Cpu,
   Database,
-  ExternalLink
+  ExternalLink,
+  Compass,
+  Building2,
+  Bell,
+  Clock
 } from 'lucide-react'
 import {
   ResponsiveContainer,
@@ -32,8 +37,11 @@ import {
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
+import Counter from '../components/ui/Counter'
 import dashboardService from '../lib/dashboardService'
 import allocationService from '../lib/allocationService'
+import { useAirport } from '../context/AirportContext'
+import { staggerContainer, staggerItem } from '../lib/animations'
 
 /**
  * Format timestamp into relative or clean human-readable date.
@@ -60,6 +68,8 @@ function formatTime(timestamp) {
 }
 
 export const Dashboard = () => {
+  const { selectedTerminal, setSelectedTerminal, terminalsSummary, alerts, simClock } = useAirport()
+
   // Primary data states
   const [summary, setSummary] = useState(null)
   const [selectedSimId, setSelectedSimId] = useState('')
@@ -73,8 +83,24 @@ export const Dashboard = () => {
   const [isGeneratingSample, setIsGeneratingSample] = useState(false)
   const [allocationError, setAllocationError] = useState(null)
 
-  // Quick Access Modules definition (All 8 modules required by specification)
+  // Quick Access Modules definition (All 10 modules)
   const quickModules = [
+    {
+      title: 'Digital Airport Map',
+      description: 'Interactive schematic of Kempegowda International Airport Bengaluru runways, aprons, and stands.',
+      path: '/airport-map',
+      icon: Compass,
+      color: 'cyan',
+      tag: 'Digital Twin'
+    },
+    {
+      title: 'Terminal Operations',
+      description: 'Dedicated operational views and aircraft envelopes for Terminal 1 and Terminal 2.',
+      path: '/terminals',
+      icon: Building2,
+      color: 'blue',
+      tag: 'T1 & T2'
+    },
     {
       title: 'Flight Management',
       description: 'Configure active flight schedules, aircraft classes, carrier callsigns, and arrival windows.',
@@ -297,22 +323,36 @@ export const Dashboard = () => {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#1e3a5f]/50">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <h1 className="gw-page-heading">Airport Operations Overview</h1>
+            <h1 className="gw-page-heading">BLR Operations Center</h1>
             <Badge variant="cyan" size="sm" dot>
-              System Online
+              VOBL / BLR Digital Twin
             </Badge>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-gw-success/10 border border-gw-success/25 text-gw-success font-mono font-medium hidden sm:inline-flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-gw-success animate-pulse" />
+              Simulated Operations
+            </span>
             {lastRefreshedAt && (
-              <span className="text-[11px] text-gw-text-secondary font-mono hidden sm:inline">
+              <span className="text-[11px] text-gw-text-secondary font-mono hidden md:inline">
                 Synced {formatTime(lastRefreshedAt)}
               </span>
             )}
           </div>
           <p className="text-sm text-gw-text-secondary leading-relaxed">
-            Authoritative operational dashboard consolidating live flights, terminal gates, balanced scenarios, and discrete mathematical allocation engines.
+            Operational decision-support dashboard for Kempegowda International Airport Bengaluru. Integrates flight scheduling, apron stand allocations, and discrete mathematical conflict resolution.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 shrink-0">
+          <Link to="/airport-map">
+            <Button variant="outline" size="md" icon={Compass} className="border-gw-cyan/40 text-gw-cyan">
+              Airport Map
+            </Button>
+          </Link>
+          <Link to="/terminals">
+            <Button variant="outline" size="md" icon={Building2}>
+              Terminals
+            </Button>
+          </Link>
           <Button
             variant="outline"
             size="md"
@@ -324,19 +364,87 @@ export const Dashboard = () => {
             <span className={isRefreshing ? 'animate-spin inline-block' : ''}>
               <RefreshCw className="w-4 h-4 mr-1.5 inline" />
             </span>
-            <span>{isRefreshing ? 'Refreshing...' : 'Refresh Telemetry'}</span>
+            <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
           </Button>
           <Link to="/workspace">
             <Button size="md" icon={PlayCircle} className="shadow-lg shadow-gw-cyan/20 font-bold">
-              START NEW ALLOCATION
-            </Button>
-          </Link>
-          <Link to="/scenarios">
-            <Button size="md" variant="secondary" icon={Layers}>
-              Scenarios
+              START ALLOCATION
             </Button>
           </Link>
         </div>
+      </div>
+
+      {/* ----------------- BLR OPERATIONAL ALERTS BANNER ----------------- */}
+      {alerts && alerts.length > 0 && (
+        <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-600/40 text-xs text-amber-200 space-y-2.5 shadow-md shadow-amber-950/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 font-bold text-amber-400">
+              <AlertTriangle className="w-4 h-4 text-amber-400 animate-pulse" />
+              <span>ACTIVE AIRPORT OPERATIONAL ALERTS ({alerts.length})</span>
+            </div>
+            <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">
+              SIMULATED TELEMETRY
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+            {alerts.slice(0, 2).map((a) => (
+              <div key={a.id} className="p-2.5 rounded-lg bg-[#07111e] border border-amber-500/30 flex items-start justify-between gap-2">
+                <div>
+                  <div className="font-semibold text-gw-text flex items-center gap-1.5">
+                    <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-400 text-[10px] font-mono">{a.category}</span>
+                    <span>{a.title}</span>
+                  </div>
+                  <p className="text-[11px] text-gw-text-secondary mt-1">{a.explanation}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ----------------- TERMINAL STATUS OVERVIEW CARDS ----------------- */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Link to="/terminals" className="group">
+          <Card className="hover:border-cyan-500/50 transition-all p-4 bg-[#081527] border-[#183556]">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Plane className="w-4 h-4 text-gw-cyan" />
+                <span className="font-bold text-sm text-gw-text">Terminal 1 — Domestic</span>
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-400 font-mono">
+                Code C / D
+              </span>
+            </div>
+            <p className="text-xs text-gw-text-secondary leading-relaxed mb-3">
+              Dedicated domestic operations handling IndiGo (6E), Akasa Air (QP), and SpiceJet (SG). Narrow-body contact stands and bus boarding positions.
+            </p>
+            <div className="flex items-center justify-between text-xs font-mono pt-2 border-t border-[#1e3a5f]/40 text-gw-cyan">
+              <span>View T1 Operations & Stands</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Card>
+        </Link>
+
+        <Link to="/terminals" className="group">
+          <Card className="hover:border-teal-500/50 transition-all p-4 bg-[#081527] border-[#183556]">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-emerald-400" />
+                <span className="font-bold text-sm text-gw-text">Terminal 2 — International & Premium</span>
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-mono">
+                Code E / F Dual Aerobridges
+              </span>
+            </div>
+            <p className="text-xs text-gw-text-secondary leading-relaxed mb-3">
+              "Terminal in a Garden" handling international carriers (Emirates, Singapore Airlines, Qatar Airways) and full-service domestic (Air India, Vistara).
+            </p>
+            <div className="flex items-center justify-between text-xs font-mono pt-2 border-t border-[#1e3a5f]/40 text-emerald-400">
+              <span>View T2 Operations & Stands</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Card>
+        </Link>
       </div>
 
       {/* ----------------- 2. DOMINANT NEXT-ACTION GUIDANCE BANNER ----------------- */}
@@ -381,7 +489,7 @@ export const Dashboard = () => {
       {/* ----------------- 3. CORE TELEMETRY STATISTIC CARDS ----------------- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Flights Telemetry */}
-        <Card className="hover:border-gw-cyan/40 transition-colors">
+        <Card className="hover:border-gw-cyan/40 transition-colors" interactive>
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs uppercase font-medium tracking-wider text-gw-text-secondary">
               Fleet Operations
@@ -391,7 +499,7 @@ export const Dashboard = () => {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold font-mono text-gw-text">{flights.total}</span>
+            <Counter value={flights.total} className="text-3xl font-extrabold text-gw-text" />
             <span className="text-xs text-gw-text-secondary">flights registered</span>
           </div>
 
@@ -421,7 +529,7 @@ export const Dashboard = () => {
         </Card>
 
         {/* Card 2: Gates Telemetry */}
-        <Card className="hover:border-gw-blue/40 transition-colors">
+        <Card className="hover:border-gw-blue/40 transition-colors" interactive>
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs uppercase font-medium tracking-wider text-gw-text-secondary">
               Facility Docking
@@ -431,7 +539,7 @@ export const Dashboard = () => {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold font-mono text-gw-text">{gates.total}</span>
+            <Counter value={gates.total} className="text-3xl font-extrabold text-gw-text" />
             <span className="text-xs text-gw-text-secondary">gates available</span>
           </div>
 
@@ -458,7 +566,7 @@ export const Dashboard = () => {
         </Card>
 
         {/* Card 3: Simulation Scenarios */}
-        <Card className="hover:border-gw-warning/40 transition-colors">
+        <Card className="hover:border-gw-warning/40 transition-colors" interactive>
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs uppercase font-medium tracking-wider text-gw-text-secondary">
               Simulation Windows
@@ -468,7 +576,7 @@ export const Dashboard = () => {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold font-mono text-gw-warning">{simulations.total}</span>
+            <Counter value={simulations.total} className="text-3xl font-extrabold text-gw-warning" />
             <span className="text-xs text-gw-text-secondary">total scenarios</span>
           </div>
 
@@ -496,7 +604,7 @@ export const Dashboard = () => {
         </Card>
 
         {/* Card 4: Selected Scenario Feasibility & Math */}
-        <Card className="hover:border-gw-success/40 transition-colors">
+        <Card className="hover:border-gw-success/40 transition-colors" interactive>
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs uppercase font-medium tracking-wider text-gw-text-secondary">
               Feasibility Ratio

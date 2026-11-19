@@ -7,7 +7,6 @@ import {
   Calculator,
   Grid3X3,
   ShieldCheck,
-  PlayCircle,
   Code2,
   Terminal,
   Plane
@@ -34,18 +33,63 @@ export const About = () => {
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
+          <Link to="/airport-map">
+            <Button size="md" variant="outline" className="border-gw-cyan/40 text-gw-cyan">
+              Airport Map
+            </Button>
+          </Link>
+          <Link to="/terminals">
+            <Button size="md" variant="outline">
+              Terminals
+            </Button>
+          </Link>
           <Link to="/math-explorer">
             <Button size="md" icon={BookOpen} className="shadow-lg shadow-gw-cyan/10">
               Math Explorer
             </Button>
           </Link>
-          <Link to="/simulator">
-            <Button size="md" variant="outline" icon={PlayCircle}>
-              Open Simulator
-            </Button>
-          </Link>
         </div>
       </div>
+
+      {/* ----------------- BLR DIGITAL TWIN DATA ARCHITECTURE ----------------- */}
+      <Card className="p-6 border-cyan-800/60 bg-[#071322] space-y-4">
+        <div className="flex items-center gap-2 pb-3 border-b border-[#1e3a5f]/40">
+          <Plane className="w-5 h-5 text-gw-cyan" />
+          <h2 className="text-base font-bold text-gw-text">GateWise BLR — Bengaluru Airport Digital Twin Prototype</h2>
+        </div>
+        <p className="text-sm text-gw-text-secondary leading-relaxed">
+          GateWise BLR is an academic operational digital twin modeled specifically around <strong>Kempegowda International Airport (BLR / VOBL)</strong> in Devanahalli, Bengaluru. It simulates airport gate allocations, turnaround occupancy windows, and terminal operational constraints across <strong>Terminal 1 (Dedicated Domestic)</strong> and <strong>Terminal 2 (International & Premium Domestic)</strong>.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+          <div className="p-3.5 rounded-xl bg-[#09182b] border border-cyan-500/30 space-y-1.5">
+            <div className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wide">
+              Tier 1: Verified Public Data
+            </div>
+            <p className="text-[11px] text-gw-text-secondary leading-relaxed">
+              Official IATA (BLR) / ICAO (VOBL) identifiers, coordinates (13°11'56" N), runways (09L/27R CAT I & 09R/27L CAT III-B), airline terminal allocations, and published terminal opening dates.
+            </p>
+          </div>
+          <div className="p-3.5 rounded-xl bg-[#09182b] border border-amber-500/30 space-y-1.5">
+            <div className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wide">
+              Tier 2: Configurable Demo Data
+            </div>
+            <p className="text-[11px] text-gw-text-secondary leading-relaxed">
+              Demonstration apron stands (Contact Aerobridge vs Remote Bus Apron), maximum wingspan limits, passenger capacity thresholds, and jetway configurations.
+            </p>
+          </div>
+          <div className="p-3.5 rounded-xl bg-[#09182b] border border-emerald-500/30 space-y-1.5">
+            <div className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wide">
+              Tier 3: Simulated Operational Data
+            </div>
+            <p className="text-[11px] text-gw-text-secondary leading-relaxed">
+              Simulated flight arrivals, turnaround timelines (45m narrow-body to 90–120m wide-body), schedule delay events, and discrete math gate allocations.
+            </p>
+          </div>
+        </div>
+        <p className="text-[11px] text-gw-text-secondary italic pt-1 border-t border-[#1e3a5f]/40">
+          * Disclaimer: Academic research prototype. Not connected to BIAL internal operational systems, live AODB data, or airline operational feeds.
+        </p>
+      </Card>
 
       {/* ----------------- 2. SYSTEM OVERVIEW ----------------- */}
       <Card className="p-6 border-[#1e3a5f]/80 space-y-4">

@@ -28,7 +28,17 @@ SAMPLE_FLIGHTS = [
         "departure_time": "10:00",
         "passenger_capacity": 342,
         "terminal": "T2",
-        "status": "Scheduled"
+        "status": "Scheduled",
+        "origin": "DEL",
+        "destination": "LHR",
+        "flight_type": "International",
+        "priority": "Standard",
+        "estimated_time": "08:30",
+        "actual_time": "08:30",
+        "turnaround_duration": 90,
+        "aircraft_registration": "VT-ALQ",
+        "aircraft_category": "Code E",
+        "data_tier": "SIMULATED_OPERATIONAL_DATA"
     },
     {
         "id": "FL-002",
@@ -39,7 +49,17 @@ SAMPLE_FLIGHTS = [
         "departure_time": "09:45",
         "passenger_capacity": 164,
         "terminal": "T2",
-        "status": "Scheduled"
+        "status": "Scheduled",
+        "origin": "BOM",
+        "destination": "BLR",
+        "flight_type": "Domestic",
+        "priority": "Standard",
+        "estimated_time": "08:45",
+        "actual_time": "08:45",
+        "turnaround_duration": 45,
+        "aircraft_registration": "VT-TNB",
+        "aircraft_category": "Code C",
+        "data_tier": "SIMULATED_OPERATIONAL_DATA"
     },
     {
         "id": "FL-003",
@@ -50,7 +70,17 @@ SAMPLE_FLIGHTS = [
         "departure_time": "10:15",
         "passenger_capacity": 222,
         "terminal": "T1",
-        "status": "Boarding"
+        "status": "Boarding",
+        "origin": "HYD",
+        "destination": "BLR",
+        "flight_type": "Domestic",
+        "priority": "Standard",
+        "estimated_time": "09:00",
+        "actual_time": "09:00",
+        "turnaround_duration": 50,
+        "aircraft_registration": "VT-IMD",
+        "aircraft_category": "Code C",
+        "data_tier": "SIMULATED_OPERATIONAL_DATA"
     },
     {
         "id": "FL-004",
@@ -61,7 +91,17 @@ SAMPLE_FLIGHTS = [
         "departure_time": "10:30",
         "passenger_capacity": 189,
         "terminal": "T1",
-        "status": "Scheduled"
+        "status": "Scheduled",
+        "origin": "DEL",
+        "destination": "BLR",
+        "flight_type": "Domestic",
+        "priority": "Standard",
+        "estimated_time": "09:15",
+        "actual_time": "09:15",
+        "turnaround_duration": 45,
+        "aircraft_registration": "VT-SZR",
+        "aircraft_category": "Code C",
+        "data_tier": "SIMULATED_OPERATIONAL_DATA"
     },
     {
         "id": "FL-005",
@@ -72,7 +112,17 @@ SAMPLE_FLIGHTS = [
         "departure_time": "11:15",
         "passenger_capacity": 316,
         "terminal": "T2",
-        "status": "Delayed"
+        "status": "Delayed",
+        "origin": "DXB",
+        "destination": "BLR",
+        "flight_type": "International",
+        "priority": "Standard",
+        "estimated_time": "10:00",
+        "actual_time": "10:00",
+        "turnaround_duration": 90,
+        "aircraft_registration": "VT-JRH",
+        "aircraft_category": "Code E",
+        "data_tier": "SIMULATED_OPERATIONAL_DATA"
     },
     {
         "id": "FL-006",
@@ -83,7 +133,17 @@ SAMPLE_FLIGHTS = [
         "departure_time": "10:45",
         "passenger_capacity": 164,
         "terminal": "T2",
-        "status": "Scheduled"
+        "status": "Scheduled",
+        "origin": "CCU",
+        "destination": "BLR",
+        "flight_type": "Domestic",
+        "priority": "Standard",
+        "estimated_time": "09:45",
+        "actual_time": "09:45",
+        "turnaround_duration": 45,
+        "aircraft_registration": "VT-TNC",
+        "aircraft_category": "Code C",
+        "data_tier": "SIMULATED_OPERATIONAL_DATA"
     }
 ]
 
@@ -95,7 +155,14 @@ SAMPLE_GATES = [
         "gate_type": "Domestic",
         "supported_aircraft": "Narrow-Body Only",
         "max_capacity": 230,
-        "status": "Available"
+        "status": "Available",
+        "stand_type": "Contact Aerobridge",
+        "has_jetway": 1,
+        "aircraft_category": "Code C",
+        "max_wingspan_m": 36.0,
+        "max_length_m": 45.0,
+        "is_remote": 0,
+        "data_tier": "CONFIGURABLE_DEMONSTRATION_DATA"
     },
     {
         "id": "GT-002",
@@ -104,7 +171,14 @@ SAMPLE_GATES = [
         "gate_type": "Domestic",
         "supported_aircraft": "Narrow-Body Only",
         "max_capacity": 230,
-        "status": "Available"
+        "status": "Available",
+        "stand_type": "Contact Aerobridge",
+        "has_jetway": 1,
+        "aircraft_category": "Code C",
+        "max_wingspan_m": 36.0,
+        "max_length_m": 45.0,
+        "is_remote": 0,
+        "data_tier": "CONFIGURABLE_DEMONSTRATION_DATA"
     },
     {
         "id": "GT-003",
@@ -113,7 +187,14 @@ SAMPLE_GATES = [
         "gate_type": "Universal",
         "supported_aircraft": "All Categories (Narrow & Wide)",
         "max_capacity": 450,
-        "status": "Available"
+        "status": "Available",
+        "stand_type": "Contact Aerobridge",
+        "has_jetway": 1,
+        "aircraft_category": "Code E",
+        "max_wingspan_m": 65.0,
+        "max_length_m": 75.0,
+        "is_remote": 0,
+        "data_tier": "CONFIGURABLE_DEMONSTRATION_DATA"
     },
     {
         "id": "GT-004",
@@ -122,7 +203,14 @@ SAMPLE_GATES = [
         "gate_type": "Universal",
         "supported_aircraft": "All Categories (Narrow & Wide)",
         "max_capacity": 450,
-        "status": "Available"
+        "status": "Available",
+        "stand_type": "Contact Aerobridge",
+        "has_jetway": 1,
+        "aircraft_category": "Code E",
+        "max_wingspan_m": 65.0,
+        "max_length_m": 75.0,
+        "is_remote": 0,
+        "data_tier": "CONFIGURABLE_DEMONSTRATION_DATA"
     },
     {
         "id": "GT-005",
@@ -131,7 +219,14 @@ SAMPLE_GATES = [
         "gate_type": "International",
         "supported_aircraft": "Wide-Body Only",
         "max_capacity": 500,
-        "status": "Occupied"
+        "status": "Occupied",
+        "stand_type": "Contact Aerobridge",
+        "has_jetway": 1,
+        "aircraft_category": "Code E",
+        "max_wingspan_m": 65.0,
+        "max_length_m": 75.0,
+        "is_remote": 0,
+        "data_tier": "CONFIGURABLE_DEMONSTRATION_DATA"
     },
     {
         "id": "GT-006",
@@ -140,7 +235,14 @@ SAMPLE_GATES = [
         "gate_type": "International",
         "supported_aircraft": "All Categories (Narrow & Wide)",
         "max_capacity": 450,
-        "status": "Available"
+        "status": "Available",
+        "stand_type": "Contact Dual Aerobridge",
+        "has_jetway": 1,
+        "aircraft_category": "Code F",
+        "max_wingspan_m": 80.0,
+        "max_length_m": 80.0,
+        "is_remote": 0,
+        "data_tier": "CONFIGURABLE_DEMONSTRATION_DATA"
     }
 ]
 
@@ -203,6 +305,10 @@ def seed_database(db: Session):
         if not existing:
             db.add(Flight(**f))
             seeded_flights_count += 1
+        else:
+            for k in ["origin", "destination", "flight_type", "priority", "turnaround_duration", "aircraft_registration", "aircraft_category", "data_tier", "estimated_time", "actual_time"]:
+                if k in f:
+                    setattr(existing, k, f[k])
 
     seeded_gates_count = 0
     for g in SAMPLE_GATES:
@@ -212,6 +318,10 @@ def seed_database(db: Session):
         if not existing:
             db.add(Gate(**g))
             seeded_gates_count += 1
+        else:
+            for k in ["stand_type", "has_jetway", "aircraft_category", "max_wingspan_m", "max_length_m", "is_remote", "data_tier"]:
+                if k in g:
+                    setattr(existing, k, g[k])
 
     if seeded_flights_count > 0 or seeded_gates_count > 0:
         db.flush()
@@ -251,6 +361,8 @@ def seed_database(db: Session):
                 rows_count=len(s["matrix"]),
                 cols_count=len(s["matrix"][0]) if s["matrix"] else 0,
                 matrix_data=matrix_json,
+                row_flight_ids=json.dumps(s["flight_ids"]) if s.get("flight_ids") else None,
+                column_gate_ids=json.dumps(s["gate_ids"]) if s.get("gate_ids") else None,
                 created_at=datetime.now(timezone.utc),
                 updated_at=datetime.now(timezone.utc)
             ))

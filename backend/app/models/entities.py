@@ -8,6 +8,7 @@ from typing import List, Optional
 from sqlalchemy import (
     String,
     Integer,
+    Float,
     ForeignKey,
     DateTime,
     Text,
@@ -32,6 +33,18 @@ class Flight(Base):
     terminal: Mapped[str] = mapped_column(String(20), default="T1")
     status: Mapped[str] = mapped_column(String(50), default="Scheduled")
 
+    # BLR Digital Twin Fields
+    origin: Mapped[Optional[str]] = mapped_column(String(50), default="DEL", nullable=True)
+    destination: Mapped[Optional[str]] = mapped_column(String(50), default="BLR", nullable=True)
+    flight_type: Mapped[Optional[str]] = mapped_column(String(50), default="Domestic", nullable=True)
+    priority: Mapped[Optional[str]] = mapped_column(String(50), default="Standard", nullable=True)
+    estimated_time: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    actual_time: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    turnaround_duration: Mapped[Optional[int]] = mapped_column(Integer, default=45, nullable=True)
+    aircraft_registration: Mapped[Optional[str]] = mapped_column(String(50), default="VT-BLR", nullable=True)
+    aircraft_category: Mapped[Optional[str]] = mapped_column(String(50), default="Code C", nullable=True)
+    data_tier: Mapped[Optional[str]] = mapped_column(String(50), default="SIMULATED_OPERATIONAL_DATA", nullable=True)
+
     # Relationship to simulation link table
     simulations: Mapped[List["SimulationFlight"]] = relationship(
         "SimulationFlight", back_populates="flight", cascade="all, delete-orphan"
@@ -39,7 +52,7 @@ class Flight(Base):
 
 
 class Gate(Base):
-    """Gate entity representing an airport docking slot."""
+    """Gate entity representing an airport docking slot or apron stand."""
 
     __tablename__ = "gates"
 
@@ -50,6 +63,15 @@ class Gate(Base):
     supported_aircraft: Mapped[str] = mapped_column(String(100), default="Narrow-Body Only")
     max_capacity: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[str] = mapped_column(String(50), default="Available")
+
+    # BLR Digital Twin Stand Fields
+    stand_type: Mapped[Optional[str]] = mapped_column(String(50), default="Contact Aerobridge", nullable=True)
+    has_jetway: Mapped[Optional[int]] = mapped_column(Integer, default=1, nullable=True)
+    aircraft_category: Mapped[Optional[str]] = mapped_column(String(50), default="Code C", nullable=True)
+    max_wingspan_m: Mapped[Optional[float]] = mapped_column(Float, default=36.0, nullable=True)
+    max_length_m: Mapped[Optional[float]] = mapped_column(Float, default=45.0, nullable=True)
+    is_remote: Mapped[Optional[int]] = mapped_column(Integer, default=0, nullable=True)
+    data_tier: Mapped[Optional[str]] = mapped_column(String(50), default="CONFIGURABLE_DEMONSTRATION_DATA", nullable=True)
 
     # Relationship to simulation link table
     simulations: Mapped[List["SimulationGate"]] = relationship(
@@ -125,6 +147,8 @@ class RestrictionMatrix(Base):
     rows_count: Mapped[int] = mapped_column(Integer, nullable=False)
     cols_count: Mapped[int] = mapped_column(Integer, nullable=False)
     matrix_data: Mapped[str] = mapped_column(Text, nullable=False)  # JSON-serialized 2D binary matrix
+    row_flight_ids: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # JSON-serialized list of row flight IDs
+    column_gate_ids: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # JSON-serialized list of column gate IDs
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 

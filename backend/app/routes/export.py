@@ -45,7 +45,13 @@ def export_flights_csv(db: Session = Depends(get_db)):
         "Arrival Time",
         "Departure Time",
         "Passenger Capacity",
-        "Status"
+        "Status",
+        "Origin",
+        "Destination",
+        "Flight Type",
+        "Aircraft Category",
+        "Turnaround (min)",
+        "Data Classification"
     ])
 
     for f in flights:
@@ -58,7 +64,13 @@ def export_flights_csv(db: Session = Depends(get_db)):
             f.arrival_time,
             f.departure_time,
             f.passenger_capacity,
-            f.status
+            f.status,
+            getattr(f, "origin", "DEL") or "DEL",
+            getattr(f, "destination", "BLR") or "BLR",
+            getattr(f, "flight_type", "Domestic") or "Domestic",
+            getattr(f, "aircraft_category", "Code C") or "Code C",
+            getattr(f, "turnaround_duration", 45) or 45,
+            getattr(f, "data_tier", "SIMULATED_OPERATIONAL_DATA")
         ])
 
     output.seek(0)
@@ -84,7 +96,12 @@ def export_gates_csv(db: Session = Depends(get_db)):
         "Gate Type",
         "Supported Aircraft",
         "Max Capacity",
-        "Status"
+        "Status",
+        "Stand Type",
+        "Jetway",
+        "Aircraft Category",
+        "Max Wingspan (m)",
+        "Data Classification"
     ])
 
     for g in gates:
@@ -95,7 +112,12 @@ def export_gates_csv(db: Session = Depends(get_db)):
             g.gate_type,
             g.supported_aircraft,
             g.max_capacity,
-            g.status
+            g.status,
+            getattr(g, "stand_type", "Contact Aerobridge") or "Contact Aerobridge",
+            "Yes" if getattr(g, "has_jetway", 1) else "No",
+            getattr(g, "aircraft_category", "Code C") or "Code C",
+            getattr(g, "max_wingspan_m", 36.0) or 36.0,
+            getattr(g, "data_tier", "CONFIGURABLE_DEMONSTRATION_DATA")
         ])
 
     output.seek(0)

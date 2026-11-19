@@ -22,7 +22,8 @@ import {
   List,
   Share2,
   Download,
-  FileText
+  FileText,
+  GitBranch
 } from 'lucide-react'
 import Button from '../ui/Button'
 import Card from '../ui/Card'
@@ -33,6 +34,7 @@ import restrictionService from '../../lib/restrictionService'
 import exportService from '../../lib/exportService'
 import BipartiteDiagram from './BipartiteDiagram'
 import AllocationMatrixOverlay from './AllocationMatrixOverlay'
+import BacktrackingAllocationExplorer from './BacktrackingAllocationExplorer'
 
 const RESULT_LIMIT_PRESETS = [10, 50, 100, 309, 500, 1000]
 
@@ -620,6 +622,19 @@ export const AllocationResultsView = ({
                 <Columns className="w-3.5 h-3.5" />
                 <span>Dual View</span>
               </button>
+
+              <button
+                type="button"
+                onClick={() => setViewMode('backtracking')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
+                  viewMode === 'backtracking'
+                    ? 'bg-gw-success text-gw-bg font-bold shadow-xs'
+                    : 'text-gw-text-secondary hover:text-gw-text'
+                }`}
+              >
+                <GitBranch className="w-3.5 h-3.5" />
+                <span>Backtracking Engine (Phase 13)</span>
+              </button>
             </div>
 
             {/* Allocation Selector / Stepper */}
@@ -1006,7 +1021,35 @@ export const AllocationResultsView = ({
               )}
             </div>
           )}
+
+          {/* BACKTRACKING ALLOCATION EXPLORER (Phase 13) */}
+          {viewMode === 'backtracking' && (
+            <BacktrackingAllocationExplorer
+              scenarioName={currentSimulation?.name || 'Selected Simulation'}
+              scenarioId={currentSimulation?.id || ''}
+              matrix={restrictionMatrix}
+              flightIds={currentSimulation?.selectedFlightIds || []}
+              gateIds={currentSimulation?.selectedGateIds || []}
+              flights={availableFlights}
+              gates={availableGates}
+              phase12ExactCount={calculationData?.valid_assignments}
+            />
+          )}
         </div>
+      )}
+
+      {/* Standalone Backtracking Allocation Explorer Section (Accessible directly) */}
+      {currentSimulation && restrictionMatrix.length > 0 && (!allocationData || allocationData.generated_count === 0) && (
+        <BacktrackingAllocationExplorer
+          scenarioName={currentSimulation?.name || 'Selected Simulation'}
+          scenarioId={currentSimulation?.id || ''}
+          matrix={restrictionMatrix}
+          flightIds={currentSimulation?.selectedFlightIds || []}
+          gateIds={currentSimulation?.selectedGateIds || []}
+          flights={availableFlights}
+          gates={availableGates}
+          phase12ExactCount={calculationData?.valid_assignments}
+        />
       )}
 
       {/* Allocation Inspector Modal */}

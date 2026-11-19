@@ -20,6 +20,18 @@ class FlightBase(BaseModel):
     terminal: str = Field(default="T1", max_length=20)
     status: str = Field(default="Scheduled", max_length=50)
 
+    # BLR Digital Twin Fields
+    origin: Optional[str] = Field(default="DEL", max_length=50)
+    destination: Optional[str] = Field(default="BLR", max_length=50)
+    flight_type: Optional[str] = Field(default="Domestic", max_length=50)
+    priority: Optional[str] = Field(default="Standard", max_length=50)
+    estimated_time: Optional[str] = Field(default=None, max_length=20)
+    actual_time: Optional[str] = Field(default=None, max_length=20)
+    turnaround_duration: Optional[int] = Field(default=45, gt=0, le=480)
+    aircraft_registration: Optional[str] = Field(default="VT-BLR", max_length=50)
+    aircraft_category: Optional[str] = Field(default="Code C", max_length=50)
+    data_tier: Optional[str] = Field(default="SIMULATED_OPERATIONAL_DATA", max_length=50)
+
 
 class FlightCreate(FlightBase):
     id: Optional[str] = Field(None, max_length=50)
@@ -34,6 +46,16 @@ class FlightUpdate(BaseModel):
     passenger_capacity: Optional[int] = Field(None, gt=0, le=900)
     terminal: Optional[str] = None
     status: Optional[str] = None
+    origin: Optional[str] = None
+    destination: Optional[str] = None
+    flight_type: Optional[str] = None
+    priority: Optional[str] = None
+    estimated_time: Optional[str] = None
+    actual_time: Optional[str] = None
+    turnaround_duration: Optional[int] = Field(None, gt=0, le=480)
+    aircraft_registration: Optional[str] = None
+    aircraft_category: Optional[str] = None
+    data_tier: Optional[str] = None
 
 
 class FlightResponse(FlightBase):
@@ -52,6 +74,15 @@ class GateBase(BaseModel):
     max_capacity: int = Field(..., gt=0, le=900)
     status: str = Field(default="Available", max_length=50)
 
+    # BLR Digital Twin Stand Fields
+    stand_type: Optional[str] = Field(default="Contact Aerobridge", max_length=50)
+    has_jetway: Optional[int] = Field(default=1)
+    aircraft_category: Optional[str] = Field(default="Code C", max_length=50)
+    max_wingspan_m: Optional[float] = Field(default=36.0, gt=0)
+    max_length_m: Optional[float] = Field(default=45.0, gt=0)
+    is_remote: Optional[int] = Field(default=0)
+    data_tier: Optional[str] = Field(default="CONFIGURABLE_DEMONSTRATION_DATA", max_length=50)
+
 
 class GateCreate(GateBase):
     id: Optional[str] = Field(None, max_length=50)
@@ -64,6 +95,13 @@ class GateUpdate(BaseModel):
     supported_aircraft: Optional[str] = None
     max_capacity: Optional[int] = Field(None, gt=0, le=900)
     status: Optional[str] = None
+    stand_type: Optional[str] = None
+    has_jetway: Optional[int] = None
+    aircraft_category: Optional[str] = None
+    max_wingspan_m: Optional[float] = None
+    max_length_m: Optional[float] = None
+    is_remote: Optional[int] = None
+    data_tier: Optional[str] = None
 
 
 class GateResponse(GateBase):
@@ -108,6 +146,12 @@ class SimulationResponse(BaseModel):
 
 class RestrictionUpdate(BaseModel):
     matrix: List[List[int]] = Field(..., description="2D binary restriction matrix")
+    row_flight_ids: Optional[List[str]] = Field(default=None, description="Ordered flight IDs corresponding to matrix rows")
+    column_gate_ids: Optional[List[str]] = Field(default=None, description="Ordered gate IDs corresponding to matrix columns")
+    rowFlightIds: Optional[List[str]] = Field(default=None, description="CamelCase alias for row_flight_ids")
+    columnGateIds: Optional[List[str]] = Field(default=None, description="CamelCase alias for column_gate_ids")
+
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
 
 
 class RestrictionResponse(BaseModel):
@@ -115,9 +159,13 @@ class RestrictionResponse(BaseModel):
     rows_count: int
     cols_count: int
     matrix: List[List[int]]
+    row_flight_ids: Optional[List[str]] = Field(default=None, description="Ordered flight IDs corresponding to matrix rows")
+    column_gate_ids: Optional[List[str]] = Field(default=None, description="Ordered gate IDs corresponding to matrix columns")
+    rowFlightIds: Optional[List[str]] = Field(default=None, description="CamelCase alias for row_flight_ids")
+    columnGateIds: Optional[List[str]] = Field(default=None, description="CamelCase alias for column_gate_ids")
     updated_at: Optional[datetime] = None
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 # ==================== MATHEMATICAL ENGINE SCHEMAS ====================

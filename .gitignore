@@ -82,3 +82,8 @@ Thumbs.db
 *.sln
 *.sw?
 *.bak
+
+# Scratch scripts
+scratch/
+verify_*.py
+

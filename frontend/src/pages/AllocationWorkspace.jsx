@@ -32,6 +32,9 @@ import restrictionService from '../lib/restrictionService'
 import allocationService from '../lib/allocationService'
 import exportService from '../lib/exportService'
 import BipartiteDiagram from '../components/allocations/BipartiteDiagram'
+import BacktrackingAllocationExplorer from '../components/allocations/BacktrackingAllocationExplorer'
+import { useToast } from '../context/ToastContext'
+import { motion } from 'framer-motion'
 
 const STEPS = [
   { id: 1, name: 'Select Flights', short: 'Flights', icon: Plane },
@@ -44,6 +47,7 @@ const STEPS = [
 ]
 
 export const AllocationWorkspace = () => {
+  const toast = useToast()
   const [currentStep, setCurrentStep] = useState(1)
 
   // Registry data
@@ -187,6 +191,53 @@ export const AllocationWorkspace = () => {
     setMatrixData(Array.from({ length: rows }, () => Array(cols).fill(0)))
   }
 
+  // Auto-populate restriction matrix from BLR compatibility rules
+  const applyBlrCompatibilityRestrictions = () => {
+    const rows = selectedFlightIds.length
+    const cols = selectedGateIds.length
+    const copy = Array.from({ length: rows }, () => Array(cols).fill(0))
+
+    const catRank = { 'Code C': 1, 'Code D': 2, 'Code E': 3, 'Code F': 4 }
+
+    for (let r = 0; r < rows; r++) {
+      const flight = selectedFlights[r]
+      for (let c = 0; c < cols; c++) {
+        const gate = selectedGates[c]
+        if (!flight || !gate) continue
+
+        let forbidden = false
+        // 1. Terminal mismatch
+        if (flight.terminal && gate.terminal && flight.terminal !== gate.terminal) {
+          forbidden = true
+        }
+        // 2. International flight on T1
+        if (flight.flight_type?.toLowerCase() === 'international' && gate.terminal === 'T1') {
+          forbidden = true
+        }
+        // 3. Category rank check
+        const fCat = flight.aircraft_category || (flight.aircraftType?.includes('Wide') ? 'Code E' : 'Code C')
+        const gCat = gate.aircraft_category || (gate.supportedAircraft?.includes('All') || gate.supportedAircraft?.includes('Wide') ? 'Code E' : 'Code C')
+        if ((catRank[fCat] || 1) > (catRank[gCat] || 1)) {
+          forbidden = true
+        }
+        // 4. Stand status
+        if (gate.status?.toLowerCase() === 'maintenance' || gate.status?.toLowerCase() === 'restricted') {
+          forbidden = true
+        }
+
+        if (forbidden) {
+          copy[r][c] = 1
+        }
+      }
+    }
+    setMatrixData(copy)
+    setNotification({
+      type: 'info',
+      title: 'BLR Compatibility Rules Applied',
+      message: 'Automatically marked incompatible flight-stand pairs as forbidden (1) based on terminal and aircraft category rules.'
+    })
+  }
+
   // Calculate restriction density
   const restrictionStats = useMemo(() => {
     const totalCells = selectedFlightIds.length * selectedGateIds.length
@@ -246,6 +297,7 @@ export const AllocationWorkspace = () => {
       const math = await allocationService.getMathEngine(simId)
       setMathResult(math)
       setCurrentStep(4)
+      toast.success('Mathematical Analysis Complete', `Derived ${math.exact_valid_assignments.toLocaleString()} conflict-free solutions using Rook Polynomials & PIE.`)
       setNotification({
         type: 'success',
         title: 'Mathematical Analysis Complete',
@@ -253,6 +305,7 @@ export const AllocationWorkspace = () => {
       })
     } catch (err) {
       console.error('Math analysis failed:', err)
+      toast.error('Math Analysis Failed', err.message || 'Failed to execute mathematical calculation.')
       setErrorMsg(err.message || 'Failed to execute mathematical calculation.')
     } finally {
       setIsCalculatingMath(false)
@@ -272,6 +325,7 @@ export const AllocationWorkspace = () => {
       setAllocationResult(alloc)
       setSelectedPlanIndex(0)
       setCurrentStep(5)
+      toast.success('Allocations Generated', `Synthesized ${alloc.generated_count} verified conflict-free plans via backtracking search.`)
       setNotification({
         type: 'success',
         title: 'Allocations Generated',
@@ -279,6 +333,7 @@ export const AllocationWorkspace = () => {
       })
     } catch (err) {
       console.error('Allocation generation failed:', err)
+      toast.error('Allocation Generation Failed', err.message || 'Failed to generate flight-to-gate assignments.')
       setErrorMsg(err.message || 'Failed to generate flight-to-gate assignments.')
     } finally {
       setIsGenerating(false)
@@ -569,7 +624,10 @@ export const AllocationWorkspace = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <Button variant="outline" size="sm" onClick={applyBlrCompatibilityRestrictions} className="border-cyan-500/40 text-cyan-400 hover:bg-cyan-950/30">
+                Apply BLR Compatibility Rules
+              </Button>
               <Button variant="secondary" size="sm" onClick={applySampleRestrictions}>
                 Apply Realistic Pattern
               </Button>
@@ -715,17 +773,23 @@ export const AllocationWorkspace = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1e3a5f]/30">
-                {mathResult.itemized_terms.map((t) => (
-                  <tr key={t.k} className="hover:bg-white/[0.02]">
-                    <td className="p-2.5 font-bold text-gw-text">k = {t.k}</td>
-                    <td className="p-2.5 text-gw-warning">r_{t.k} = {t.coefficient.toLocaleString()}</td>
-                    <td className="p-2.5 text-gw-text-secondary">({selectedFlightIds.length - t.k})! = {t.factorial_remaining.toLocaleString()}</td>
-                    <td className="p-2.5">{t.sign === 1 ? '+' : '-'}</td>
-                    <td className={`p-2.5 text-right font-bold ${t.sign === 1 ? 'text-gw-success' : 'text-gw-error'}`}>
-                      {t.signed_contribution > 0 ? `+${t.signed_contribution.toLocaleString()}` : t.signed_contribution.toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
+                {(mathResult.itemized_terms || []).map((t) => {
+                  const coeff = t.coefficient ?? t.rook_coefficient ?? 0
+                  const fact = t.factorial_remaining ?? t.factorial_value ?? 0
+                  const contrib = t.signed_contribution ?? t.contribution ?? 0
+                  const isPos = t.sign === 1 || t.sign === '+'
+                  return (
+                    <tr key={t.k} className="hover:bg-white/[0.02]">
+                      <td className="p-2.5 font-bold text-gw-text">k = {t.k}</td>
+                      <td className="p-2.5 text-gw-warning">r_{t.k} = {coeff.toLocaleString()}</td>
+                      <td className="p-2.5 text-gw-text-secondary">({selectedFlightIds.length - t.k})! = {fact.toLocaleString()}</td>
+                      <td className="p-2.5">{isPos ? '+' : '-'}</td>
+                      <td className={`p-2.5 text-right font-bold ${contrib >= 0 ? 'text-gw-success' : 'text-gw-error'}`}>
+                        {contrib > 0 ? `+${contrib.toLocaleString()}` : contrib.toLocaleString()}
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
@@ -747,7 +811,36 @@ export const AllocationWorkspace = () => {
       )}
 
       {/* -------------------- STEP 5 & 6: GENERATE & VERIFY -------------------- */}
-      {currentStep >= 5 && allocationResult && (
+      {currentStep === 5 && (
+        <Card className="p-5 space-y-4">
+          <BacktrackingAllocationExplorer
+            scenarioName={scenarioName}
+            scenarioId={savedSimulationId || 'WORKSPACE-SCENARIO'}
+            matrix={matrixData}
+            flightIds={selectedFlightIds}
+            gateIds={selectedGateIds}
+            flights={selectedFlights}
+            gates={selectedGates}
+            phase12ExactCount={mathResult?.exact_valid_assignments}
+            onAllocationsGenerated={(res) => {
+              // Convert to compatible format for step 6 & export
+              setAllocationResult({
+                simulation_id: savedSimulationId || 'WORKSPACE-SCENARIO',
+                generated_count: res.totalGenerated,
+                total_valid_assignments: mathResult?.exact_valid_assignments || res.totalGenerated,
+                allocations: res.allocations.map((a, i) => ({
+                  allocation_id: a.allocationId,
+                  allocation_number: i + 1,
+                  pairs: a.assignments.map((x) => ({ flight_id: x.flightId, gate_id: x.gateId })),
+                  validation: { is_valid: true, total_conflicts: 0 }
+                }))
+              })
+            }}
+          />
+        </Card>
+      )}
+
+      {currentStep >= 6 && allocationResult && (
         <Card className="p-5 space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#1e3a5f]/40">
             <div>

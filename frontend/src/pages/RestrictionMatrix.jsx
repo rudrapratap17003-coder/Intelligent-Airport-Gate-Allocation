@@ -1,85 +1,127 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
-  Grid3X3,
-  CheckCircle2,
-  XCircle,
   RotateCcw,
   Ban,
-  CheckSquare,
+  Save,
   AlertTriangle,
   Info,
   Layers,
   Plane,
-  DoorClosed,
-  ChevronRight,
+  DoorOpen,
+  Lock,
+  Sparkles,
   ShieldCheck,
   ShieldAlert,
+  CheckCircle2,
+  XCircle,
   ChevronDown,
   ChevronUp,
-  RefreshCw
+  RefreshCw,
+  Calculator,
+  PlayCircle
 } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
 import Dropdown from '../components/ui/Dropdown'
 import Modal from '../components/ui/Modal'
-import Notification from '../components/ui/Notification'
+import EmptyState from '../components/ui/EmptyState'
+import RookPolynomialVisualizer from '../components/matrix/RookPolynomialVisualizer'
+import BacktrackingAllocationExplorer from '../components/allocations/BacktrackingAllocationExplorer'
 import simulationService from '../lib/simulationService'
-import flightService from '../lib/flightService'
-import gateService from '../lib/gateService'
-import restrictionService from '../lib/restrictionService'
+import flightService, { INITIAL_SAMPLE_FLIGHTS } from '../lib/flightService'
+import gateService, { INITIAL_SAMPLE_GATES } from '../lib/gateService'
+import restrictionService, { createZeroMatrix } from '../lib/restrictionService'
 import matrixValidationService from '../lib/matrixValidationService'
+import { useToast } from '../context/ToastContext'
 
 export const RestrictionMatrix = () => {
+  const toast = useToast()
+  const [searchParams, setSearchParams] = useSearchParams()
+
   // Registry data
   const [simulations, setSimulations] = useState([])
-  const [selectedSimulationId, setSelectedSimulationId] = useState('')
+  const [selectedSimulationId, setSelectedSimulationId] = useState(searchParams.get('sim') || '')
   const [allFlights, setAllFlights] = useState([])
   const [allGates, setAllGates] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   // Active matrix state
   const [matrix, setMatrix] = useState([])
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
-  // Validation details expanded state
-  const [isValidationDetailsOpen, setIsValidationDetailsOpen] = useState(false)
+  // Validation Engine State (Phase 10)
+  const [isDiagnosticsDismissed, setIsDiagnosticsDismissed] = useState(false)
+  const [isValidationPanelOpen, setIsValidationPanelOpen] = useState(true)
+  const [validationTab, setValidationTab] = useState('all') // 'all' | 'errors' | 'warnings' | 'operational'
 
-  // Confirmation modal states
-  const [confirmModal, setConfirmModal] = useState({
-    isOpen: false,
-    action: null,
-    title: '',
-    message: ''
-  })
+  // Modals for Unsaved Changes, Reset Confirmation, and Bulk Action
+  const [pendingSimulationId, setPendingSimulationId] = useState(null)
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false)
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false)
+  const [isAllForbiddenModalOpen, setIsAllForbiddenModalOpen] = useState(false)
 
-  // Notification state
-  const [notification, setNotification] = useState(null)
+  // Rook Polynomial Engine Section Ref (Phase 11)
+  const rookSectionRef = React.useRef(null)
 
-  // Load all foundational data on mount
-  useEffect(() => {
-    const loadFoundationalData = async () => {
-      try {
-        const [sims, flights, gates] = await Promise.all([
-          simulationService.getSimulations(),
-          flightService.getFlights(),
-          gateService.getGates()
-        ])
-        setSimulations(sims)
-        setAllFlights(flights)
-        setAllGates(gates)
-        if (sims.length > 0) {
-          setSelectedSimulationId(sims[0].id)
-        }
-      } catch (e) {
-        console.error('Failed to load foundational matrix data:', e)
-      }
+  const handleScrollToRookEngine = useCallback(() => {
+    if (rookSectionRef.current) {
+      rookSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
-    loadFoundationalData()
   }, [])
+
+  // Backtracking Allocation Engine Section Ref (Phase 13)
+  const backtrackingSectionRef = React.useRef(null)
+
+  const handleScrollToBacktrackingEngine = useCallback(() => {
+    if (backtrackingSectionRef.current) {
+      backtrackingSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [])
+
+  // 1. Load simulations, flights, and gates on mount
+  const loadFoundationalData = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      const [simsResult, flightsResult, gatesResult] = await Promise.allSettled([
+        simulationService.getSimulations(),
+        flightService.getFlights(),
+        gateService.getGates()
+      ])
+
+      const loadedSims = simsResult.status === 'fulfilled' ? simsResult.value : []
+      const loadedFlights = flightsResult.status === 'fulfilled' ? flightsResult.value : INITIAL_SAMPLE_FLIGHTS
+      const loadedGates = gatesResult.status === 'fulfilled' ? gatesResult.value : INITIAL_SAMPLE_GATES
+
+      setSimulations(loadedSims)
+      setAllFlights(loadedFlights)
+      setAllGates(loadedGates)
+
+      if (loadedSims.length > 0) {
+        const querySimId = searchParams.get('sim')
+        const matchedSim = querySimId ? loadedSims.find((s) => s.id === querySimId) : null
+        const sim001 = loadedSims.find((s) => s.id === 'SIM-001')
+        const readySim = loadedSims.find((s) => s.status === 'Ready')
+        const initialSim = matchedSim || sim001 || readySim || loadedSims[0]
+        setSelectedSimulationId(initialSim.id)
+      }
+    } catch (err) {
+      console.error('Failed to load foundational matrix data:', err)
+      toast.error('Load Error', 'Could not initialize registry data.')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [toast])
+
+  useEffect(() => {
+    loadFoundationalData()
+  }, [loadFoundationalData])
 
   // Resolve current active simulation
   const currentSimulation = useMemo(() => {
-    return simulations.find(s => s.id === selectedSimulationId) || null
+    return simulations.find((s) => s.id === selectedSimulationId) || null
   }, [simulations, selectedSimulationId])
 
   // Resolve active flights and gates for the current simulation
@@ -88,39 +130,57 @@ export const RestrictionMatrix = () => {
       return { flights: [], gates: [], missingFlightIds: [], missingGateIds: [] }
     }
 
-    const flightMap = new Map(allFlights.map(f => [f.id, f]))
-    const gateMap = new Map(allGates.map(g => [g.id, g]))
+    const flightMap = new Map(allFlights.map((f) => [f.id, f]))
+    const gateMap = new Map(allGates.map((g) => [g.id, g]))
+
+    const selectedFIds = currentSimulation.selectedFlightIds || currentSimulation.selected_flight_ids || []
+    const selectedGIds = currentSimulation.selectedGateIds || currentSimulation.selected_gate_ids || []
 
     const flights = []
     const missingFlightIds = []
-    for (const fId of currentSimulation.selectedFlightIds) {
+    for (const fId of selectedFIds) {
       if (flightMap.has(fId)) {
         flights.push(flightMap.get(fId))
       } else {
         missingFlightIds.push(fId)
+        flights.push({
+          id: fId,
+          flightNumber: fId,
+          airline: 'Unknown / Missing',
+          terminal: 'T1',
+          isMissing: true
+        })
       }
     }
 
     const gates = []
     const missingGateIds = []
-    for (const gId of currentSimulation.selectedGateIds) {
+    for (const gId of selectedGIds) {
       if (gateMap.has(gId)) {
         gates.push(gateMap.get(gId))
       } else {
         missingGateIds.push(gId)
+        gates.push({
+          id: gId,
+          gateNumber: gId,
+          terminal: 'T1',
+          gateType: 'Universal',
+          isMissing: true
+        })
       }
     }
 
     return { flights, gates, missingFlightIds, missingGateIds }
   }, [currentSimulation, allFlights, allGates])
 
-  // Synchronize or load matrix whenever selected simulation changes
+  // 2. Load or initialize matrix when selected scenario changes
   useEffect(() => {
     let isCancelled = false
 
     const loadMatrix = async () => {
       if (!currentSimulation) {
         setMatrix([])
+        setHasUnsavedChanges(false)
         return
       }
 
@@ -129,21 +189,30 @@ export const RestrictionMatrix = () => {
 
       if (numF === 0 || numG === 0) {
         setMatrix([])
+        setHasUnsavedChanges(false)
         return
       }
 
       try {
-        const loaded = await restrictionService.getMatrixForSimulation(currentSimulation.id, numF, numG)
+        const currentFIds = resolvedScenario.flights.map((f) => f.id)
+        const currentGIds = resolvedScenario.gates.map((g) => g.id)
+        const loaded = await restrictionService.getMatrixForSimulation(
+          currentSimulation.id,
+          numF,
+          numG,
+          currentFIds,
+          currentGIds
+        )
         if (!isCancelled) {
           setMatrix(loaded)
+          setHasUnsavedChanges(false)
         }
       } catch (err) {
+        console.error('Failed to load matrix:', err)
         if (!isCancelled) {
-          setNotification({
-            type: 'danger',
-            title: 'Matrix Load Error',
-            message: err.message
-          })
+          const zero = createZeroMatrix(numF, numG)
+          setMatrix(zero)
+          setHasUnsavedChanges(false)
         }
       }
     }
@@ -153,202 +222,329 @@ export const RestrictionMatrix = () => {
     return () => {
       isCancelled = true
     }
-  }, [currentSimulation, resolvedScenario.flights.length, resolvedScenario.gates.length])
+  }, [currentSimulation?.id, resolvedScenario.flights.length, resolvedScenario.gates.length])
 
-  // Execute structural & mathematical matrix validation
-  const validationResult = useMemo(() => {
-    return matrixValidationService.validateMatrix(
+  // 3. Matrix Validation Engine (Phase 10)
+  // Automatically validate when simulation, matrix, or registry changes
+  const validationReport = useMemo(() => {
+    if (isDiagnosticsDismissed) return null
+    if (currentSimulation && matrix && matrix.length > 0) {
+      return matrixValidationService.validateMatrix(
+        currentSimulation,
+        matrix,
+        allFlights,
+        allGates
+      )
+    }
+    return null
+  }, [currentSimulation, matrix, allFlights, allGates, isDiagnosticsDismissed])
+
+  // Manual Revalidate Action
+  const handleManualValidate = useCallback(() => {
+    setIsDiagnosticsDismissed(false)
+    if (!currentSimulation || matrix.length === 0) {
+      toast.error('Validation Error', 'No active matrix to validate.')
+      return
+    }
+
+    const report = matrixValidationService.validateMatrix(
       currentSimulation,
       matrix,
       allFlights,
       allGates
     )
-  }, [currentSimulation, matrix, allFlights, allGates])
+    setIsValidationPanelOpen(true)
 
-  // Toggle individual matrix cell
-  const handleToggleCell = async (rowIdx, colIdx) => {
-    if (!currentSimulation) return
-    try {
-      const updated = await restrictionService.toggleCell(currentSimulation.id, matrix, rowIdx, colIdx)
-      setMatrix(updated)
-    } catch (err) {
-      setNotification({
-        type: 'danger',
-        title: 'Save Failed',
-        message: err.message
-      })
-    }
-  }
-
-  // Bulk actions
-  const executeClearAll = async () => {
-    if (!currentSimulation) return
-    const numF = resolvedScenario.flights.length
-    const numG = resolvedScenario.gates.length
-    try {
-      const updated = await restrictionService.clearAllRestrictions(currentSimulation.id, numF, numG)
-      setMatrix(updated)
-      setConfirmModal({ isOpen: false, action: null, title: '', message: '' })
-      setNotification({
-        type: 'info',
-        title: 'Restrictions Cleared',
-        message: 'All cells set to Allowed (0). Every flight is currently permitted at every gate.'
-      })
-    } catch (err) {
-      setConfirmModal({ isOpen: false, action: null, title: '', message: '' })
-      setNotification({
-        type: 'danger',
-        title: 'Action Failed',
-        message: err.message
-      })
-    }
-  }
-
-  const executeMarkAllForbidden = async () => {
-    if (!currentSimulation) return
-    const numF = resolvedScenario.flights.length
-    const numG = resolvedScenario.gates.length
-    try {
-      const updated = await restrictionService.markAllForbidden(currentSimulation.id, numF, numG)
-      setMatrix(updated)
-      setConfirmModal({ isOpen: false, action: null, title: '', message: '' })
-      setNotification({
-        type: 'warning',
-        title: 'All Assignments Forbidden',
-        message: 'All cells set to Forbidden (1). Zero valid flight assignments exist in this state.'
-      })
-    } catch (err) {
-      setConfirmModal({ isOpen: false, action: null, title: '', message: '' })
-      setNotification({
-        type: 'danger',
-        title: 'Action Failed',
-        message: err.message
-      })
-    }
-  }
-
-  // Manual Trigger Toast for "Validate Matrix"
-  const handleManualValidate = () => {
-    if (validationResult.isValid) {
-      setNotification({
-        type: 'success',
-        title: 'Matrix Validation Passed',
-        message: `Board is square (${validationResult.flightCount}×${validationResult.gateCount}) and satisfies all structural constraints.`
-      })
+    if (report.status === 'PASSED') {
+      toast.success(
+        'Matrix Validation Passed',
+        `Board is structurally sound (${report.passedChecks}/${report.totalChecks} checks passed).`
+      )
+    } else if (report.status === 'WARNINGS') {
+      toast.warning(
+        'Validation Warnings',
+        `Found ${report.warningCount} operational/structural warning(s) for review.`
+      )
     } else {
-      setNotification({
-        type: 'error',
-        title: 'Matrix Validation Failed',
-        message: `Found ${validationResult.errors.length} validation error(s). Please review the validation diagnostics panel.`
-      })
-      setIsValidationDetailsOpen(true)
+      toast.error(
+        'Validation Failed',
+        `Found ${report.errorCount} blocking error(s) preventing mathematical evaluation.`
+      )
+    }
+  }, [currentSimulation, matrix, allFlights, allGates, toast])
+
+  // Matrix Statistics (calculated live from in-memory matrix)
+  const numFlights = resolvedScenario.flights.length
+  const numGates = resolvedScenario.gates.length
+  const totalCells = numFlights * numGates
+
+  const forbiddenCount = useMemo(() => {
+    let count = 0
+    for (let r = 0; r < matrix.length; r++) {
+      for (let c = 0; c < (matrix[r]?.length || 0); c++) {
+        if (matrix[r][c] === 1) count++
+      }
+    }
+    return count
+  }, [matrix])
+
+  const permittedCount = useMemo(() => {
+    return Math.max(0, totalCells - forbiddenCount)
+  }, [totalCells, forbiddenCount])
+
+  const densityPct = useMemo(() => {
+    if (totalCells === 0) return 0
+    return ((forbiddenCount / totalCells) * 100).toFixed(1)
+  }, [totalCells, forbiddenCount])
+
+  const isCompleted = currentSimulation?.status === 'Completed'
+
+  // 4. Cell Click Toggle: 0 <-> 1
+  const handleToggleCell = (rowIdx, colIdx) => {
+    if (isCompleted) {
+      toast.info('Read-Only Scenario', 'Completed scenarios are archived and cannot be modified.')
+      return
+    }
+
+    setMatrix((prev) => {
+      const next = prev.map((r) => [...r])
+      const currentVal = next[rowIdx]?.[colIdx] ?? 0
+      next[rowIdx][colIdx] = currentVal === 1 ? 0 : 1
+      return next
+    })
+    setHasUnsavedChanges(true)
+  }
+
+  // Keyboard accessibility handler for matrix cells
+  const handleCellKeyDown = (e, rowIdx, colIdx) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      handleToggleCell(rowIdx, colIdx)
     }
   }
 
-  // Confirmation modals
-  const promptClearAll = () => {
-    setConfirmModal({
-      isOpen: true,
-      action: executeClearAll,
-      title: 'Clear All Forbidden Restrictions?',
-      message: 'This will reset all cells in the matrix to Allowed (0).'
-    })
+  // 5. Save Matrix
+  const handleSaveMatrix = async () => {
+    if (!currentSimulation) return
+    if (isCompleted) {
+      toast.error('Save Blocked', 'Completed scenarios cannot be updated.')
+      return
+    }
+
+    try {
+      setIsSaving(true)
+      const currentFIds = resolvedScenario.flights.map((f) => f.id)
+      const currentGIds = resolvedScenario.gates.map((g) => g.id)
+      await restrictionService.saveMatrixForSimulation(currentSimulation.id, matrix, currentFIds, currentGIds)
+      setHasUnsavedChanges(false)
+      toast.success(
+        'Matrix Saved',
+        `Successfully saved restriction board (${forbiddenCount} forbidden, ${permittedCount} permitted) for "${currentSimulation.name}".`
+      )
+    } catch (err) {
+      toast.error('Save Failed', err.message || 'Could not persist restriction matrix.')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
-  const promptMarkAllForbidden = () => {
-    setConfirmModal({
-      isOpen: true,
-      action: executeMarkAllForbidden,
-      title: 'Mark All Assignments as Forbidden?',
-      message: 'This will set every cell to Forbidden (1).'
-    })
+  // 6. Reset Matrix (Set all cells to 0)
+  const handleConfirmReset = async () => {
+    if (!currentSimulation) return
+    const zero = createZeroMatrix(numFlights, numGates)
+    setMatrix(zero)
+    setIsResetModalOpen(false)
+
+    try {
+      const currentFIds = resolvedScenario.flights.map((f) => f.id)
+      const currentGIds = resolvedScenario.gates.map((g) => g.id)
+      await restrictionService.saveMatrixForSimulation(currentSimulation.id, zero, currentFIds, currentGIds)
+      setHasUnsavedChanges(false)
+      toast.success('Matrix Reset', 'All cells set to Permitted (0). Matrix persisted.')
+    } catch {
+      setHasUnsavedChanges(true)
+      toast.warning('Matrix Reset Locally', 'All cells set to Permitted (0). Click "Save Matrix" to persist.')
+    }
   }
 
-  // Simulation dropdown choices
+  // 7. Mark All Forbidden (Set all cells to 1)
+  const handleConfirmMarkAllForbidden = async () => {
+    if (!currentSimulation) return
+    const forbidden = Array.from({ length: numFlights }, () =>
+      Array.from({ length: numGates }, () => 1)
+    )
+    setMatrix(forbidden)
+    setIsAllForbiddenModalOpen(false)
+
+    try {
+      const currentFIds = resolvedScenario.flights.map((f) => f.id)
+      const currentGIds = resolvedScenario.gates.map((g) => g.id)
+      await restrictionService.saveMatrixForSimulation(currentSimulation.id, forbidden, currentFIds, currentGIds)
+      setHasUnsavedChanges(false)
+      toast.success('All Forbidden', 'All cells set to Forbidden (1). Matrix persisted.')
+    } catch {
+      setHasUnsavedChanges(true)
+      toast.warning('Set Forbidden Locally', 'All cells set to Forbidden (1). Click "Save Matrix" to persist.')
+    }
+  }
+
+  // 8. Scenario Switching with Unsaved Changes Protection
+  const handleSelectScenario = (newId) => {
+    if (newId === selectedSimulationId) return
+
+    if (hasUnsavedChanges) {
+      setPendingSimulationId(newId)
+      setIsDiscardModalOpen(true)
+    } else {
+      setSelectedSimulationId(newId)
+    }
+  }
+
+  const handleConfirmDiscard = () => {
+    if (pendingSimulationId) {
+      setSelectedSimulationId(pendingSimulationId)
+      setPendingSimulationId(null)
+      setHasUnsavedChanges(false)
+    }
+    setIsDiscardModalOpen(false)
+  }
+
+  // Simulation dropdown choices (Ready scenarios ordered first)
   const simulationOptions = useMemo(() => {
-    return simulations.map(s => ({
-      label: `${s.name} (${s.selectedFlightIds.length}F × ${s.selectedGateIds.length}G)`,
+    const sorted = [...simulations].sort((a, b) => {
+      if (a.status === 'Ready' && b.status !== 'Ready') return -1
+      if (b.status === 'Ready' && a.status !== 'Ready') return 1
+      return 0
+    })
+
+    return sorted.map((s) => ({
+      label: `${s.name} [${s.status}] (${(s.selectedFlightIds || []).length}F × ${(s.selectedGateIds || []).length}G)`,
       value: s.id
     }))
   }, [simulations])
 
-  const numFlights = resolvedScenario.flights.length
-  const numGates = resolvedScenario.gates.length
-
   return (
-    <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn max-w-7xl mx-auto pb-12">
       {/* -------------------- 1. HEADER -------------------- */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#1e3a5f]/50">
-        <div className="space-y-1">
+        <div>
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">Restriction Matrix</h1>
             <Badge variant="cyan" size="sm" className="font-mono">
               Binary Board B
             </Badge>
+            {hasUnsavedChanges && (
+              <Badge variant="warning" size="sm" className="font-mono animate-pulse">
+                Unsaved Changes
+              </Badge>
+            )}
           </div>
-          <p className="text-sm text-gw-text-secondary leading-relaxed">
-            A restricted pairing means that a particular flight cannot be assigned to a particular gate in the current mathematical model.
-            The binary matrix B assigns 0 to available pairings and 1 to forbidden cells.
+          <p className="text-sm text-gw-text-secondary mt-1">
+            Define forbidden flight-to-gate assignments for your simulation scenarios.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
           <Button
+            variant="secondary"
+            size="md"
+            icon={PlayCircle}
+            onClick={handleScrollToBacktrackingEngine}
+            disabled={numFlights === 0 || numGates === 0}
+            className="border-gw-success/40 text-gw-success hover:bg-gw-success/15 font-mono shadow-sm"
+            title="Generate flight-to-gate allocations using Phase 13 Backtracking Engine"
+          >
+            Generate Allocations
+          </Button>
+
+          <Button
+            variant="secondary"
+            size="md"
+            icon={Calculator}
+            onClick={handleScrollToRookEngine}
+            disabled={numFlights === 0 || numGates === 0}
+            className="border-gw-cyan/40 text-gw-cyan hover:bg-gw-cyan/15 font-mono shadow-sm"
+            title="Calculate and visualize Rook Polynomial for active matrix"
+          >
+            Calculate Rook Polynomial
+          </Button>
+
+          <Button
             variant="outline"
             size="md"
             icon={RefreshCw}
             onClick={handleManualValidate}
+            title="Run validation engine on active matrix"
           >
             Validate Matrix
           </Button>
 
           <Link to="/workspace">
-            <Button size="md" icon={Grid3X3} className="shadow-lg shadow-gw-cyan/10">
+            <Button size="md" variant="secondary" icon={Sparkles} className="shadow-lg shadow-gw-cyan/5">
               Allocation Workspace
             </Button>
           </Link>
+
+          <Button
+            variant="outline"
+            size="md"
+            icon={RotateCcw}
+            onClick={() => setIsResetModalOpen(true)}
+            disabled={numFlights === 0 || numGates === 0 || isCompleted}
+            title="Reset all cells to Permitted (0)"
+          >
+            Reset Matrix
+          </Button>
+
+          <Button
+            variant="primary"
+            size="md"
+            icon={Save}
+            onClick={handleSaveMatrix}
+            disabled={numFlights === 0 || numGates === 0 || isCompleted || (!hasUnsavedChanges && !isSaving)}
+            title={isCompleted ? 'Completed scenario is locked' : 'Persist current matrix'}
+          >
+            {isSaving ? 'Saving...' : 'Save Matrix'}
+          </Button>
         </div>
       </div>
 
-      {/* Notifications */}
-      {notification && (
-        <Notification
-          type={notification.type}
-          title={notification.title}
-          message={notification.message}
-          onClose={() => setNotification(null)}
-        />
-      )}
-
-      {/* -------------------- 2. SIMULATION SELECTOR & METADATA -------------------- */}
+      {/* -------------------- 2. SIMULATION SELECTOR & STATUS BAR -------------------- */}
       <Card className="p-4 space-y-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-          {/* Selector */}
-          <div className="lg:col-span-6">
+          <div className="lg:col-span-7">
             <Dropdown
               label="Active Simulation Scenario"
               options={simulationOptions}
               value={selectedSimulationId}
-              onChange={setSelectedSimulationId}
+              onChange={handleSelectScenario}
               placeholder="Select an allocation scenario..."
             />
           </div>
 
-          {/* Dimension & Health Badges */}
-          <div className="lg:col-span-6 flex flex-wrap items-center justify-start lg:justify-end gap-3 pt-2 lg:pt-5">
+          <div className="lg:col-span-5 flex flex-wrap items-center justify-start lg:justify-end gap-3 pt-2 lg:pt-5">
             <div className="flex items-center gap-2 font-mono text-xs">
               <span className="text-gw-cyan font-bold">{numFlights} Flights</span>
               <span className="text-gw-text-secondary">×</span>
               <span className="text-gw-blue font-bold">{numGates} Gates</span>
             </div>
 
-            <Badge
-              variant={validationResult.isValid ? 'success' : 'error'}
-              size="md"
-              dot
-            >
-              {validationResult.isValid ? 'Structure Valid' : 'Validation Failed'}
-            </Badge>
+            {currentSimulation && (
+              <Badge
+                variant={
+                  currentSimulation.status === 'Ready'
+                    ? 'success'
+                    : currentSimulation.status === 'Completed'
+                    ? 'blue'
+                    : 'warning'
+                }
+                size="md"
+                dot={currentSimulation.status !== 'Completed'}
+                icon={currentSimulation.status === 'Completed' ? Lock : undefined}
+              >
+                {currentSimulation.status}
+              </Badge>
+            )}
 
             {currentSimulation && (
               <Badge variant="default" size="md" className="font-mono">
@@ -358,166 +554,378 @@ export const RestrictionMatrix = () => {
           </div>
         </div>
 
+        {/* Completed Scenario Read-Only Notice */}
+        {isCompleted && (
+          <div className="p-3 rounded-lg bg-gw-blue/10 border border-gw-blue/30 text-xs text-gw-blue flex items-center gap-2.5">
+            <Lock className="w-4 h-4 shrink-0" />
+            <div>
+              <strong>Completed Historical Scenario:</strong> This scenario is archived as Completed and locked.
+              The restriction matrix is displayed in read-only mode to prevent accidental alteration.
+            </div>
+          </div>
+        )}
+
         {/* Missing reference warnings */}
         {(resolvedScenario.missingFlightIds.length > 0 || resolvedScenario.missingGateIds.length > 0) && (
-          <div className="p-3 rounded-lg bg-gw-error/15 border border-gw-error/30 text-xs text-gw-error flex items-start gap-2.5">
+          <div className="p-3 rounded-lg bg-gw-warning/15 border border-gw-warning/30 text-xs text-gw-warning flex items-start gap-2.5">
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
             <div>
-              <strong>Missing Reference Warning:</strong> This scenario references{' '}
-              {resolvedScenario.missingFlightIds.length} deleted flight(s) and{' '}
-              {resolvedScenario.missingGateIds.length} deleted gate(s). Only existing records are displayed in the matrix.
+              <strong>Reference Notice:</strong> Scenario references{' '}
+              {resolvedScenario.missingFlightIds.length > 0 && (
+                <span>{resolvedScenario.missingFlightIds.length} unavailable flight(s) ({resolvedScenario.missingFlightIds.join(', ')}) </span>
+              )}
+              {resolvedScenario.missingGateIds.length > 0 && (
+                <span>{resolvedScenario.missingGateIds.length} unavailable gate(s) ({resolvedScenario.missingGateIds.join(', ')})</span>
+              )}
+              . Placeholders are maintained to ensure matrix dimensional integrity.
             </div>
           </div>
         )}
       </Card>
 
-      {/* -------------------- 3. VALIDATION STATUS PANEL -------------------- */}
-      <Card className={`border-2 transition-all ${
-        validationResult.isValid
-          ? 'border-gw-success/40 bg-gw-success/[0.02]'
-          : 'border-gw-error/50 bg-gw-error/[0.02]'
-      }`}>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-start sm:items-center gap-3.5">
-            <div className={`p-2.5 rounded-xl border shrink-0 ${
-              validationResult.isValid
-                ? 'bg-gw-success/15 border-gw-success/30 text-gw-success'
-                : 'bg-gw-error/15 border-gw-error/30 text-gw-error'
-            }`}>
-              {validationResult.isValid ? <ShieldCheck className="w-6 h-6" /> : <ShieldAlert className="w-6 h-6" />}
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="gw-card-heading">
-                  {validationResult.isValid ? 'Matrix Valid for Allocation Modeling' : 'Matrix Incompatible for Allocation Modeling'}
-                </h3>
-                <Badge variant={validationResult.isValid ? 'success' : 'error'} size="sm">
-                  {validationResult.isValid ? 'VALID' : 'INVALID'}
-                </Badge>
+      {/* -------------------- 3. VALIDATION REPORT RESULTS PANEL (PHASE 10) -------------------- */}
+      {validationReport && (
+        <Card
+          className={`border-2 transition-all space-y-4 ${
+            validationReport.status === 'PASSED'
+              ? 'border-gw-success/40 bg-gw-success/[0.02]'
+              : validationReport.status === 'WARNINGS'
+              ? 'border-gw-warning/40 bg-gw-warning/[0.02]'
+              : 'border-gw-error/50 bg-gw-error/[0.02]'
+          }`}
+        >
+          {/* Header Summary */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-start sm:items-center gap-3.5">
+              <div
+                className={`p-2.5 rounded-xl border shrink-0 ${
+                  validationReport.status === 'PASSED'
+                    ? 'bg-gw-success/15 border-gw-success/30 text-gw-success'
+                    : validationReport.status === 'WARNINGS'
+                    ? 'bg-gw-warning/15 border-gw-warning/30 text-gw-warning'
+                    : 'bg-gw-error/15 border-gw-error/30 text-gw-error'
+                }`}
+              >
+                {validationReport.status === 'PASSED' ? (
+                  <ShieldCheck className="w-6 h-6" />
+                ) : validationReport.status === 'WARNINGS' ? (
+                  <AlertTriangle className="w-6 h-6" />
+                ) : (
+                  <ShieldAlert className="w-6 h-6" />
+                )}
               </div>
 
-              <p className="text-xs text-gw-text-secondary mt-0.5">
-                {validationResult.isValid
-                  ? `Square board satisfies all discrete mathematical requirements (${validationResult.flightCount}×${validationResult.gateCount}).`
-                  : `Matrix has ${validationResult.errors.length} blocking error(s) preventing mathematical evaluation.`
-                }
-              </p>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="gw-card-heading">Matrix Validation Engine</h3>
+                  <Badge
+                    variant={
+                      validationReport.status === 'PASSED'
+                        ? 'success'
+                        : validationReport.status === 'WARNINGS'
+                        ? 'warning'
+                        : 'error'
+                    }
+                    size="sm"
+                  >
+                    {validationReport.status}
+                  </Badge>
+                  <span className="text-xs font-mono text-gw-text-secondary">
+                    ({validationReport.passedChecks}/{validationReport.totalChecks} Checks Passed)
+                  </span>
+                </div>
+
+                <p className="text-xs text-gw-text-secondary mt-0.5">
+                  {validationReport.status === 'PASSED'
+                    ? 'All structural, binary, reference, and dimension checks satisfied. Matrix ready for mathematical allocation.'
+                    : validationReport.status === 'WARNINGS'
+                    ? `Matrix is structurally valid, but contains ${validationReport.warningCount} operational or constraint warning(s).`
+                    : `Matrix contains ${validationReport.errorCount} blocking structural/binary error(s) preventing mathematical evaluation.`}
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 font-mono text-xs">
-              <span className={`px-2 py-1 rounded border ${
-                validationResult.errors.length > 0 ? 'bg-gw-error/20 border-gw-error/50 text-gw-error font-bold' : 'bg-gw-card border-[#1e3a5f] text-gw-text-secondary'
-              }`}>
-                {validationResult.errors.length} Errors
-              </span>
-
-              <span className={`px-2 py-1 rounded border ${
-                validationResult.warnings.length > 0 ? 'bg-gw-warning/20 border-gw-warning/50 text-gw-warning font-bold' : 'bg-gw-card border-[#1e3a5f] text-gw-text-secondary'
-              }`}>
-                {validationResult.warnings.length} Warnings
-              </span>
-            </div>
-
-            {(validationResult.errors.length > 0 || validationResult.warnings.length > 0) && (
+            <div className="flex items-center gap-2.5">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsDiagnosticsDismissed(true)}
+                className="text-xs text-gw-text-secondary hover:text-gw-text"
+              >
+                Dismiss Diagnostics
+              </Button>
               <button
                 type="button"
-                onClick={() => setIsValidationDetailsOpen(!isValidationDetailsOpen)}
+                onClick={() => setIsValidationPanelOpen(!isValidationPanelOpen)}
                 className="p-1.5 rounded-lg text-gw-text-secondary hover:text-gw-text hover:bg-white/5 border border-[#1e3a5f] transition-colors cursor-pointer"
-                title={isValidationDetailsOpen ? 'Collapse Details' : 'Expand Details'}
+                title={isValidationPanelOpen ? 'Collapse Diagnostics' : 'Expand Diagnostics'}
               >
-                {isValidationDetailsOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                {isValidationPanelOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </button>
-            )}
+            </div>
           </div>
-        </div>
 
-        {/* Expandable Validation Diagnostics List */}
-        {isValidationDetailsOpen && (validationResult.errors.length > 0 || validationResult.warnings.length > 0) && (
-          <div className="mt-4 pt-4 border-t border-[#1e3a5f]/60 space-y-2.5">
-            {/* Errors */}
-            {validationResult.errors.map((err, idx) => (
-              <div
-                key={`err-${idx}`}
-                className="p-3 rounded-lg bg-gw-error/10 border border-gw-error/30 text-xs flex items-start gap-2.5"
-              >
-                <XCircle className="w-4 h-4 text-gw-error shrink-0 mt-0.5" />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-semibold text-gw-error">{err.category}</span>
-                    <span className="font-mono text-[10px] text-gw-error/80 uppercase">{err.code}</span>
+          {/* Expandable Categories & Detailed Diagnostics */}
+          {isValidationPanelOpen && (
+            <div className="space-y-4 pt-3 border-t border-[#1e3a5f]/50">
+              {/* Category Pills (Categories A through F) */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs font-mono">
+                {Object.entries(validationReport.categories).map(([key, cat]) => (
+                  <div
+                    key={key}
+                    className={`p-2 rounded-lg border flex flex-col justify-between ${
+                      cat.status === 'PASSED'
+                        ? 'bg-gw-bg-secondary/60 border-gw-success/30 text-gw-success'
+                        : cat.status === 'WARNINGS'
+                        ? 'bg-gw-bg-secondary/60 border-gw-warning/40 text-gw-warning'
+                        : 'bg-gw-bg-secondary/60 border-gw-error/50 text-gw-error'
+                    }`}
+                  >
+                    <span className="text-[10px] text-gw-text-secondary font-sans truncate">{cat.name}</span>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="font-bold text-[11px]">{cat.status}</span>
+                      <span className="text-[10px] opacity-75">{cat.passed}/{cat.total}</span>
+                    </div>
                   </div>
-                  <p className="text-gw-text mt-0.5 leading-relaxed">{err.message}</p>
-                </div>
+                ))}
               </div>
-            ))}
 
-            {/* Warnings */}
-            {validationResult.warnings.map((warn, idx) => (
-              <div
-                key={`warn-${idx}`}
-                className="p-3 rounded-lg bg-gw-warning/10 border border-gw-warning/30 text-xs flex items-start gap-2.5"
-              >
-                <AlertTriangle className="w-4 h-4 text-gw-warning shrink-0 mt-0.5" />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-semibold text-gw-warning">{warn.category}</span>
-                    <span className="font-mono text-[10px] text-gw-warning/80 uppercase">{warn.code}</span>
-                  </div>
-                  <p className="text-gw-text mt-0.5 leading-relaxed">{warn.message}</p>
-                </div>
+              {/* Filter Tabs */}
+              <div className="flex items-center gap-2 border-b border-[#1e3a5f]/40 pb-2 text-xs font-mono">
+                <button
+                  type="button"
+                  className={`px-3 py-1 rounded-md transition-colors ${
+                    validationTab === 'all'
+                      ? 'bg-gw-cyan/20 text-gw-cyan font-bold border border-gw-cyan/40'
+                      : 'text-gw-text-secondary hover:text-gw-text'
+                  }`}
+                  onClick={() => setValidationTab('all')}
+                >
+                  All Findings ({validationReport.errorCount + validationReport.warningCount})
+                </button>
+                {validationReport.errorCount > 0 && (
+                  <button
+                    type="button"
+                    className={`px-3 py-1 rounded-md transition-colors ${
+                      validationTab === 'errors'
+                        ? 'bg-gw-error/20 text-gw-error font-bold border border-gw-error/40'
+                        : 'text-gw-text-secondary hover:text-gw-text'
+                    }`}
+                    onClick={() => setValidationTab('errors')}
+                  >
+                    Errors ({validationReport.errorCount})
+                  </button>
+                )}
+                {validationReport.warningCount > 0 && (
+                  <button
+                    type="button"
+                    className={`px-3 py-1 rounded-md transition-colors ${
+                      validationTab === 'warnings'
+                        ? 'bg-gw-warning/20 text-gw-warning font-bold border border-gw-warning/40'
+                        : 'text-gw-text-secondary hover:text-gw-text'
+                    }`}
+                    onClick={() => setValidationTab('warnings')}
+                  >
+                    Warnings ({validationReport.warningCount})
+                  </button>
+                )}
+                {validationReport.incompatibilityCount > 0 && (
+                  <button
+                    type="button"
+                    className={`px-3 py-1 rounded-md transition-colors ${
+                      validationTab === 'operational'
+                        ? 'bg-gw-blue/20 text-gw-blue font-bold border border-gw-blue/40'
+                        : 'text-gw-text-secondary hover:text-gw-text'
+                    }`}
+                    onClick={() => setValidationTab('operational')}
+                  >
+                    Incompatibilities ({validationReport.incompatibilityCount})
+                  </button>
+                )}
               </div>
-            ))}
-          </div>
-        )}
-      </Card>
+
+              {/* Findings List */}
+              <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
+                {/* Errors */}
+                {(validationTab === 'all' || validationTab === 'errors') &&
+                  validationReport.errors.map((err, idx) => (
+                    <div
+                      key={`err-${idx}`}
+                      className="p-3 rounded-lg bg-gw-error/10 border border-gw-error/30 text-xs flex items-start gap-2.5"
+                    >
+                      <XCircle className="w-4 h-4 text-gw-error shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-semibold text-gw-error">{err.category}</span>
+                          <span className="font-mono text-[10px] text-gw-error/80 uppercase">
+                            {err.code}
+                            {err.row !== undefined && ` [R${err.row + 1}:C${err.col !== undefined ? err.col + 1 : '?'}]`}
+                          </span>
+                        </div>
+                        <p className="text-gw-text mt-0.5 leading-relaxed">{err.message}</p>
+                      </div>
+                    </div>
+                  ))}
+
+                {/* Warnings */}
+                {(validationTab === 'all' || validationTab === 'warnings') &&
+                  validationReport.warnings.map((warn, idx) => (
+                    <div
+                      key={`warn-${idx}`}
+                      className="p-3 rounded-lg bg-gw-warning/10 border border-gw-warning/30 text-xs flex items-start gap-2.5"
+                    >
+                      <AlertTriangle className="w-4 h-4 text-gw-warning shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-semibold text-gw-warning">{warn.category}</span>
+                          <span className="font-mono text-[10px] text-gw-warning/80 uppercase">
+                            {warn.code}
+                            {warn.row !== undefined && ` [R${warn.row + 1}:C${warn.col !== undefined ? warn.col + 1 : '?'}]`}
+                          </span>
+                        </div>
+                        <p className="text-gw-text mt-0.5 leading-relaxed">{warn.message}</p>
+                      </div>
+                    </div>
+                  ))}
+
+                {/* Operational Incompatibilities */}
+                {validationTab === 'operational' &&
+                  validationReport.incompatibilities.map((incomp, idx) => (
+                    <div
+                      key={`incomp-${idx}`}
+                      className="p-3 rounded-lg bg-gw-blue/10 border border-gw-blue/30 text-xs flex items-start gap-2.5"
+                    >
+                      <Info className="w-4 h-4 text-gw-blue shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-semibold text-gw-blue">
+                            {incomp.rule} ({incomp.flightNumber} ↔ Gate {incomp.gateNumber})
+                          </span>
+                          <span className="font-mono text-[10px] text-gw-blue/80 uppercase">
+                            Cell ({incomp.row + 1}, {incomp.col + 1}) = {incomp.currentMatrixValue === 1 ? 'Forbidden' : 'Permitted'}
+                          </span>
+                        </div>
+                        <p className="text-gw-text mt-0.5 leading-relaxed">{incomp.message}</p>
+                      </div>
+                    </div>
+                  ))}
+
+                {/* Clean State Notice */}
+                {validationReport.errors.length === 0 && validationReport.warnings.length === 0 && (
+                  <div className="p-3 rounded-lg bg-gw-success/10 border border-gw-success/20 text-xs text-gw-success flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>Zero validation defects detected across all 6 validation categories.</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="text-[11px] text-gw-text-secondary italic pt-1 border-t border-[#1e3a5f]/40">
+                Notice: The Matrix Validation Engine inspects structural integrity and operational constraints. Validation does NOT automatically modify binary matrix values.
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* -------------------- 4. INFORMATION PANEL & METRICS -------------------- */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Card className="p-3 text-center">
-          <span className="text-[11px] uppercase tracking-wider text-gw-text-secondary block font-medium">Total Cells</span>
-          <span className="text-xl font-extrabold font-mono text-gw-text mt-0.5 block">{validationResult.totalCells}</span>
-          <span className="text-[10px] text-gw-text-secondary">{validationResult.flightCount} × {validationResult.gateCount} board</span>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 font-mono">
+        <Card className="p-3.5 text-center bg-gw-bg-secondary/40 border-[#1e3a5f]/60">
+          <span className="text-[10px] uppercase tracking-wider text-gw-text-secondary block font-sans font-medium">
+            Dimensions
+          </span>
+          <span className="text-xl font-extrabold text-gw-cyan mt-0.5 block">
+            {numFlights} × {numGates}
+          </span>
+          <span className="text-[10px] text-gw-text-secondary font-sans">
+            {numFlights === numGates ? 'Balanced' : 'Unbalanced'}
+          </span>
         </Card>
 
-        <Card className="p-3 text-center">
-          <span className="text-[11px] uppercase tracking-wider text-gw-success block font-medium">Allowed (0)</span>
-          <span className="text-xl font-extrabold font-mono text-gw-success mt-0.5 block">{validationResult.allowedCells}</span>
-          <span className="text-[10px] text-gw-text-secondary">Permitted docks</span>
+        <Card className="p-3.5 text-center bg-gw-bg-secondary/40 border-[#1e3a5f]/60">
+          <span className="text-[10px] uppercase tracking-wider text-gw-text-secondary block font-sans font-medium">
+            Total Cells
+          </span>
+          <span className="text-xl font-extrabold text-gw-text mt-0.5 block">
+            {totalCells}
+          </span>
+          <span className="text-[10px] text-gw-text-secondary font-sans">
+            m × n matrix
+          </span>
         </Card>
 
-        <Card className="p-3 text-center">
-          <span className="text-[11px] uppercase tracking-wider text-gw-error block font-medium">Forbidden (1)</span>
-          <span className="text-xl font-extrabold font-mono text-gw-error mt-0.5 block">{validationResult.forbiddenCells}</span>
-          <span className="text-[10px] text-gw-text-secondary">Restricted cells</span>
+        <Card className="p-3.5 text-center bg-gw-bg-secondary/40 border-[#1e3a5f]/60">
+          <span className="text-[10px] uppercase tracking-wider text-gw-success block font-sans font-medium">
+            Permitted (0)
+          </span>
+          <span className="text-xl font-extrabold text-gw-success mt-0.5 block">
+            {permittedCount}
+          </span>
+          <span className="text-[10px] text-gw-text-secondary font-sans">
+            Valid pairings
+          </span>
         </Card>
 
-        <Card className="p-3 text-center">
-          <span className="text-[11px] uppercase tracking-wider text-gw-warning block font-medium">Restriction Density</span>
-          <span className="text-xl font-extrabold font-mono text-gw-warning mt-0.5 block">{validationResult.densityPct}%</span>
-          <span className="text-[10px] text-gw-text-secondary">Constraint density</span>
+        <Card className="p-3.5 text-center bg-gw-bg-secondary/40 border-[#1e3a5f]/60">
+          <span className="text-[10px] uppercase tracking-wider text-gw-error block font-sans font-medium">
+            Forbidden (1)
+          </span>
+          <span className="text-xl font-extrabold text-gw-error mt-0.5 block">
+            {forbiddenCount}
+          </span>
+          <span className="text-[10px] text-gw-text-secondary font-sans">
+            Restricted cells
+          </span>
+        </Card>
+
+        <Card className="p-3.5 text-center bg-gw-bg-secondary/40 border-[#1e3a5f]/60">
+          <span className="text-[10px] uppercase tracking-wider text-gw-warning block font-sans font-medium">
+            Density
+          </span>
+          <span className="text-xl font-extrabold text-gw-warning mt-0.5 block">
+            {densityPct}%
+          </span>
+          <span className="text-[10px] text-gw-text-secondary font-sans">
+            Restricted ratio
+          </span>
+        </Card>
+
+        <Card className="p-3.5 text-center bg-gw-bg-secondary/40 border-[#1e3a5f]/60">
+          <span className="text-[10px] uppercase tracking-wider text-gw-text-secondary block font-sans font-medium">
+            Status
+          </span>
+          <span className="text-base font-bold text-gw-text mt-1 block">
+            {hasUnsavedChanges ? (
+              <span className="text-gw-warning">Unsaved</span>
+            ) : (
+              <span className="text-gw-success">Persisted</span>
+            )}
+          </span>
+          <span className="text-[10px] text-gw-text-secondary font-sans">
+            {isCompleted ? 'Locked' : 'Editable'}
+          </span>
         </Card>
       </div>
 
-      {/* -------------------- 5. MATRIX BOARD WITH CONTROLS -------------------- */}
+      {/* -------------------- 5. MATRIX BOARD WITH CONTROLS & LEGEND -------------------- */}
       <Card className="space-y-4">
-        {/* Controls Toolbar & Legend */}
+        {/* Controls Toolbar & Permanent Legend */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#1e3a5f]/50">
-          {/* Visual Legend */}
+          {/* Permanent Visual Legend */}
           <div className="flex items-center gap-4 text-xs font-mono">
-            <div className="flex items-center gap-1.5">
-              <span className="w-5 h-5 rounded flex items-center justify-center bg-gw-bg-secondary border border-[#1e3a5f] text-gw-text-secondary font-bold text-[11px]">
+            <span className="text-gw-text-secondary uppercase text-[11px] font-sans font-semibold">
+              Legend:
+            </span>
+            <div className="flex items-center gap-1.5" title="0 = Assignment permitted. Flight can be scheduled to this gate.">
+              <span className="w-5 h-5 rounded flex items-center justify-center bg-gw-bg-secondary border border-[#1e3a5f] text-gw-text font-bold text-[11px]">
                 0
               </span>
-              <span className="text-gw-text-secondary">Allowed</span>
+              <span className="text-gw-text-secondary font-medium">0 = Permitted</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5" title="1 = Assignment forbidden. Flight prohibited from this gate.">
               <span className="w-5 h-5 rounded flex items-center justify-center bg-gw-error/20 border border-gw-error/60 text-gw-error font-bold text-[11px]">
                 1
               </span>
-              <span className="text-gw-error font-semibold">Forbidden</span>
+              <span className="text-gw-error font-semibold">1 = Forbidden</span>
             </div>
           </div>
 
@@ -527,75 +935,116 @@ export const RestrictionMatrix = () => {
               variant="outline"
               size="sm"
               icon={RotateCcw}
-              onClick={promptClearAll}
-              disabled={numFlights === 0 || numGates === 0}
+              onClick={() => setIsResetModalOpen(true)}
+              disabled={numFlights === 0 || numGates === 0 || isCompleted}
             >
-              Reset (Clear All)
+              Clear (All 0)
             </Button>
             <Button
               variant="secondary"
               size="sm"
               icon={Ban}
-              onClick={promptMarkAllForbidden}
-              disabled={numFlights === 0 || numGates === 0}
+              onClick={() => setIsAllForbiddenModalOpen(true)}
+              disabled={numFlights === 0 || numGates === 0 || isCompleted}
             >
-              Mark All Forbidden
+              Forbid All (All 1)
             </Button>
           </div>
         </div>
 
         {/* -------------------- INTERACTIVE MATRIX GRID -------------------- */}
-        {numFlights === 0 || numGates === 0 ? (
+        {isLoading ? (
+          <div className="py-16 text-center flex flex-col items-center justify-center gap-3">
+            <div className="w-8 h-8 border-2 border-gw-cyan border-t-transparent rounded-full animate-spin" />
+            <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary">
+              Loading restriction matrix...
+            </span>
+          </div>
+        ) : simulations.length === 0 ? (
+          <EmptyState
+            icon={Layers}
+            title="No airport simulations registered"
+            description="Create an allocation scenario in Simulation Management to configure its restriction matrix."
+            actionLabel="Go to Scenarios"
+            onAction={() => (window.location.href = '/scenarios')}
+          />
+        ) : numFlights === 0 || numGates === 0 ? (
           <div className="py-12 text-center space-y-3">
-            <p className="text-sm font-semibold text-gw-text">No active flights or gates in this scenario</p>
-            <p className="text-xs text-gw-text-secondary max-w-md mx-auto">
-              Please edit the selected simulation scenario to include at least one registered flight and gate.
+            <div className="w-12 h-12 rounded-2xl bg-gw-warning/10 border border-gw-warning/25 flex items-center justify-center text-gw-warning mx-auto">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+            <h4 className="text-base font-semibold text-gw-text">Incomplete Simulation Scenario</h4>
+            <p className="text-xs text-gw-text-secondary max-w-md mx-auto leading-relaxed">
+              Scenario <strong>"{currentSimulation?.name}"</strong> does not have both flights and gates selected
+              ({numFlights} Flights, {numGates} Gates). Please configure its flight and gate roster.
             </p>
-            <Link to="/simulator">
+            <Link to="/scenarios">
               <Button size="sm" icon={Layers}>
-                Configure Scenario
+                Edit Scenario Roster
               </Button>
             </Link>
           </div>
         ) : (
-          <div className="overflow-x-auto pb-2">
+          <div className="overflow-x-auto pb-2 rounded-xl border border-[#1e3a5f]/60 bg-gw-bg-primary/50 shadow-inner">
             <div className="inline-block min-w-full align-middle">
-              <table className="border-collapse select-none">
-                <thead>
+              <table className="border-collapse select-none w-full">
+                {/* Column Headers (Gates) */}
+                <thead className="sticky top-0 z-10 bg-gw-bg-secondary/95 backdrop-blur-md">
                   <tr>
                     {/* Top-left corner */}
-                    <th className="p-3 text-left font-mono text-[11px] text-gw-text-secondary uppercase tracking-wider bg-gw-bg-secondary/40 border-b border-r border-[#1e3a5f]/60 min-w-36">
-                      Flights \ Gates
+                    <th className="p-3 text-left font-mono text-[11px] text-gw-text-secondary uppercase tracking-wider border-b border-r border-[#1e3a5f]/60 min-w-[160px] sticky left-0 z-20 bg-gw-bg-secondary/95">
+                      <div className="flex items-center gap-1.5">
+                        <DoorOpen className="w-3.5 h-3.5 text-gw-cyan" />
+                        <span>Flight \ Gate</span>
+                      </div>
                     </th>
-                    {/* Gate Column Headers */}
+
                     {resolvedScenario.gates.map((gate) => (
                       <th
                         key={gate.id}
-                        className="p-3 text-center font-mono border-b border-[#1e3a5f]/60 bg-gw-bg-secondary/20 min-w-20"
+                        className="p-3 text-center font-mono border-b border-[#1e3a5f]/60 min-w-[90px]"
                       >
                         <div className="flex flex-col items-center">
-                          <span className="font-bold text-sm text-gw-cyan">{gate.gateNumber}</span>
-                          <span className="text-[10px] text-gw-text-secondary font-normal font-sans">
-                            {gate.terminal}
+                          <span className="font-bold text-sm text-gw-cyan tracking-wide">
+                            {gate.gateNumber || gate.id}
                           </span>
+                          <span className="text-[10px] text-gw-text-secondary font-normal font-sans mt-0.5">
+                            {gate.terminal || 'T1'}
+                          </span>
+                          {gate.gateType && (
+                            <span className="text-[9px] text-gw-text-secondary/70 font-sans mt-0.5 line-clamp-1">
+                              {gate.gateType}
+                            </span>
+                          )}
                         </div>
                       </th>
                     ))}
                   </tr>
                 </thead>
 
-                <tbody>
+                {/* Rows (Flights) and Cells */}
+                <tbody className="divide-y divide-[#1e3a5f]/40 font-mono">
                   {resolvedScenario.flights.map((flight, rowIdx) => (
-                    <tr key={flight.id} className="hover:bg-white/[0.02] transition-colors">
+                    <tr
+                      key={flight.id}
+                      className="hover:bg-white/[0.02] transition-colors group"
+                    >
                       {/* Flight Row Header */}
-                      <th className="p-3 text-left font-mono text-xs border-r border-b border-[#1e3a5f]/60 bg-gw-bg-secondary/30">
+                      <th className="p-3 text-left font-mono text-xs border-r border-[#1e3a5f]/60 bg-gw-bg-secondary/80 sticky left-0 z-10 min-w-[160px] group-hover:bg-gw-bg-secondary transition-colors">
                         <div className="flex items-center gap-2">
                           <Plane className="w-3.5 h-3.5 text-gw-cyan shrink-0" />
                           <div className="min-w-0">
-                            <span className="font-bold text-gw-text block">{flight.flightNumber}</span>
-                            <span className="text-[10px] text-gw-text-secondary font-normal font-sans block truncate max-w-28">
-                              {flight.airline}
+                            <span className="font-bold text-gw-text block">
+                              {flight.flightNumber || flight.id}
                             </span>
+                            <span className="text-[10px] text-gw-text-secondary font-normal font-sans block truncate max-w-[120px]">
+                              {flight.airline || 'Commercial'}
+                            </span>
+                            {(flight.arrivalTime || flight.departureTime) && (
+                              <span className="text-[9px] text-gw-cyan/80 font-mono block mt-0.5">
+                                {flight.arrivalTime || '08:00'} - {flight.departureTime || '10:00'}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </th>
@@ -608,23 +1057,33 @@ export const RestrictionMatrix = () => {
                         return (
                           <td
                             key={`${flight.id}-${gate.id}`}
-                            className="p-1.5 border-b border-[#1e3a5f]/40 text-center"
+                            className="p-1.5 text-center border-r border-[#1e3a5f]/30 last:border-r-0"
                           >
                             <button
                               type="button"
+                              disabled={isCompleted}
                               onClick={() => handleToggleCell(rowIdx, colIdx)}
+                              onKeyDown={(e) => handleCellKeyDown(e, rowIdx, colIdx)}
+                              aria-label={`Flight ${flight.flightNumber || flight.id} to Gate ${gate.gateNumber || gate.id}: ${
+                                isForbidden ? 'Forbidden' : 'Permitted'
+                              }`}
+                              tabIndex={isCompleted ? -1 : 0}
                               className={`
-                                w-14 h-11 rounded-lg font-mono text-xs font-bold transition-all duration-150 cursor-pointer flex flex-col items-center justify-center border mx-auto
+                                w-14 h-12 rounded-lg font-mono text-sm font-bold transition-all duration-150 cursor-pointer flex flex-col items-center justify-center border mx-auto select-none
                                 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-gw-bg
-                                ${isForbidden
-                                  ? 'bg-gw-error/20 border-gw-error/60 text-gw-error hover:bg-gw-error/30 shadow-inner shadow-gw-error/10 focus:ring-gw-error'
-                                  : 'bg-gw-card border-[#1e3a5f] text-gw-text-secondary hover:border-gw-cyan/50 hover:text-gw-text hover:bg-gw-card-hover focus:ring-gw-cyan'
+                                ${isCompleted ? 'cursor-not-allowed opacity-80' : ''}
+                                ${
+                                  isForbidden
+                                    ? 'bg-gw-error/20 border-gw-error/60 text-gw-error hover:bg-gw-error/30 shadow-inner shadow-gw-error/15 focus:ring-gw-error'
+                                    : 'bg-gw-card border-[#1e3a5f] text-gw-text hover:border-gw-cyan/60 hover:bg-gw-cyan/5 focus:ring-gw-cyan'
                                 }
                               `}
-                              title={`Toggle (Flight ${flight.flightNumber}, Gate ${gate.gateNumber}): Currently ${isForbidden ? 'Forbidden (1)' : 'Allowed (0)'}`}
+                              title={`Flight ${flight.flightNumber || flight.id} at Gate ${gate.gateNumber || gate.id}: Currently ${
+                                isForbidden ? 'Forbidden (1)' : 'Permitted (0)'
+                              }${isCompleted ? ' (Locked)' : '. Click to toggle.'}`}
                             >
-                              <span className="text-sm leading-none">{cellVal}</span>
-                              <span className="text-[9px] font-sans font-normal opacity-70 leading-none mt-0.5">
+                              <span className="leading-none text-base font-extrabold">{cellVal}</span>
+                              <span className="text-[9px] font-sans font-normal opacity-80 leading-none mt-1">
                                 {isForbidden ? 'Forbidden' : 'Allowed'}
                               </span>
                             </button>
@@ -639,60 +1098,150 @@ export const RestrictionMatrix = () => {
           </div>
         )}
 
-        <p className="text-[11px] text-gw-text-secondary italic pt-1">
-          Click any cell to toggle assignment constraint: <span className="text-gw-error font-mono font-semibold">1 = Forbidden</span>,{' '}
-          <span className="text-gw-text-secondary font-mono font-semibold">0 = Allowed</span>. All changes trigger live structural validation.
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs text-gw-text-secondary pt-1 gap-2">
+          <span>
+            Click or press Enter/Space on any cell to toggle constraint:{' '}
+            <strong className="text-gw-error font-mono">1 = Forbidden</strong>,{' '}
+            <strong className="text-gw-text font-mono">0 = Permitted</strong>.
+          </span>
+          {hasUnsavedChanges && (
+            <span className="text-gw-warning font-semibold flex items-center gap-1">
+              <AlertTriangle className="w-3.5 h-3.5" />
+              Unsaved changes present. Remember to click "Save Matrix".
+            </span>
+          )}
+        </div>
       </Card>
 
-      {/* -------------------- 6. MATHEMATICAL CONTEXT & FORMULA -------------------- */}
+      {/* -------------------- 6. ROOK POLYNOMIAL ENGINE (PHASE 11) -------------------- */}
+      <div ref={rookSectionRef} className="pt-2">
+        <RookPolynomialVisualizer
+          scenarioName={currentSimulation?.name || 'Active Simulation'}
+          scenarioId={currentSimulation?.id || ''}
+          matrix={matrix}
+          flights={resolvedScenario.flights}
+          gates={resolvedScenario.gates}
+        />
+      </div>
+
+      {/* -------------------- 7. BACKTRACKING ALLOCATION ENGINE (PHASE 13) -------------------- */}
+      <div ref={backtrackingSectionRef} className="pt-2">
+        <BacktrackingAllocationExplorer
+          scenarioName={currentSimulation?.name || 'Active Simulation'}
+          scenarioId={currentSimulation?.id || ''}
+          matrix={matrix}
+          flightIds={resolvedScenario.flights.map((f) => f.id)}
+          gateIds={resolvedScenario.gates.map((g) => g.id)}
+          flights={resolvedScenario.flights}
+          gates={resolvedScenario.gates}
+        />
+      </div>
+
+      {/* -------------------- 8. OPERATIONAL CONTEXT PANEL -------------------- */}
       <Card className="space-y-3">
         <div className="flex items-center gap-2">
           <Info className="w-5 h-5 text-gw-cyan shrink-0" />
-          <h3 className="gw-card-heading">Mathematical Context & Foundation</h3>
+          <h3 className="gw-card-heading">Operational Context & Mathematical Convention</h3>
         </div>
 
         <p className="text-xs text-gw-text-secondary leading-relaxed">
-          A restriction matrix represents forbidden flight-to-gate assignments using binary values.
-          These forbidden cells will later be used to construct rook polynomials and apply the Inclusion-Exclusion Principle.
+          The binary restriction board <strong className="text-gw-text font-mono">B = [bᵢⱼ]</strong> represents all forbidden flight-to-gate assignments.
+          A value of <strong className="text-gw-error font-mono">1</strong> models hard physical or operational constraints—such as wingspan limitations, international customs cordons, or ground equipment restrictions.
+          A value of <strong className="text-gw-text font-mono">0</strong> indicates an assignment is valid and available for allocation.
         </p>
 
-        <div className="gw-formula-box text-xs">
-          B = [bᵢⱼ] where bᵢⱼ = 1 (Forbidden assignment) and bᵢⱼ = 0 (Allowed assignment)
+        <div className="gw-formula-box text-xs font-mono">
+          bᵢⱼ = 1 (Forbidden assignment: Flight i cannot dock at Gate j) &nbsp;|&nbsp; bᵢⱼ = 0 (Permitted assignment)
         </div>
-
-        <p className="text-[11px] text-gw-text-secondary leading-relaxed">
-          In Phase 13 & 14, the forbidden coordinates where <span className="font-mono text-gw-cyan">bᵢⱼ = 1</span> form the restricted cells on a chessboard.
-          The engine computes the rook polynomial <span className="font-mono text-gw-cyan">R(B, x)</span> counting non-attacking rooks on these forbidden squares to determine valid arrangements.
-        </p>
       </Card>
 
-      {/* -------------------- 7. CONFIRMATION DIALOG MODAL -------------------- */}
+      {/* -------------------- MODAL: DISCARD UNSAVED CHANGES -------------------- */}
       <Modal
-        isOpen={confirmModal.isOpen}
-        onClose={() => setConfirmModal({ isOpen: false, action: null, title: '', message: '' })}
-        title={confirmModal.title}
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        title="Discard Unsaved Changes?"
         maxWidth="max-w-md"
+        icon={AlertTriangle}
         footer={
-          <>
-            <Button
-              variant="ghost"
-              onClick={() => setConfirmModal({ isOpen: false, action: null, title: '', message: '' })}
-            >
-              Cancel
+          <div className="flex items-center justify-end gap-2.5 w-full">
+            <Button variant="ghost" size="md" onClick={() => setIsDiscardModalOpen(false)}>
+              Keep Editing
             </Button>
-            <Button
-              variant="danger"
-              onClick={() => confirmModal.action?.()}
-            >
-              Confirm Action
+            <Button variant="danger" size="md" onClick={handleConfirmDiscard}>
+              Discard & Switch
             </Button>
-          </>
+          </div>
         }
       >
-        <p className="text-xs text-gw-text-secondary leading-relaxed">
-          {confirmModal.message}
-        </p>
+        <div className="space-y-3">
+          <p className="text-sm text-gw-text-secondary leading-relaxed">
+            You have unsaved modifications to the restriction matrix for scenario{' '}
+            <strong className="text-gw-text">{currentSimulation?.name}</strong>.
+          </p>
+          <div className="p-3 rounded-lg bg-gw-error/10 border border-gw-error/20 text-xs text-gw-error leading-relaxed">
+            Switching scenarios will permanently discard your uncommitted cell toggles.
+          </div>
+        </div>
+      </Modal>
+
+      {/* -------------------- MODAL: CONFIRM MATRIX RESET -------------------- */}
+      <Modal
+        isOpen={isResetModalOpen}
+        onClose={() => setIsResetModalOpen(false)}
+        title="Confirm Matrix Reset (All Permitted)"
+        maxWidth="max-w-md"
+        icon={RotateCcw}
+        footer={
+          <div className="flex items-center justify-end gap-2.5 w-full">
+            <Button variant="ghost" size="md" onClick={() => setIsResetModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" size="md" icon={RotateCcw} onClick={handleConfirmReset}>
+              Confirm Reset
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-3">
+          <p className="text-sm text-gw-text-secondary leading-relaxed">
+            Reset all cells in the restriction matrix for{' '}
+            <strong className="text-gw-text">{currentSimulation?.name}</strong> to{' '}
+            <strong className="text-gw-success">0 (Permitted)</strong>?
+          </p>
+          <div className="p-3 rounded-lg bg-gw-cyan/10 border border-gw-cyan/25 text-xs text-gw-text leading-relaxed">
+            This clears all forbidden assignments, authorizing every flight to dock at every gate.
+          </div>
+        </div>
+      </Modal>
+
+      {/* -------------------- MODAL: CONFIRM FORBID ALL -------------------- */}
+      <Modal
+        isOpen={isAllForbiddenModalOpen}
+        onClose={() => setIsAllForbiddenModalOpen(false)}
+        title="Confirm Forbid All Assignments"
+        maxWidth="max-w-md"
+        icon={Ban}
+        footer={
+          <div className="flex items-center justify-end gap-2.5 w-full">
+            <Button variant="ghost" size="md" onClick={() => setIsAllForbiddenModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="danger" size="md" icon={Ban} onClick={handleConfirmMarkAllForbidden}>
+              Forbid All
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-3">
+          <p className="text-sm text-gw-text-secondary leading-relaxed">
+            Set every cell in the restriction matrix for{' '}
+            <strong className="text-gw-text">{currentSimulation?.name}</strong> to{' '}
+            <strong className="text-gw-error">1 (Forbidden)</strong>?
+          </p>
+          <div className="p-3 rounded-lg bg-gw-error/10 border border-gw-error/20 text-xs text-gw-error leading-relaxed">
+            This marks every flight-to-gate pairing as forbidden.
+          </div>
+        </div>
       </Modal>
     </div>
   )

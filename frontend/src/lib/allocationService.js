@@ -21,7 +21,13 @@ export const allocationService = {
       ...data,
       rook_polynomial: data.polynomial,
       exact_valid_assignments: data.valid_assignments,
-      itemized_terms: data.inclusion_exclusion_terms
+      itemized_terms: (data.inclusion_exclusion_terms || []).map((t) => ({
+        ...t,
+        coefficient: t.rook_coefficient !== undefined ? t.rook_coefficient : (t.coefficient ?? 0),
+        factorial_remaining: t.factorial_value !== undefined ? t.factorial_value : (t.factorial_remaining ?? 0),
+        signed_contribution: t.contribution !== undefined ? t.contribution : (t.signed_contribution ?? 0),
+        sign: t.sign === 1 || t.sign === '+' ? 1 : -1
+      }))
     }
   },
 

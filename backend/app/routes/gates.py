@@ -59,7 +59,14 @@ def create_gate(payload: GateCreate, db: Session = Depends(get_db)):
         gate_type=payload.gate_type,
         supported_aircraft=payload.supported_aircraft,
         max_capacity=payload.max_capacity,
-        status=payload.status
+        status=payload.status,
+        stand_type=payload.stand_type or "Contact Aerobridge",
+        has_jetway=payload.has_jetway if payload.has_jetway is not None else 1,
+        aircraft_category=payload.aircraft_category or "Code C",
+        max_wingspan_m=payload.max_wingspan_m or 36.0,
+        max_length_m=payload.max_length_m or 45.0,
+        is_remote=payload.is_remote if payload.is_remote is not None else 0,
+        data_tier=payload.data_tier or "CONFIGURABLE_DEMONSTRATION_DATA"
     )
     db.add(new_gate)
     log_activity(

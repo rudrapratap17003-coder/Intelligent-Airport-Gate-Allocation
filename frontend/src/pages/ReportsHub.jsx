@@ -19,8 +19,10 @@ import Dropdown from '../components/ui/Dropdown'
 import Notification from '../components/ui/Notification'
 import simulationService from '../lib/simulationService'
 import exportService from '../lib/exportService'
+import { useToast } from '../context/ToastContext'
 
 export const ReportsHub = () => {
+  const toast = useToast()
   const [simulations, setSimulations] = useState([])
   const [selectedSimId, setSelectedSimId] = useState('')
   const [compareSimIds, setCompareSimIds] = useState([])
@@ -62,12 +64,14 @@ export const ReportsHub = () => {
     setIsGeneratingPdf(true)
     try {
       await exportService.downloadScenarioPdf(selectedSimId)
+      toast.success('Report Downloaded', `Scenario PDF report generated for ${selectedSim?.name || selectedSimId}.`)
       setNotification({
         type: 'success',
         title: 'Report Downloaded',
         message: `Scenario PDF report generated for ${selectedSim?.name || selectedSimId}.`
       })
     } catch (err) {
+      toast.error('Export Failed', err.message || 'Failed to generate PDF report.')
       setNotification({
         type: 'danger',
         title: 'Export Failed',
@@ -80,6 +84,7 @@ export const ReportsHub = () => {
 
   const handleDownloadComparisonPdf = async () => {
     if (compareSimIds.length < 2) {
+      toast.warning('Selection Required', 'Select at least 2 scenarios for comparative PDF export.')
       setNotification({
         type: 'warning',
         title: 'Selection Required',
@@ -90,12 +95,14 @@ export const ReportsHub = () => {
     setIsGeneratingPdf(true)
     try {
       await exportService.downloadComparisonPdf(compareSimIds)
+      toast.success('Comparison Report Downloaded', `Comparative analysis PDF generated for ${compareSimIds.length} scenarios.`)
       setNotification({
         type: 'success',
         title: 'Comparison Report Downloaded',
         message: `Comparative analysis PDF generated for ${compareSimIds.length} scenarios.`
       })
     } catch (err) {
+      toast.error('Export Failed', err.message || 'Failed to generate comparison PDF.')
       setNotification({
         type: 'danger',
         title: 'Export Failed',

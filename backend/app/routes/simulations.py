@@ -124,6 +124,8 @@ def create_simulation(payload: SimulationCreate, db: Session = Depends(get_db)):
         rows_count=len(flight_ids),
         cols_count=len(gate_ids),
         matrix_data=json.dumps(default_matrix),
+        row_flight_ids=json.dumps(flight_ids) if flight_ids else None,
+        column_gate_ids=json.dumps(gate_ids) if gate_ids else None,
         created_at=now,
         updated_at=now
     ))
@@ -254,6 +256,8 @@ def duplicate_simulation(sim_id: str, db: Session = Depends(get_db)):
             rows_count=sim.restriction_matrix.rows_count,
             cols_count=sim.restriction_matrix.cols_count,
             matrix_data=sim.restriction_matrix.matrix_data,
+            row_flight_ids=sim.restriction_matrix.row_flight_ids,
+            column_gate_ids=sim.restriction_matrix.column_gate_ids,
             created_at=now,
             updated_at=now
         ))

@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import AppLayout from './components/layout/AppLayout'
 import LandingPage from './pages/LandingPage'
 import Dashboard from './pages/Dashboard'
@@ -15,6 +15,8 @@ import AllocationWorkspace from './pages/AllocationWorkspace'
 import ScenarioManagement from './pages/ScenarioManagement'
 import ReportsHub from './pages/ReportsHub'
 import SystemSettings from './pages/SystemSettings'
+import TerminalManagement from './pages/TerminalManagement'
+import DigitalAirportMap from './pages/DigitalAirportMap'
 import NotFound from './pages/NotFound'
 
 function App() {
@@ -27,6 +29,8 @@ function App() {
         {/* Protected App Layout */}
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/airport-map" element={<DigitalAirportMap />} />
+          <Route path="/terminals" element={<TerminalManagement />} />
           <Route path="/flights" element={<FlightManagement />} />
           <Route path="/gates" element={<GateManagement />} />
           <Route path="/restrictions" element={<RestrictionMatrix />} />

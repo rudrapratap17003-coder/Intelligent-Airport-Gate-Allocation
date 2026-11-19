@@ -62,7 +62,17 @@ def create_flight(payload: FlightCreate, db: Session = Depends(get_db)):
         departure_time=payload.departure_time,
         passenger_capacity=payload.passenger_capacity,
         terminal=payload.terminal,
-        status=payload.status
+        status=payload.status,
+        origin=payload.origin or "DEL",
+        destination=payload.destination or "BLR",
+        flight_type=payload.flight_type or "Domestic",
+        priority=payload.priority or "Standard",
+        estimated_time=payload.estimated_time or payload.arrival_time,
+        actual_time=payload.actual_time,
+        turnaround_duration=payload.turnaround_duration or 45,
+        aircraft_registration=payload.aircraft_registration or "VT-BLR",
+        aircraft_category=payload.aircraft_category or "Code C",
+        data_tier=payload.data_tier or "SIMULATED_OPERATIONAL_DATA"
     )
     db.add(new_flight)
     log_activity(
