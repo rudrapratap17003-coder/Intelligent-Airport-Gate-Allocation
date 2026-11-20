@@ -39,7 +39,7 @@ export const Dropdown = ({
   return (
     <div className={`relative w-full ${className}`} ref={dropdownRef}>
       {label && (
-        <label className="block text-xs font-semibold text-gw-text-secondary uppercase tracking-wider mb-1.5">
+        <label className="block text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider mb-1.5">
           {label}
         </label>
       )}
@@ -50,28 +50,28 @@ export const Dropdown = ({
         aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
         className={`
-          w-full flex items-center justify-between gap-2 bg-gw-bg-secondary/90 text-left text-sm rounded-lg border px-3.5 py-2.5 transition-all outline-none cursor-pointer min-h-[42px]
-          ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-gw-cyan/40'}
-          ${isOpen ? 'border-gw-cyan ring-2 ring-gw-cyan/25 shadow-[0_0_12px_rgba(36,200,232,0.2)]' : 'border-[#1e3a5f]'}
-          ${selectedOption ? 'text-gw-text font-medium' : 'text-gw-text-secondary/60'}
+          w-full flex items-center justify-between gap-2 bg-[#181818] text-left text-sm rounded-lg border px-3.5 py-2.5 transition-all outline-none cursor-pointer min-h-[42px]
+          ${disabled ? 'opacity-40 cursor-not-allowed' : 'hover:border-[#555555]'}
+          ${isOpen ? 'border-[#777777] ring-1 ring-white/20' : 'border-[#333333]'}
+          ${selectedOption ? 'text-[#FFFFFF] font-medium' : 'text-[#737373]'}
         `}
       >
         <div className="flex items-center gap-2 truncate">
-          {Icon && <Icon className="w-4 h-4 text-gw-text-secondary shrink-0" />}
+          {Icon && <Icon className="w-4 h-4 text-[#A3A3A3] shrink-0" />}
           <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
         </div>
-        <ChevronDown className={`w-4 h-4 text-gw-text-secondary transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180 text-gw-cyan' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-[#A3A3A3] transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180 text-[#FFFFFF]' : ''}`} />
       </button>
 
       {/* Animated Dropdown Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -6, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -6, scale: 0.98 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute left-0 right-0 mt-1.5 bg-gw-card/95 backdrop-blur-xl border border-[#1e3a5f] rounded-xl shadow-2xl z-50 max-h-60 overflow-y-auto py-1"
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.12 }}
+            className="absolute left-0 right-0 mt-1.5 bg-[#222222] border border-[#333333] rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto py-1"
             role="listbox"
           >
             {options.map((opt) => {
@@ -88,11 +88,11 @@ export const Dropdown = ({
                   }}
                   className={`
                     w-full flex items-center justify-between px-3.5 py-2 text-xs text-left transition-colors cursor-pointer
-                    ${isSelected ? 'bg-gw-cyan/15 text-gw-cyan font-semibold' : 'text-gw-text hover:bg-white/[0.06]'}
+                    ${isSelected ? 'bg-[#383838] text-[#FFFFFF] font-semibold' : 'text-[#E5E5E5] hover:bg-[#2A2A2A] hover:text-[#FFFFFF]'}
                   `}
                 >
                   <span className="truncate">{opt.label}</span>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-gw-cyan shrink-0" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-[#FFFFFF] shrink-0" />}
                 </button>
               )
             })}

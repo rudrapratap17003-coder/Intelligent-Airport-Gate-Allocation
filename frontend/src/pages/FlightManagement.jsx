@@ -270,14 +270,14 @@ export const FlightManagement = () => {
     {
       header: 'Flight ID',
       key: 'id',
-      render: (row) => <span className="font-mono text-xs text-gw-cyan">{row.id}</span>
+      render: (row) => <span className="font-mono text-xs text-[#FFFFFF]">{row.id}</span>
     },
     {
       header: 'Flight No.',
       key: 'flightNumber',
       render: (row) => (
         <div className="flex items-center gap-2">
-          <Plane className="w-3.5 h-3.5 text-gw-cyan" />
+          <Plane className="w-3.5 h-3.5 text-[#FFFFFF]" />
           <span className="font-bold text-sm font-mono text-gw-text">{row.flightNumber}</span>
         </div>
       )
@@ -291,9 +291,8 @@ export const FlightManagement = () => {
       header: 'Aircraft Class',
       key: 'aircraftType',
       render: (row) => {
-        const isWide = row.aircraftType.includes('Wide-Body')
         return (
-          <Badge variant={isWide ? 'blue' : 'default'} size="sm">
+          <Badge variant="outline" size="sm" className="font-mono">
             {row.aircraftType}
           </Badge>
         )
@@ -315,7 +314,7 @@ export const FlightManagement = () => {
       header: 'Terminal',
       key: 'terminal',
       render: (row) => (
-        <span className="font-mono text-xs text-gw-text px-2 py-0.5 rounded bg-gw-bg-secondary border border-[#1e3a5f]">
+        <span className="font-mono text-xs text-gw-text px-2 py-0.5 rounded bg-[#181818] border border-[#333333]">
           {row.terminal}
         </span>
       )
@@ -333,16 +332,8 @@ export const FlightManagement = () => {
       header: 'Status',
       key: 'status',
       render: (row) => {
-        const variant =
-          row.status === 'Boarding'
-            ? 'cyan'
-            : row.status === 'Delayed'
-            ? 'error'
-            : row.status === 'Arrived'
-            ? 'success'
-            : 'default'
         return (
-          <Badge variant={variant} size="sm" dot>
+          <Badge variant="outline" size="sm">
             {row.status}
           </Badge>
         )
@@ -357,7 +348,7 @@ export const FlightManagement = () => {
           <button
             type="button"
             onClick={() => handleOpenEditModal(row)}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-gw-cyan hover:bg-gw-cyan/10 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
             title="Edit Flight"
           >
             <Edit2 className="w-4 h-4" />
@@ -365,7 +356,7 @@ export const FlightManagement = () => {
           <button
             type="button"
             onClick={() => handleOpenDeleteModal(row)}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-gw-error hover:bg-gw-error/10 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
             title="Delete Flight"
           >
             <Trash2 className="w-4 h-4" />
@@ -378,11 +369,11 @@ export const FlightManagement = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* -------------------- 1. HEADER -------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#1e3a5f]/50">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#333333]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">Flight Management</h1>
-            <Badge variant="cyan" size="sm" className="font-mono">
+            <Badge variant="outline" size="sm" className="font-mono">
               {flights.length} Registered
             </Badge>
           </div>
@@ -416,7 +407,6 @@ export const FlightManagement = () => {
             size="md"
             icon={Plus}
             onClick={handleOpenAddModal}
-            className="shadow-lg shadow-gw-cyan/10"
           >
             Add New Flight
           </Button>
@@ -513,14 +503,14 @@ export const FlightManagement = () => {
       {/* Mobile Flight Cards (sm:hidden) */}
       <div className="block sm:hidden space-y-3">
         {isLoading ? (
-          <div className="p-8 text-center text-gw-text-secondary bg-gw-card/50 rounded-xl border border-[#1e3a5f]/60">
+          <div className="p-8 text-center text-gw-text-secondary bg-[#181818] rounded-xl border border-[#333333]">
             <div className="flex items-center justify-center gap-2">
-              <div className="w-4 h-4 border-2 border-gw-cyan border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-[#FFFFFF] border-t-transparent rounded-full animate-spin" />
               <span>Loading flights...</span>
             </div>
           </div>
         ) : filteredFlights.length === 0 ? (
-          <div className="p-6 text-center space-y-3 bg-gw-card/50 rounded-xl border border-[#1e3a5f]/60">
+          <div className="p-6 text-center space-y-3 bg-[#181818] rounded-xl border border-[#333333]">
             <p className="text-sm font-semibold text-gw-text">No matching flights found</p>
             <p className="text-xs text-gw-text-secondary">Try adjusting your search criteria or filters.</p>
             <Button
@@ -537,50 +527,41 @@ export const FlightManagement = () => {
           </div>
         ) : (
           filteredFlights.map((flight) => {
-            const statusVariant =
-              flight.status === 'Boarding'
-                ? 'cyan'
-                : flight.status === 'Delayed'
-                ? 'error'
-                : flight.status === 'Arrived'
-                ? 'success'
-                : 'default'
-
             return (
-              <Card key={flight.id} className="p-4 space-y-3 border-[#1e3a5f]/80">
+              <Card key={flight.id} className="p-4 space-y-3 border-[#333333]">
                 {/* Header: Flight number, Airline, Status */}
-                <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-[#1e3a5f]/40">
+                <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-[#333333]">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-lg bg-gw-cyan/10 text-gw-cyan border border-gw-cyan/20">
+                    <div className="p-2 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
                       <Plane className="w-4 h-4" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-sm font-bold text-gw-cyan">{flight.flightNumber}</span>
+                        <span className="font-mono text-sm font-bold text-[#FFFFFF]">{flight.flightNumber}</span>
                         <span className="font-mono text-[11px] text-gw-text-secondary">({flight.id})</span>
                       </div>
                       <div className="text-xs font-medium text-gw-text">{flight.airline}</div>
                     </div>
                   </div>
-                  <Badge variant={statusVariant} size="sm" dot>
+                  <Badge variant="outline" size="sm">
                     {flight.status}
                   </Badge>
                 </div>
 
                 {/* Details Grid */}
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2 rounded-lg bg-gw-bg-secondary/60 border border-[#1e3a5f]/40 space-y-0.5">
+                  <div className="p-2 rounded-lg bg-[#181818] border border-[#333333] space-y-0.5">
                     <span className="text-[10px] text-gw-text-secondary uppercase">Schedule</span>
                     <div className="font-mono font-medium text-gw-text flex items-center gap-1">
-                      <Clock className="w-3 h-3 text-gw-cyan shrink-0" />
+                      <Clock className="w-3 h-3 text-[#FFFFFF] shrink-0" />
                       <span>{flight.arrivalTime} → {flight.departureTime}</span>
                     </div>
                   </div>
 
-                  <div className="p-2 rounded-lg bg-gw-bg-secondary/60 border border-[#1e3a5f]/40 space-y-0.5">
+                  <div className="p-2 rounded-lg bg-[#181818] border border-[#333333] space-y-0.5">
                     <span className="text-[10px] text-gw-text-secondary uppercase">Terminal & Pax</span>
                     <div className="font-mono font-medium text-gw-text flex items-center gap-1.5">
-                      <span className="px-1.5 py-0.5 rounded bg-gw-bg-tertiary border border-[#1e3a5f] text-[11px]">
+                      <span className="px-1.5 py-0.5 rounded bg-[#222222] border border-[#333333] text-[11px]">
                         {flight.terminal}
                       </span>
                       <span className="text-gw-text-secondary">{flight.passengerCapacity} pax</span>
@@ -595,7 +576,7 @@ export const FlightManagement = () => {
                 </div>
 
                 {/* Action buttons */}
-                <div className="flex items-center gap-2 pt-2 border-t border-[#1e3a5f]/40">
+                <div className="flex items-center gap-2 pt-2 border-t border-[#333333]">
                   <Button
                     variant="outline"
                     size="sm"
@@ -609,7 +590,7 @@ export const FlightManagement = () => {
                     variant="ghost"
                     size="sm"
                     icon={Trash2}
-                    className="flex-1 justify-center text-xs h-9 text-gw-error hover:bg-gw-error/10 hover:text-gw-error"
+                    className="flex-1 justify-center text-xs h-9 hover:bg-[#222222]"
                     onClick={() => handleOpenDeleteModal(flight)}
                   >
                     Delete
@@ -622,11 +603,11 @@ export const FlightManagement = () => {
       </div>
 
       {/* Storage & Architecture Notice */}
-      <div className="p-3.5 rounded-xl bg-gw-bg-secondary/40 border border-[#1e3a5f]/50 flex items-center justify-between text-xs text-gw-text-secondary">
+      <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] flex items-center justify-between text-xs text-gw-text-secondary">
         <div className="flex items-center gap-2">
-          <Info className="w-4 h-4 text-gw-cyan shrink-0" />
+          <Info className="w-4 h-4 text-[#FFFFFF] shrink-0" />
           <span>
-            Flights are stored locally in the browser registry (<code className="font-mono text-gw-cyan">localStorage</code>) and will seamlessly integrate with SQLite / FastAPI in Phase 12.
+            Flights are stored locally in the browser registry (<code className="font-mono text-[#FFFFFF]">localStorage</code>) and will seamlessly integrate with SQLite / FastAPI in Phase 12.
           </span>
         </div>
         <span className="font-mono text-[11px] text-gw-text-secondary hidden md:inline">
@@ -758,8 +739,8 @@ export const FlightManagement = () => {
       >
         {flightToDelete && (
           <div className="space-y-3">
-            <div className="p-3 rounded-xl bg-gw-error/10 border border-gw-error/30 text-xs text-gw-error flex items-start gap-2.5">
-              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+            <div className="p-3 rounded-xl bg-[#111111] border border-[#333333] text-xs text-white flex items-start gap-2.5">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#A3A3A3]" />
               <div>
                 Are you sure you want to remove flight{' '}
                 <strong className="font-mono text-gw-text">{flightToDelete.flightNumber}</strong> ({flightToDelete.airline})?

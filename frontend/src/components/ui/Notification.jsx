@@ -11,10 +11,10 @@ const icons = {
 }
 
 const styles = {
-  success: 'bg-gw-success/15 border-gw-success/35 text-gw-success',
-  warning: 'bg-gw-warning/15 border-gw-warning/35 text-gw-warning',
-  error: 'bg-gw-error/15 border-gw-error/35 text-gw-error',
-  info: 'bg-gw-cyan/15 border-gw-cyan/35 text-gw-cyan'
+  success: 'bg-[#222222] border-[#555555] text-[#FFFFFF]',
+  warning: 'bg-[#1E1E1E] border-[#333333] text-[#E5E5E5]',
+  error: 'bg-[#181818] border-[#555555] text-[#FFFFFF]',
+  info: 'bg-[#222222] border-[#333333] text-[#E5E5E5]'
 }
 
 export const Notification = ({
@@ -35,19 +35,19 @@ export const Notification = ({
       exit="exit"
       role="status"
       aria-live="polite"
-      className={`flex items-start gap-3 p-4 rounded-xl border backdrop-blur-md shadow-lg ${style} ${className}`}
+      className={`flex items-start gap-3 p-4 rounded-xl border backdrop-blur-md shadow-md ${style} ${className}`}
     >
       <Icon className="w-5 h-5 shrink-0 mt-0.5" />
       <div className="flex-1 min-w-0">
         {title && <h5 className="font-semibold text-sm leading-snug">{title}</h5>}
-        {message && <p className="text-xs text-gw-text mt-0.5 leading-relaxed">{message}</p>}
+        {message && <p className="text-xs text-[#A3A3A3] mt-0.5 leading-relaxed">{message}</p>}
       </div>
       {onClose && (
         <button
           type="button"
           onClick={onClose}
           aria-label="Dismiss notification"
-          className="text-gw-text-secondary hover:text-gw-text p-1 rounded-md transition-colors cursor-pointer"
+          className="text-[#A3A3A3] hover:text-[#FFFFFF] p-1 rounded-md transition-colors cursor-pointer"
         >
           <X className="w-4 h-4" />
         </button>

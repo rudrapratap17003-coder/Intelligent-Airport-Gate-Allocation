@@ -421,23 +421,23 @@ export const ScenarioManagement = () => {
   return (
     <div className="space-y-6 animate-fadeIn max-w-7xl mx-auto pb-12">
       {/* -------------------- HEADER -------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#1e3a5f]/50">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#333333]">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
             <h1 className="gw-page-heading">Simulation Management</h1>
-            <Badge variant="cyan" size="sm" className="font-mono">
+            <Badge variant="outline" size="sm" className="font-mono">
               {simulations.length} Total
             </Badge>
-            <Badge variant="success" size="sm" className="font-mono">
+            <Badge variant="outline" size="sm" className="font-mono">
               {readyCount} Ready
             </Badge>
             {draftCount > 0 && (
-              <Badge variant="warning" size="sm" className="font-mono">
+              <Badge variant="outline" size="sm" className="font-mono">
                 {draftCount} Draft
               </Badge>
             )}
             {completedCount > 0 && (
-              <Badge variant="blue" size="sm" className="font-mono" icon={Lock}>
+              <Badge variant="outline" size="sm" className="font-mono" icon={Lock}>
                 {completedCount} Completed
               </Badge>
             )}
@@ -449,7 +449,7 @@ export const ScenarioManagement = () => {
 
         <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
           <Link to="/workspace">
-            <Button size="md" variant="secondary" icon={Sparkles} className="shadow-lg shadow-gw-cyan/5">
+            <Button size="md" variant="secondary" icon={Sparkles}>
               Allocation Workspace
             </Button>
           </Link>
@@ -504,7 +504,7 @@ export const ScenarioManagement = () => {
       {/* -------------------- SIMULATION LIST / EMPTY STATES -------------------- */}
       {isLoading ? (
         <div className="py-20 text-center flex flex-col items-center justify-center gap-3">
-          <div className="w-8 h-8 border-2 border-gw-cyan border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
           <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary">
             Loading simulation registry...
           </span>
@@ -542,29 +542,24 @@ export const ScenarioManagement = () => {
             return (
               <Card
                 key={sim.id}
-                className={`p-5 flex flex-col justify-between transition-all duration-200 space-y-4 group ${
-                  isCompleted
-                    ? 'border-gw-blue/40 bg-gw-card/80'
-                    : 'hover:border-gw-cyan/50'
-                }`}
+                className="p-5 flex flex-col justify-between transition-all duration-200 space-y-4 group border border-[#333333] hover:border-[#555555] bg-[#181818]"
               >
                 <div>
                   {/* Card Header */}
-                  <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-[#1e3a5f]/40">
+                  <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-[#333333]">
                     <div>
-                      <span className="font-mono text-xs font-bold text-gw-cyan block tracking-wider">
+                      <span className="font-mono text-xs font-bold text-[#A3A3A3] block tracking-wider">
                         {sim.id}
                       </span>
-                      <h3 className="font-bold text-base text-gw-text mt-0.5 line-clamp-1 group-hover:text-gw-cyan transition-colors">
+                      <h3 className="font-bold text-base text-gw-text mt-0.5 line-clamp-1 group-hover:text-[#FFFFFF] transition-colors">
                         {sim.name}
                       </h3>
                     </div>
 
                     {/* Status Badge with Click Protection */}
                     <Badge
-                      variant={isReady ? 'success' : isCompleted ? 'blue' : 'warning'}
+                      variant="outline"
                       size="sm"
-                      dot={!isCompleted}
                       icon={isCompleted ? Lock : undefined}
                       className={isCompleted ? 'select-none font-semibold' : 'cursor-pointer select-none'}
                       onClick={() => handleToggleStatus(sim)}
@@ -584,16 +579,16 @@ export const ScenarioManagement = () => {
                   </p>
 
                   {/* Operational Details Grid */}
-                  <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#1e3a5f]/40 text-xs font-mono">
-                    <div className="p-2 rounded-lg bg-gw-bg-secondary/60 border border-[#1e3a5f]/40">
+                  <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#333333] text-xs font-mono">
+                    <div className="p-2 rounded-lg bg-[#181818] border border-[#333333]">
                       <span className="text-[10px] text-gw-text-secondary uppercase block">Roster</span>
                       <span className="font-bold text-gw-text">
                         {flightCount} Flights × {gateCount} Gates
                       </span>
                     </div>
-                    <div className="p-2 rounded-lg bg-gw-bg-secondary/60 border border-[#1e3a5f]/40">
+                    <div className="p-2 rounded-lg bg-[#181818] border border-[#333333]">
                       <span className="text-[10px] text-gw-text-secondary uppercase block">Dimension</span>
-                      <span className={`font-bold ${isBalanced ? 'text-gw-success' : 'text-gw-warning'}`}>
+                      <span className={`font-bold ${isBalanced ? 'text-[#FFFFFF]' : 'text-[#A3A3A3]'}`}>
                         {isBalanced ? 'Balanced n×n' : 'Unbalanced'}
                       </span>
                     </div>
@@ -602,18 +597,18 @@ export const ScenarioManagement = () => {
                   {/* Schedule Slot Info */}
                   <div className="mt-2 text-[11px] text-gw-text-secondary flex items-center justify-between font-mono">
                     <span className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-gw-cyan/70" />
+                      <Calendar className="w-3.5 h-3.5 text-[#A3A3A3]" />
                       {sim.simulationDate || '2026-11-18'}
                     </span>
                     <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-gw-cyan/70" />
+                      <Clock className="w-3.5 h-3.5 text-[#A3A3A3]" />
                       {sim.timeWindow || '08:00 - 12:00'}
                     </span>
                   </div>
                 </div>
 
                 {/* Card Actions */}
-                <div className="pt-3 border-t border-[#1e3a5f]/50 flex items-center justify-between gap-1.5 flex-wrap">
+                <div className="pt-3 border-t border-[#333333] flex items-center justify-between gap-1.5 flex-wrap">
                   <div className="flex items-center gap-1.5">
                     <Button
                       size="sm"
@@ -632,7 +627,7 @@ export const ScenarioManagement = () => {
                         size="sm"
                         variant="secondary"
                         icon={RotateCcw}
-                        className="h-8 text-xs px-2 text-gw-cyan border-gw-cyan/40 hover:bg-gw-cyan/10"
+                        className="h-8 text-xs px-2 text-[#FFFFFF] border-[#333333] hover:bg-[#222222]"
                         onClick={() => setSimToReopen(sim)}
                         title="Reopen completed scenario to Draft"
                       >
@@ -657,7 +652,7 @@ export const ScenarioManagement = () => {
                         size="sm"
                         variant="ghost"
                         icon={CheckCircle2}
-                        className="h-8 text-xs px-2 text-gw-success hover:bg-gw-success/10"
+                        className="h-8 text-xs px-2 text-[#FFFFFF] hover:bg-[#222222]"
                         onClick={() => setSimToComplete(sim)}
                         title="Mark scenario as Completed (Lock)"
                       >
@@ -682,7 +677,7 @@ export const ScenarioManagement = () => {
                       size="sm"
                       variant="ghost"
                       icon={Download}
-                      className="h-8 text-xs px-2 text-gw-text-secondary hover:text-gw-cyan"
+                      className="h-8 text-xs px-2 text-gw-text-secondary hover:text-[#FFFFFF]"
                       onClick={() => exportService.downloadScenarioPdf(sim.id)}
                       title="Export scenario PDF report"
                     >
@@ -692,7 +687,7 @@ export const ScenarioManagement = () => {
                       size="sm"
                       variant="ghost"
                       icon={Trash2}
-                      className="h-8 text-xs px-2 text-gw-error hover:bg-gw-error/10"
+                      className="h-8 text-xs px-2 text-[#A3A3A3] hover:text-white hover:bg-[#222222]"
                       onClick={() => {
                         setSimulationToDelete(sim)
                         setIsDeleteModalOpen(true)
@@ -720,8 +715,8 @@ export const ScenarioManagement = () => {
         footer={
           <div className="flex items-center justify-between w-full gap-3">
             <div className="text-xs font-mono text-gw-text-secondary">
-              Selected: <strong className="text-gw-cyan">{formData.selectedFlightIds.length}</strong> Flights ↔{' '}
-              <strong className="text-gw-cyan">{formData.selectedGateIds.length}</strong> Gates
+              Selected: <strong className="text-[#FFFFFF]">{formData.selectedFlightIds.length}</strong> Flights ↔{' '}
+              <strong className="text-[#FFFFFF]">{formData.selectedGateIds.length}</strong> Gates
             </div>
             <div className="flex items-center gap-2.5">
               <Button variant="ghost" size="md" onClick={() => setIsFormModalOpen(false)}>
@@ -766,7 +761,7 @@ export const ScenarioManagement = () => {
             </label>
             <textarea
               rows={2}
-              className="w-full bg-gw-bg-secondary/90 text-gw-text text-sm rounded-lg border border-[#1e3a5f] p-3 focus:border-gw-cyan focus:ring-2 focus:ring-gw-cyan/25 outline-none transition-all placeholder:text-gw-text-secondary/50"
+              className="w-full bg-[#181818] text-gw-text text-sm rounded-lg border border-[#333333] p-3 focus:border-[#FFFFFF] outline-none transition-all placeholder:text-gw-text-secondary/50"
               placeholder="Operational objectives, expected constraints, weather assumptions..."
               value={formData.description}
               onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
@@ -802,8 +797,8 @@ export const ScenarioManagement = () => {
                     type="button"
                     className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-colors ${
                       formData.timeWindow === slot
-                        ? 'bg-gw-cyan/20 border-gw-cyan text-gw-cyan'
-                        : 'bg-gw-bg-primary/60 border-[#1e3a5f]/40 text-gw-text-secondary hover:text-gw-text'
+                        ? 'bg-[#FFFFFF] text-[#090909] font-bold border-[#FFFFFF]'
+                        : 'bg-[#181818] border-[#333333] text-gw-text-secondary hover:text-gw-text'
                     }`}
                     onClick={() => setFormData((prev) => ({ ...prev, timeWindow: slot }))}
                   >
@@ -817,12 +812,12 @@ export const ScenarioManagement = () => {
               <label className="block text-xs font-semibold text-gw-text-secondary uppercase tracking-wider mb-1.5">
                 Target Status
               </label>
-              <div className="flex rounded-lg overflow-hidden border border-[#1e3a5f] bg-gw-bg-secondary/90 p-0.5">
+              <div className="flex rounded-lg overflow-hidden border border-[#333333] bg-[#181818] p-0.5">
                 <button
                   type="button"
                   className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all ${
                     formData.status === 'Ready'
-                      ? 'bg-gw-cyan text-gw-bg-primary shadow'
+                      ? 'bg-[#FFFFFF] text-[#090909] shadow'
                       : 'text-gw-text-secondary hover:text-gw-text'
                   }`}
                   onClick={() => setFormData((prev) => ({ ...prev, status: 'Ready' }))}
@@ -833,7 +828,7 @@ export const ScenarioManagement = () => {
                   type="button"
                   className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all ${
                     formData.status === 'Draft'
-                      ? 'bg-gw-warning text-gw-bg-primary shadow'
+                      ? 'bg-[#383838] text-[#FFFFFF] shadow'
                       : 'text-gw-text-secondary hover:text-gw-text'
                   }`}
                   onClick={() => setFormData((prev) => ({ ...prev, status: 'Draft' }))}
@@ -845,10 +840,10 @@ export const ScenarioManagement = () => {
           </div>
 
           {/* Flight Selection Section */}
-          <div className="p-3.5 rounded-xl bg-gw-bg-secondary/40 border border-[#1e3a5f]/60 space-y-3">
+          <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Plane className="w-4 h-4 text-gw-cyan" />
+                <Plane className="w-4 h-4 text-[#FFFFFF]" />
                 <span className="text-xs font-bold uppercase tracking-wider text-gw-text">
                   Flight Selection ({formData.selectedFlightIds.length} of {availableFlights.length} selected)
                 </span>
@@ -859,7 +854,7 @@ export const ScenarioManagement = () => {
                   placeholder="Filter flights..."
                   value={flightSearchInModal}
                   onChange={(e) => setFlightSearchInModal(e.target.value)}
-                  className="text-xs bg-gw-bg-primary border border-[#1e3a5f] rounded px-2 py-1 text-gw-text placeholder:text-gw-text-secondary/50 outline-none focus:border-gw-cyan"
+                  className="text-xs bg-[#111111] border border-[#333333] rounded px-2 py-1 text-gw-text placeholder:text-gw-text-secondary/50 outline-none focus:border-[#FFFFFF]"
                 />
                 <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2" onClick={handleSelectAllFlights}>
                   Select All
@@ -871,10 +866,10 @@ export const ScenarioManagement = () => {
             </div>
 
             {formErrors.flights && (
-              <p className="text-xs text-gw-error font-medium">{formErrors.flights}</p>
+              <p className="text-xs text-white font-medium">{formErrors.flights}</p>
             )}
 
-            <div className="max-h-48 overflow-y-auto divide-y divide-[#1e3a5f]/40 border border-[#1e3a5f]/40 rounded-lg bg-gw-bg-primary/50">
+            <div className="max-h-48 overflow-y-auto divide-y divide-[#333333] border border-[#333333] rounded-lg bg-[#111111]">
               {filteredModalFlights.map((flight) => {
                 const isSelected = formData.selectedFlightIds.includes(flight.id)
                 return (
@@ -882,14 +877,14 @@ export const ScenarioManagement = () => {
                     key={flight.id}
                     onClick={() => toggleFlightSelection(flight.id)}
                     className={`flex items-center justify-between p-2.5 text-xs cursor-pointer transition-colors ${
-                      isSelected ? 'bg-gw-cyan/10 hover:bg-gw-cyan/15' : 'hover:bg-white/5'
+                      isSelected ? 'bg-[#222222]' : 'hover:bg-white/5'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
                       {isSelected ? (
-                        <CheckSquare className="w-4 h-4 text-gw-cyan shrink-0" />
+                        <CheckSquare className="w-4 h-4 text-[#FFFFFF] shrink-0" />
                       ) : (
-                        <Square className="w-4 h-4 text-gw-text-secondary shrink-0" />
+                        <Square className="w-4 h-4 text-[#737373] shrink-0" />
                       )}
                       <div>
                         <span className="font-mono font-bold text-gw-text mr-2">
@@ -903,7 +898,7 @@ export const ScenarioManagement = () => {
                       <span>•</span>
                       <span>{flight.aircraftType || flight.aircraft_type || 'Commercial'}</span>
                       <span>•</span>
-                      <span className="text-gw-cyan">
+                      <span className="text-[#FFFFFF]">
                         {flight.arrivalTime || flight.arrival_time} - {flight.departureTime || flight.departure_time}
                       </span>
                     </div>
@@ -914,10 +909,10 @@ export const ScenarioManagement = () => {
           </div>
 
           {/* Gate Selection Section */}
-          <div className="p-3.5 rounded-xl bg-gw-bg-secondary/40 border border-[#1e3a5f]/60 space-y-3">
+          <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div className="flex items-center gap-2">
-                <DoorOpen className="w-4 h-4 text-gw-cyan" />
+                <DoorOpen className="w-4 h-4 text-[#FFFFFF]" />
                 <span className="text-xs font-bold uppercase tracking-wider text-gw-text">
                   Gate Selection ({formData.selectedGateIds.length} of {availableGates.length} selected)
                 </span>
@@ -928,7 +923,7 @@ export const ScenarioManagement = () => {
                   placeholder="Filter gates..."
                   value={gateSearchInModal}
                   onChange={(e) => setGateSearchInModal(e.target.value)}
-                  className="text-xs bg-gw-bg-primary border border-[#1e3a5f] rounded px-2 py-1 text-gw-text placeholder:text-gw-text-secondary/50 outline-none focus:border-gw-cyan"
+                  className="text-xs bg-[#111111] border border-[#333333] rounded px-2 py-1 text-gw-text placeholder:text-gw-text-secondary/50 outline-none focus:border-[#FFFFFF]"
                 />
                 <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2" onClick={handleSelectAllGates}>
                   Select All
@@ -940,10 +935,10 @@ export const ScenarioManagement = () => {
             </div>
 
             {formErrors.gates && (
-              <p className="text-xs text-gw-error font-medium">{formErrors.gates}</p>
+              <p className="text-xs text-white font-medium">{formErrors.gates}</p>
             )}
 
-            <div className="max-h-48 overflow-y-auto divide-y divide-[#1e3a5f]/40 border border-[#1e3a5f]/40 rounded-lg bg-gw-bg-primary/50">
+            <div className="max-h-48 overflow-y-auto divide-y divide-[#333333] border border-[#333333] rounded-lg bg-[#111111]">
               {filteredModalGates.map((gate) => {
                 const isSelected = formData.selectedGateIds.includes(gate.id)
                 return (
@@ -951,14 +946,14 @@ export const ScenarioManagement = () => {
                     key={gate.id}
                     onClick={() => toggleGateSelection(gate.id)}
                     className={`flex items-center justify-between p-2.5 text-xs cursor-pointer transition-colors ${
-                      isSelected ? 'bg-gw-cyan/10 hover:bg-gw-cyan/15' : 'hover:bg-white/5'
+                      isSelected ? 'bg-[#222222]' : 'hover:bg-white/5'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
                       {isSelected ? (
-                        <CheckSquare className="w-4 h-4 text-gw-cyan shrink-0" />
+                        <CheckSquare className="w-4 h-4 text-[#FFFFFF] shrink-0" />
                       ) : (
-                        <Square className="w-4 h-4 text-gw-text-secondary shrink-0" />
+                        <Square className="w-4 h-4 text-[#737373] shrink-0" />
                       )}
                       <div>
                         <span className="font-mono font-bold text-gw-text mr-2">
@@ -982,7 +977,7 @@ export const ScenarioManagement = () => {
           </div>
 
           {/* Dimension preview note */}
-          <div className="p-3 rounded-lg bg-gw-bg-secondary/70 border border-[#1e3a5f]/40 flex items-center justify-between text-xs">
+          <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] flex items-center justify-between text-xs">
             <span className="text-gw-text-secondary">
               Dimension Status:{' '}
               <strong className="text-gw-text">
@@ -1055,32 +1050,31 @@ export const ScenarioManagement = () => {
           <div className="space-y-5">
             {/* Metadata Bar */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-xs">
-              <div className="p-2.5 rounded-lg bg-gw-bg-secondary/60 border border-[#1e3a5f]/40">
+              <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
                 <span className="text-[10px] text-gw-text-secondary uppercase block">Status</span>
                 <Badge
-                  variant={inspectingSim.status === 'Ready' ? 'success' : inspectingSim.status === 'Completed' ? 'blue' : 'warning'}
+                  variant="outline"
                   size="sm"
-                  dot={inspectingSim.status !== 'Completed'}
                   icon={inspectingSim.status === 'Completed' ? Lock : undefined}
                   className="mt-0.5"
                 >
                   {inspectingSim.status}
                 </Badge>
               </div>
-              <div className="p-2.5 rounded-lg bg-gw-bg-secondary/60 border border-[#1e3a5f]/40">
+              <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
                 <span className="text-[10px] text-gw-text-secondary uppercase block">Dimensions</span>
                 <span className="font-bold text-gw-text mt-0.5 block">
                   {(inspectingSim.selectedFlightIds || inspectingSim.selected_flight_ids || []).length}F ↔{' '}
                   {(inspectingSim.selectedGateIds || inspectingSim.selected_gate_ids || []).length}G
                 </span>
               </div>
-              <div className="p-2.5 rounded-lg bg-gw-bg-secondary/60 border border-[#1e3a5f]/40">
+              <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
                 <span className="text-[10px] text-gw-text-secondary uppercase block">Schedule Slot</span>
-                <span className="font-bold text-gw-cyan mt-0.5 block">
+                <span className="font-bold text-[#FFFFFF] mt-0.5 block">
                   {inspectingSim.timeWindow || '08:00 - 12:00'}
                 </span>
               </div>
-              <div className="p-2.5 rounded-lg bg-gw-bg-secondary/60 border border-[#1e3a5f]/40">
+              <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
                 <span className="text-[10px] text-gw-text-secondary uppercase block">Created</span>
                 <span className="font-bold text-gw-text-secondary mt-0.5 block truncate">
                   {inspectingSim.createdAt ? new Date(inspectingSim.createdAt).toLocaleDateString() : 'N/A'}
@@ -1090,7 +1084,7 @@ export const ScenarioManagement = () => {
 
             {/* Description */}
             {inspectingSim.description && (
-              <div className="p-3.5 rounded-lg bg-gw-bg-secondary/40 border border-[#1e3a5f]/40 text-xs text-gw-text-secondary leading-relaxed">
+              <div className="p-3.5 rounded-lg bg-[#181818] border border-[#333333] text-xs text-gw-text-secondary leading-relaxed">
                 <strong className="text-gw-text block mb-1">Operational Description:</strong>
                 {inspectingSim.description}
               </div>
@@ -1099,17 +1093,17 @@ export const ScenarioManagement = () => {
             {/* Flight Roster Table */}
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-gw-text mb-2 flex items-center gap-1.5">
-                <Plane className="w-4 h-4 text-gw-cyan" />
+                <Plane className="w-4 h-4 text-[#FFFFFF]" />
                 Selected Flight Roster (
                 {(inspectingSim.selectedFlightIds || inspectingSim.selected_flight_ids || []).length})
               </h4>
-              <div className="max-h-44 overflow-y-auto rounded-lg border border-[#1e3a5f]/40 divide-y divide-[#1e3a5f]/40">
+              <div className="max-h-44 overflow-y-auto rounded-lg border border-[#333333] divide-y divide-[#333333]">
                 {(inspectingSim.selectedFlightIds || inspectingSim.selected_flight_ids || []).map((fid) => {
                   const flight = availableFlights.find((f) => f.id === fid)
                   return (
                     <div key={fid} className="p-2.5 flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-gw-cyan">{fid}</span>
+                        <span className="font-mono font-bold text-[#FFFFFF]">{fid}</span>
                         <span className="text-gw-text font-semibold">
                           {flight?.flightNumber || flight?.flight_number || fid}
                         </span>
@@ -1120,7 +1114,7 @@ export const ScenarioManagement = () => {
                         <span>•</span>
                         <span>{flight?.aircraftType || flight?.aircraft_type || 'Standard'}</span>
                         <span>•</span>
-                        <span className="text-gw-cyan">
+                        <span className="text-[#FFFFFF]">
                           {flight?.arrivalTime || flight?.arrival_time || '08:00'} - {flight?.departureTime || flight?.departure_time || '10:00'}
                         </span>
                       </div>
@@ -1133,23 +1127,23 @@ export const ScenarioManagement = () => {
             {/* Gate Roster Table */}
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-gw-text mb-2 flex items-center gap-1.5">
-                <DoorOpen className="w-4 h-4 text-gw-cyan" />
+                <DoorOpen className="w-4 h-4 text-[#FFFFFF]" />
                 Selected Gate Roster (
                 {(inspectingSim.selectedGateIds || inspectingSim.selected_gate_ids || []).length})
               </h4>
-              <div className="max-h-44 overflow-y-auto rounded-lg border border-[#1e3a5f]/40 divide-y divide-[#1e3a5f]/40">
+              <div className="max-h-44 overflow-y-auto rounded-lg border border-[#333333] divide-y divide-[#333333]">
                 {(inspectingSim.selectedGateIds || inspectingSim.selected_gate_ids || []).map((gid) => {
                   const gate = availableGates.find((g) => g.id === gid)
                   return (
                     <div key={gid} className="p-2.5 flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-gw-cyan">{gid}</span>
+                        <span className="font-mono font-bold text-[#FFFFFF]">{gid}</span>
                         <span className="text-gw-text font-semibold">
                           Gate {gate?.gateNumber || gate?.gate_number || gid}
                         </span>
                         <span className="text-gw-text-secondary">({gate?.terminal || 'T1'})</span>
                       </div>
-                      <div className="flex items-center gap-2 text-gw-text-secondary font-mono text-[11px]">
+                      <div className="flex items-center gap-2 font-mono text-[11px] text-gw-text-secondary">
                         <Badge variant="default" size="sm">
                           {gate?.gateType || gate?.gate_type || 'Universal'}
                         </Badge>
@@ -1180,10 +1174,10 @@ export const ScenarioManagement = () => {
             Are you sure you want to reopen completed scenario{' '}
             <strong className="text-gw-text">{simToReopen?.name}</strong>?
           </p>
-          <div className="p-3 rounded-lg bg-gw-cyan/10 border border-gw-cyan/25 text-xs text-gw-text leading-relaxed">
+          <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] text-xs text-gw-text leading-relaxed">
             Reopening transitions the scenario to <strong>Draft</strong> status, unlocking parameters, flight rosters, and gate allocations for modification.
           </div>
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1e3a5f]/50">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#333333]">
             <Button variant="ghost" size="md" onClick={() => setSimToReopen(null)}>
               Cancel
             </Button>
@@ -1207,10 +1201,10 @@ export const ScenarioManagement = () => {
           <p className="text-sm text-gw-text-secondary leading-relaxed">
             Mark scenario <strong className="text-gw-text">{simToComplete?.name}</strong> ({simToComplete?.id}) as Completed?
           </p>
-          <div className="p-3 rounded-lg bg-gw-blue/10 border border-gw-blue/30 text-xs text-gw-text leading-relaxed">
+          <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] text-xs text-gw-text leading-relaxed">
             Completed scenarios represent finished allocations and are protected against accidental modifications. You can reopen the scenario at any time.
           </div>
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1e3a5f]/50">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#333333]">
             <Button variant="ghost" size="md" onClick={() => setSimToComplete(null)}>
               Cancel
             </Button>
@@ -1234,14 +1228,14 @@ export const ScenarioManagement = () => {
             Are you sure you want to permanently delete simulation scenario{' '}
             <strong className="text-gw-text">{simulationToDelete?.name}</strong> ({simulationToDelete?.id})?
           </p>
-          <div className="p-3 rounded-lg bg-gw-error/10 border border-gw-error/20 text-xs text-gw-error leading-relaxed">
+          <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] text-xs text-[#A3A3A3] leading-relaxed">
             Associated restriction matrices and saved allocations configured for this scenario will be purged.
           </div>
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1e3a5f]/50">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#333333]">
             <Button variant="ghost" size="md" onClick={() => setIsDeleteModalOpen(false)}>
               Cancel
             </Button>
-            <Button variant="danger" size="md" icon={Trash2} onClick={handleDelete}>
+            <Button variant="outline" size="md" icon={Trash2} onClick={handleDelete}>
               Confirm Delete
             </Button>
           </div>

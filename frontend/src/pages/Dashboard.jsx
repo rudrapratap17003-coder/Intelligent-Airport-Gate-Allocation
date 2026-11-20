@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import {
   Plane,
   DoorClosed,
@@ -8,7 +7,6 @@ import {
   Calculator,
   PlayCircle,
   BarChart3,
-  BookOpen,
   ArrowRight,
   ShieldCheck,
   AlertCircle,
@@ -20,12 +18,10 @@ import {
   Info,
   Activity,
   Cpu,
-  Database,
   ExternalLink,
   Compass,
   Building2,
-  Bell,
-  Clock
+  Bell
 } from 'lucide-react'
 import {
   ResponsiveContainer,
@@ -41,7 +37,6 @@ import Counter from '../components/ui/Counter'
 import dashboardService from '../lib/dashboardService'
 import allocationService from '../lib/allocationService'
 import { useAirport } from '../context/AirportContext'
-import { staggerContainer, staggerItem } from '../lib/animations'
 
 /**
  * Format timestamp into relative or clean human-readable date.
@@ -68,7 +63,7 @@ function formatTime(timestamp) {
 }
 
 export const Dashboard = () => {
-  const { selectedTerminal, setSelectedTerminal, terminalsSummary, alerts, simClock } = useAirport()
+  const { alerts } = useAirport()
 
   // Primary data states
   const [summary, setSummary] = useState(null)
@@ -78,92 +73,68 @@ export const Dashboard = () => {
   const [error, setError] = useState(null)
   const [lastRefreshedAt, setLastRefreshedAt] = useState(null)
 
-  // Allocation sample generation state (Phase 16–18 integration)
+  // Allocation sample generation state
   const [allocationSample, setAllocationSample] = useState(null)
   const [isGeneratingSample, setIsGeneratingSample] = useState(false)
   const [allocationError, setAllocationError] = useState(null)
 
-  // Quick Access Modules definition (All 10 modules)
+  // Operational Modules definition
   const quickModules = [
     {
-      title: 'Digital Airport Map',
-      description: 'Interactive schematic of Kempegowda International Airport Bengaluru runways, aprons, and stands.',
+      title: 'Airport Layout',
+      description: 'Apron and docking stand layout for Kempegowda International Airport Bengaluru.',
       path: '/airport-map',
       icon: Compass,
-      color: 'cyan',
-      tag: 'Digital Twin'
-    },
-    {
-      title: 'Terminal Operations',
-      description: 'Dedicated operational views and aircraft envelopes for Terminal 1 and Terminal 2.',
-      path: '/terminals',
-      icon: Building2,
-      color: 'blue',
-      tag: 'T1 & T2'
+      tag: 'Layout'
     },
     {
       title: 'Flight Management',
-      description: 'Configure active flight schedules, aircraft classes, carrier callsigns, and arrival windows.',
+      description: 'Flight schedules, aircraft envelopes, carrier callsigns, and arrival windows.',
       path: '/flights',
       icon: Plane,
-      color: 'cyan',
-      tag: 'Fleet Ops'
+      tag: 'Fleet'
     },
     {
       title: 'Gate Management',
-      description: 'Manage terminal gates, jetway boarding bridges, and supported aircraft dimensions.',
+      description: 'Terminal contact gates, jetway boarding bridges, and apron stands.',
       path: '/gates',
       icon: DoorClosed,
-      color: 'blue',
-      tag: 'Facility Hub'
+      tag: 'Facility'
     },
     {
-      title: 'Simulation Management',
-      description: 'Create, configure, duplicate, and balance n × n flight-gate assignment scenarios.',
-      path: '/simulator?tab=scenarios',
+      title: 'Gate Restrictions',
+      description: 'Configure and inspect binary restriction matrices of forbidden flight-gate pairs.',
+      path: '/restrictions',
+      icon: Grid3X3,
+      tag: 'Matrix'
+    },
+    {
+      title: 'Allocation Workspace',
+      description: 'Guided allocation workflow with bipartite verification and step-by-step audit.',
+      path: '/workspace',
+      icon: PlayCircle,
+      tag: 'Guided'
+    },
+    {
+      title: 'Simulation Scenarios',
+      description: 'Manage balanced n × n flight-gate assignment scenarios and restriction models.',
+      path: '/scenarios',
       icon: Layers,
-      color: 'warning',
       tag: 'Scenarios'
     },
     {
-      title: 'Restriction Matrix',
-      description: 'Inspect and configure the n × n binary matrix of forbidden flight-to-gate assignments.',
-      path: '/restrictions',
-      icon: Grid3X3,
-      color: 'warning',
-      tag: 'Binary Board'
-    },
-    {
-      title: 'Allocation Simulator',
-      description: 'Generate conflict-free flight-to-gate schedules via backtracking search and interactive bipartite graph.',
-      path: '/simulator',
-      icon: PlayCircle,
-      color: 'success',
-      tag: 'Backtracking'
-    },
-    {
       title: 'Mathematical Engine',
-      description: 'Step-by-step evaluation of Rook Polynomial coefficients and Inclusion-Exclusion exact sums.',
+      description: 'Rook Polynomial derivations and Principle of Inclusion-Exclusion calculations.',
       path: '/calculation',
       icon: Calculator,
-      color: 'cyan',
-      tag: 'PIE Engine'
+      tag: 'Discrete Math'
     },
     {
-      title: 'Analytics & Compare',
-      description: 'Analyze restriction densities, combinatorial state reductions, and feasibility ratios.',
+      title: 'Analytics & Reports',
+      description: 'Combinatorial state analysis, restriction densities, and exportable reports.',
       path: '/analytics',
       icon: BarChart3,
-      color: 'blue',
-      tag: 'Telemetry'
-    },
-    {
-      title: 'Mathematical Explorer',
-      description: 'Interactive educational walkthrough of Rook Polynomials and combinatorial allocation theory.',
-      path: '/math-explorer',
-      icon: BookOpen,
-      color: 'cyan',
-      tag: 'Discrete Math'
+      tag: 'Analytics'
     }
   ]
 
@@ -182,7 +153,6 @@ export const Dashboard = () => {
       setSummary(data)
       setLastRefreshedAt(new Date())
 
-      // If a math summary is returned, ensure selectedSimId aligns with it
       if (data.mathematical_summary?.simulation_id) {
         setSelectedSimId(data.mathematical_summary.simulation_id)
       } else if (!selectedSimId && data.simulations.simulations.length > 0) {
@@ -197,12 +167,10 @@ export const Dashboard = () => {
     }
   }, [selectedSimId])
 
-  // Initial mount
   useEffect(() => {
     loadDashboardData()
   }, [])
 
-  // Handle switching target simulation in dropdown
   const handleSimulationChange = async (newSimId) => {
     if (!newSimId || newSimId === selectedSimId) return
     setSelectedSimId(newSimId)
@@ -211,7 +179,6 @@ export const Dashboard = () => {
     await loadDashboardData(newSimId, true)
   }
 
-  // Handle generating a sample of allocations on demand (Phase 16–18)
   const handleGenerateSample = async () => {
     const simId = selectedSimId || summary?.mathematical_summary?.simulation_id
     if (!simId) return
@@ -229,7 +196,6 @@ export const Dashboard = () => {
     }
   }
 
-  // Simulation Dropdown Options
   const simulationOptions = useMemo(() => {
     if (!summary?.simulations?.simulations) return []
     return summary.simulations.simulations.map((s) => ({
@@ -238,63 +204,53 @@ export const Dashboard = () => {
     }))
   }, [summary])
 
-  // Feasibility Chart Data
   const feasibilityChartData = useMemo(() => {
     if (!summary?.mathematical_summary) return []
     const math = summary.mathematical_summary
     const valid = math.exact_valid_assignments
     const invalid = Math.max(0, math.total_possible_assignments - valid)
     return [
-      { name: 'Valid Assignments', value: valid, color: '#00f0ff' },
-      { name: 'Infeasible / Forbidden', value: invalid, color: '#1e3a5f' }
+      { name: 'Valid Assignments', value: valid, color: '#FFFFFF' },
+      { name: 'Infeasible / Forbidden', value: invalid, color: '#333333' }
     ]
   }, [summary])
 
-  // =========================================================================
-  // RENDER: LOADING SKELETON
-  // =========================================================================
   if (isLoading && !summary) {
     return (
       <div className="space-y-8 animate-fadeIn">
-        <div className="flex items-center justify-between pb-4 border-b border-[#1e3a5f]/50">
+        <div className="flex items-center justify-between pb-4 border-b border-[#333333]">
           <div className="space-y-2">
-            <div className="h-8 w-64 bg-gw-bg-secondary rounded-lg animate-pulse" />
-            <div className="h-4 w-96 bg-gw-bg-secondary/60 rounded animate-pulse" />
+            <div className="h-7 w-64 bg-[#181818] rounded-lg animate-pulse" />
+            <div className="h-4 w-96 bg-[#181818]/60 rounded animate-pulse" />
           </div>
-          <div className="h-10 w-36 bg-gw-bg-secondary rounded-lg animate-pulse" />
+          <div className="h-9 w-40 bg-[#181818] rounded-lg animate-pulse" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <Card key={i} className="h-32 bg-gw-bg-secondary/40 animate-pulse border-[#1e3a5f]/40" />
+            <Card key={i} className="h-28 bg-[#181818] animate-pulse border-[#333333]" />
           ))}
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-8 h-80 bg-gw-bg-secondary/40 rounded-xl animate-pulse" />
-          <div className="lg:col-span-4 h-80 bg-gw-bg-secondary/40 rounded-xl animate-pulse" />
-        </div>
+        <div className="h-64 bg-[#181818]/40 rounded-xl animate-pulse" />
       </div>
     )
   }
 
-  // =========================================================================
-  // RENDER: ERROR STATE
-  // =========================================================================
   if (error && !summary) {
     return (
-      <div className="p-8 max-w-2xl mx-auto my-12 text-center space-y-6 bg-gw-bg-secondary border border-gw-danger/30 rounded-2xl shadow-2xl">
-        <div className="w-16 h-16 rounded-2xl bg-gw-danger/10 text-gw-danger border border-gw-danger/20 flex items-center justify-center mx-auto">
+      <div className="p-8 max-w-2xl mx-auto my-12 text-center space-y-6 bg-[#181818] border border-[#555555] rounded-2xl shadow-xl">
+        <div className="w-16 h-16 rounded-2xl bg-[#222222] text-[#FFFFFF] border border-[#333333] flex items-center justify-center mx-auto">
           <AlertCircle className="w-8 h-8" />
         </div>
         <div className="space-y-2">
-          <h2 className="text-xl font-bold text-gw-text">Backend Connection Offline</h2>
-          <p className="text-sm text-gw-text-secondary leading-relaxed">
+          <h2 className="text-xl font-bold text-[#FFFFFF]">Backend Connection Offline</h2>
+          <p className="text-sm text-[#A3A3A3] leading-relaxed">
             Unable to communicate with the FastAPI persistence and discrete math engine.
             Please ensure the backend server is active at{' '}
-            <code className="text-gw-cyan font-mono text-xs bg-black/40 px-2 py-0.5 rounded">
+            <code className="text-[#FFFFFF] font-mono text-xs bg-black/40 px-2 py-0.5 rounded">
               http://127.0.0.1:8000
             </code>.
           </p>
-          <p className="text-xs text-gw-danger font-mono bg-gw-danger/5 p-2 rounded-lg border border-gw-danger/20">
+          <p className="text-xs text-[#E5E5E5] font-mono bg-[#222222] p-2 rounded-lg border border-[#333333]">
             {error}
           </p>
         </div>
@@ -303,7 +259,6 @@ export const Dashboard = () => {
             size="md"
             icon={RefreshCw}
             onClick={() => loadDashboardData(null, false)}
-            className="shadow-lg shadow-gw-cyan/10"
           >
             Retry Connection
           </Button>
@@ -317,42 +272,35 @@ export const Dashboard = () => {
   const simulations = summary?.simulations || { total: 0, valid_count: 0, invalid_count: 0, simulations: [] }
   const math = summary?.mathematical_summary
 
+  const gateUtilization = gates.total > 0 ? Math.round((gates.occupied / gates.total) * 100) : 0
+  const forbiddenCombinations = math ? math.forbidden_assignment_count : 0
+  const actualAllocationConflicts = allocationSample?.validation?.total_conflicts ?? 0
+  const unallocatedFlights = flights.total > 0 && gates.total > 0 ? Math.max(0, flights.total - gates.total) : 0
+
   return (
-    <div className="space-y-8 animate-fadeIn">
-      {/* ----------------- 1. WELCOME HEADER & ACTIONS ----------------- */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#1e3a5f]/50">
+    <div className="space-y-6 animate-fadeIn">
+      {/* ----------------- 1. INSTITUTIONAL HEADER & SINGLE DOMINANT CTA ----------------- */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#333333]">
         <div className="space-y-1">
-          <div className="flex items-center gap-2.5">
-            <h1 className="gw-page-heading">BLR Operations Center</h1>
-            <Badge variant="cyan" size="sm" dot>
-              VOBL / BLR Digital Twin
-            </Badge>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-gw-success/10 border border-gw-success/25 text-gw-success font-mono font-medium hidden sm:inline-flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-gw-success animate-pulse" />
-              Simulated Operations
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#FFFFFF] tracking-tight font-sans">
+              Airport Operations Dashboard
+            </h1>
+            <span className="text-[10px] px-2 py-0.5 rounded bg-[#222222] border border-[#333333] text-[#E5E5E5] font-mono font-medium">
+              DEMONSTRATION ENVIRONMENT
             </span>
             {lastRefreshedAt && (
-              <span className="text-[11px] text-gw-text-secondary font-mono hidden md:inline">
-                Synced {formatTime(lastRefreshedAt)}
+              <span className="text-[11px] text-[#A3A3A3] font-mono hidden md:inline">
+                Refreshed {formatTime(lastRefreshedAt)}
               </span>
             )}
           </div>
-          <p className="text-sm text-gw-text-secondary leading-relaxed">
-            Operational decision-support dashboard for Kempegowda International Airport Bengaluru. Integrates flight scheduling, apron stand allocations, and discrete mathematical conflict resolution.
+          <p className="text-xs text-[#A3A3A3] leading-relaxed">
+            Gate allocation, flight management and operational decision support for Bengaluru airport.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 shrink-0">
-          <Link to="/airport-map">
-            <Button variant="outline" size="md" icon={Compass} className="border-gw-cyan/40 text-gw-cyan">
-              Airport Map
-            </Button>
-          </Link>
-          <Link to="/terminals">
-            <Button variant="outline" size="md" icon={Building2}>
-              Terminals
-            </Button>
-          </Link>
+        <div className="flex items-center gap-3 shrink-0">
           <Button
             variant="outline"
             size="md"
@@ -367,301 +315,329 @@ export const Dashboard = () => {
             <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
           </Button>
           <Link to="/workspace">
-            <Button size="md" icon={PlayCircle} className="shadow-lg shadow-gw-cyan/20 font-bold">
-              START ALLOCATION
+            <Button size="md" icon={PlayCircle} className="font-semibold shadow-xs">
+              RUN ALLOCATION ANALYSIS
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* ----------------- BLR OPERATIONAL ALERTS BANNER ----------------- */}
-      {alerts && alerts.length > 0 && (
-        <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-600/40 text-xs text-amber-200 space-y-2.5 shadow-md shadow-amber-950/20">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 font-bold text-amber-400">
-              <AlertTriangle className="w-4 h-4 text-amber-400 animate-pulse" />
-              <span>ACTIVE AIRPORT OPERATIONAL ALERTS ({alerts.length})</span>
-            </div>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">
-              SIMULATED TELEMETRY
-            </span>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-            {alerts.slice(0, 2).map((a) => (
-              <div key={a.id} className="p-2.5 rounded-lg bg-[#07111e] border border-amber-500/30 flex items-start justify-between gap-2">
-                <div>
-                  <div className="font-semibold text-gw-text flex items-center gap-1.5">
-                    <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-400 text-[10px] font-mono">{a.category}</span>
-                    <span>{a.title}</span>
-                  </div>
-                  <p className="text-[11px] text-gw-text-secondary mt-1">{a.explanation}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ----------------- TERMINAL STATUS OVERVIEW CARDS ----------------- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Link to="/terminals" className="group">
-          <Card className="hover:border-cyan-500/50 transition-all p-4 bg-[#081527] border-[#183556]">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Plane className="w-4 h-4 text-gw-cyan" />
-                <span className="font-bold text-sm text-gw-text">Terminal 1 — Domestic</span>
-              </div>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-400 font-mono">
-                Code C / D
-              </span>
-            </div>
-            <p className="text-xs text-gw-text-secondary leading-relaxed mb-3">
-              Dedicated domestic operations handling IndiGo (6E), Akasa Air (QP), and SpiceJet (SG). Narrow-body contact stands and bus boarding positions.
-            </p>
-            <div className="flex items-center justify-between text-xs font-mono pt-2 border-t border-[#1e3a5f]/40 text-gw-cyan">
-              <span>View T1 Operations & Stands</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Card>
-        </Link>
-
-        <Link to="/terminals" className="group">
-          <Card className="hover:border-teal-500/50 transition-all p-4 bg-[#081527] border-[#183556]">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-emerald-400" />
-                <span className="font-bold text-sm text-gw-text">Terminal 2 — International & Premium</span>
-              </div>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-mono">
-                Code E / F Dual Aerobridges
-              </span>
-            </div>
-            <p className="text-xs text-gw-text-secondary leading-relaxed mb-3">
-              "Terminal in a Garden" handling international carriers (Emirates, Singapore Airlines, Qatar Airways) and full-service domestic (Air India, Vistara).
-            </p>
-            <div className="flex items-center justify-between text-xs font-mono pt-2 border-t border-[#1e3a5f]/40 text-emerald-400">
-              <span>View T2 Operations & Stands</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Card>
-        </Link>
-      </div>
-
-      {/* ----------------- 2. DOMINANT NEXT-ACTION GUIDANCE BANNER ----------------- */}
-      <div className="p-4 rounded-xl bg-gradient-to-r from-gw-cyan/15 via-gw-bg-secondary to-gw-blue/10 border border-gw-cyan/35 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg shadow-gw-cyan/5">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-gw-cyan font-bold text-sm">
-            <Cpu className="w-4 h-4" />
-            <span>Ready for Allocation Synthesis</span>
-          </div>
-          <p className="text-xs text-gw-text-secondary leading-relaxed max-w-2xl">
-            Execute the 7-step guided workflow: select flights & gates, review restriction density, compute exact Rook Polynomials and Inclusion-Exclusion sums, and export verified schedules.
-          </p>
-        </div>
-        <Link to="/workspace" className="shrink-0">
-          <Button size="md" icon={ArrowRight} className="w-full sm:w-auto shadow-md shadow-gw-cyan/20 font-semibold">
-            START NEW ALLOCATION
-          </Button>
-        </Link>
-      </div>
-
-      {/* ----------------- 3. DATABASE PERSISTENCE STATUS BANNER ----------------- */}
-      <div className="p-3.5 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-        <div className="flex items-start sm:items-center gap-2.5 text-gw-text-secondary leading-relaxed">
-          <Database className="w-4 h-4 shrink-0 text-gw-cyan mt-0.5 sm:mt-0" />
-          <span>
-            <strong className="text-gw-text">Authoritative Storage Layer:</strong> SQLite / SQLAlchemy database synchronized with FastAPI backend (
-            <span className="text-gw-cyan font-mono font-medium">{flights.total}</span> flights,{' '}
-            <span className="text-gw-blue font-mono font-medium">{gates.total}</span> gates,{' '}
-            <span className="text-gw-warning font-mono font-medium">{simulations.total}</span> scenarios registered).
-          </span>
-        </div>
-        <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
-          <Badge variant="cyan" size="sm" className="inline-flex">
-            Database Synchronized
-          </Badge>
-          <Badge variant="default" size="sm" className="font-mono text-[10px]">
-            FastAPI v1
-          </Badge>
-        </div>
-      </div>
-
-      {/* ----------------- 3. CORE TELEMETRY STATISTIC CARDS ----------------- */}
+      {/* ----------------- 2. TOP METRICS (4 KEY KPI CARDS) ----------------- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Flights Telemetry */}
-        <Card className="hover:border-gw-cyan/40 transition-colors" interactive>
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs uppercase font-medium tracking-wider text-gw-text-secondary">
-              Fleet Operations
+        {/* Card 1: Registered Flights */}
+        <Card className="hover:border-[#555555] transition-colors p-4 bg-[#181818] border-[#333333]">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs uppercase font-medium tracking-wider text-[#A3A3A3]">
+              Registered Flights
             </span>
-            <div className="p-2 rounded-lg bg-gw-cyan/10 text-gw-cyan border border-gw-cyan/20">
+            <div className="p-2 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
               <Plane className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <Counter value={flights.total} className="text-3xl font-extrabold text-gw-text" />
-            <span className="text-xs text-gw-text-secondary">flights registered</span>
+            <Counter value={flights.total} className="text-3xl font-extrabold text-[#FFFFFF]" />
+            <span className="text-xs text-[#A3A3A3]">flights registered</span>
           </div>
-
-          {/* Status Breakdown Pills */}
-          <div className="mt-3 pt-3 border-t border-[#1e3a5f]/40 flex flex-wrap gap-1.5 text-[11px]">
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gw-text">
-              <strong className="text-gw-cyan">{flights.scheduled}</strong> Sched
-            </span>
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gw-text">
-              <strong className="text-gw-success">{flights.boarding}</strong> Board
-            </span>
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gw-text">
-              <strong className="text-gw-warning">{flights.delayed}</strong> Delay
-            </span>
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gw-text">
-              <strong className="text-gw-text-secondary">{flights.arrived}</strong> Arr
-            </span>
+          <div className="mt-3 pt-3 border-t border-[#333333] flex flex-wrap gap-1 text-[11px] text-[#A3A3A3]">
+            <span>{flights.scheduled} sched</span>
+            <span>•</span>
+            <span>{flights.boarding} boarding</span>
+            <span>•</span>
+            <span>{flights.delayed} delayed</span>
+            <span>•</span>
+            <span>{flights.arrived} arrived</span>
           </div>
-
-          <div className="mt-3 pt-2 flex items-center justify-between text-[11px] text-gw-text-secondary">
+          <div className="mt-2 flex items-center justify-between text-[11px] text-[#A3A3A3]">
             <span>Fleet Registry</span>
-            <Link to="/flights" className="text-gw-cyan hover:underline flex items-center gap-0.5 font-medium">
+            <Link to="/flights" className="text-[#FFFFFF] hover:underline flex items-center gap-0.5 font-medium">
               <span>Manage</span>
               <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
         </Card>
 
-        {/* Card 2: Gates Telemetry */}
-        <Card className="hover:border-gw-blue/40 transition-colors" interactive>
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs uppercase font-medium tracking-wider text-gw-text-secondary">
-              Facility Docking
+        {/* Card 2: Available Gates */}
+        <Card className="hover:border-[#555555] transition-colors p-4 bg-[#181818] border-[#333333]">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs uppercase font-medium tracking-wider text-[#A3A3A3]">
+              Available Gates
             </span>
-            <div className="p-2 rounded-lg bg-gw-blue/10 text-gw-blue border border-gw-blue/20">
+            <div className="p-2 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
               <DoorClosed className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <Counter value={gates.total} className="text-3xl font-extrabold text-gw-text" />
-            <span className="text-xs text-gw-text-secondary">gates available</span>
+            <Counter value={gates.available} className="text-3xl font-extrabold text-[#FFFFFF]" />
+            <span className="text-xs text-[#A3A3A3]">of {gates.total} stands</span>
           </div>
-
-          {/* Status Breakdown Pills */}
-          <div className="mt-3 pt-3 border-t border-[#1e3a5f]/40 flex flex-wrap gap-1.5 text-[11px]">
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gw-text">
-              <strong className="text-gw-success">{gates.available}</strong> Open
-            </span>
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gw-text">
-              <strong className="text-gw-warning">{gates.occupied}</strong> In-Use
-            </span>
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gw-text">
-              <strong className="text-gw-text-secondary">{gates.maintenance}</strong> Maint
-            </span>
+          <div className="mt-3 pt-3 border-t border-[#333333] flex flex-wrap gap-1 text-[11px] text-[#A3A3A3]">
+            <span className="text-[#FFFFFF] font-medium">{gates.available} open</span>
+            <span>•</span>
+            <span>{gates.occupied} occupied</span>
+            <span>•</span>
+            <span>{gates.maintenance} maint</span>
           </div>
-
-          <div className="mt-3 pt-2 flex items-center justify-between text-[11px] text-gw-text-secondary">
+          <div className="mt-2 flex items-center justify-between text-[11px] text-[#A3A3A3]">
             <span>Terminal 1 & 2</span>
-            <Link to="/gates" className="text-gw-blue hover:underline flex items-center gap-0.5 font-medium">
+            <Link to="/gates" className="text-[#FFFFFF] hover:underline flex items-center gap-0.5 font-medium">
               <span>Manage</span>
               <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
         </Card>
 
-        {/* Card 3: Simulation Scenarios */}
-        <Card className="hover:border-gw-warning/40 transition-colors" interactive>
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs uppercase font-medium tracking-wider text-gw-text-secondary">
-              Simulation Windows
+        {/* Card 3: Gate Utilization */}
+        <Card className="hover:border-[#555555] transition-colors p-4 bg-[#181818] border-[#333333]">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs uppercase font-medium tracking-wider text-[#A3A3A3]">
+              Gate Utilization
             </span>
-            <div className="p-2 rounded-lg bg-gw-warning/10 text-gw-warning border border-gw-warning/20">
-              <Layers className="w-4 h-4" />
+            <div className="p-2 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+              <BarChart3 className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <Counter value={simulations.total} className="text-3xl font-extrabold text-gw-warning" />
-            <span className="text-xs text-gw-text-secondary">total scenarios</span>
-          </div>
-
-          {/* Validity status breakdown */}
-          <div className="mt-3 pt-3 border-t border-[#1e3a5f]/40 flex flex-wrap gap-1.5 text-[11px]">
-            <span className="px-2 py-0.5 rounded bg-gw-success/10 border border-gw-success/20 text-gw-success font-medium">
-              {simulations.valid_count} Balanced (n × n)
+            <span className="text-3xl font-extrabold text-[#FFFFFF]">
+              {gateUtilization}%
             </span>
-            {simulations.invalid_count > 0 && (
-              <span className="px-2 py-0.5 rounded bg-gw-danger/10 border border-gw-danger/20 text-gw-danger font-medium">
-                {simulations.invalid_count} Incomplete
-              </span>
-            )}
+            <span className="text-xs text-[#A3A3A3]">stand occupancy</span>
           </div>
-
-          <div className="mt-3 pt-2 flex items-center justify-between text-[11px] text-gw-text-secondary">
-            <span className="truncate max-w-[130px]" title={simulations.most_recent_name || 'None'}>
-              Latest: {simulations.most_recent_name || 'None'}
-            </span>
-            <Link to="/simulator?tab=scenarios" className="text-gw-warning hover:underline flex items-center gap-0.5 font-medium">
-              <span>Scenarios</span>
+          <div className="mt-3 pt-3 border-t border-[#333333] flex flex-wrap gap-1 text-[11px] text-[#A3A3A3]">
+            <span>{gates.occupied} occupied</span>
+            <span>•</span>
+            <span>{gates.total - gates.occupied} vacant</span>
+          </div>
+          <div className="mt-2 flex items-center justify-between text-[11px] text-[#A3A3A3]">
+            <span>Apron Stands</span>
+            <Link to="/airport-map" className="text-[#FFFFFF] hover:underline flex items-center gap-0.5 font-medium">
+              <span>Layout Map</span>
               <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
         </Card>
 
-        {/* Card 4: Selected Scenario Feasibility & Math */}
-        <Card className="hover:border-gw-success/40 transition-colors" interactive>
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs uppercase font-medium tracking-wider text-gw-text-secondary">
-              Feasibility Ratio
+        {/* Card 4: Forbidden Flight-Gate Combinations */}
+        <Card className="hover:border-[#555555] transition-colors p-4 bg-[#181818] border-[#333333]">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs uppercase font-medium tracking-wider text-[#A3A3A3]">
+              Forbidden Combinations
             </span>
-            <div className="p-2 rounded-lg bg-gw-success/10 text-gw-success border border-gw-success/20">
-              <Calculator className="w-4 h-4" />
+            <div className="p-2 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+              <Grid3X3 className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold font-mono text-gw-success">
-              {math ? `${math.feasibility_percentage.toFixed(1)}%` : '—'}
+            <span className="text-3xl font-extrabold text-[#FFFFFF]">
+              {forbiddenCombinations}
             </span>
-            <span className="text-xs text-gw-text-secondary font-mono">
-              {math ? `(${math.exact_valid_assignments.toLocaleString()} / ${math.total_possible_assignments.toLocaleString()})` : 'No scenario'}
-            </span>
+            <span className="text-xs text-[#A3A3A3]">matrix cells (r₁)</span>
           </div>
-
-          {/* Density & Forbidden stats */}
-          <div className="mt-3 pt-3 border-t border-[#1e3a5f]/40 flex flex-wrap gap-1.5 text-[11px]">
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gw-text font-mono">
-              <strong className="text-gw-warning">{math ? math.forbidden_assignment_count : 0}</strong> forbidden
-            </span>
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gw-text font-mono">
-              <strong className="text-gw-cyan">{math ? `${math.restriction_density}%` : '0%'}</strong> density
-            </span>
+          <div className="mt-3 pt-3 border-t border-[#333333] flex flex-wrap gap-1 text-[11px] text-[#A3A3A3]">
+            <span>{math ? `${math.restriction_density}% density` : 'No active scenario'}</span>
+            <span>•</span>
+            <span className="font-mono">{math ? math.simulation_id : '—'}</span>
           </div>
-
-          <div className="mt-3 pt-2 flex items-center justify-between text-[11px] text-gw-text-secondary">
-            <span className="font-mono text-gw-cyan truncate max-w-[120px]">{math ? math.simulation_id : 'Select Sim'}</span>
-            <Link to="/calculation" className="text-gw-success hover:underline flex items-center gap-0.5 font-medium">
-              <span>Derivation</span>
+          <div className="mt-2 flex items-center justify-between text-[11px] text-[#A3A3A3]">
+            <span>Restriction Matrix</span>
+            <Link to="/restrictions" className="text-[#FFFFFF] hover:underline flex items-center gap-0.5 font-medium">
+              <span>Inspect</span>
               <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
         </Card>
       </div>
 
-      {/* ----------------- 4. MATHEMATICAL ENGINE & ALLOCATION VALIDATION SECTION ----------------- */}
+      {/* ----------------- 3. OPERATIONAL OVERVIEW ----------------- */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xs font-semibold text-[#FFFFFF] uppercase tracking-wider font-mono">
+            Operational Overview
+          </h2>
+          <span className="text-[11px] text-[#A3A3A3] font-mono">
+            Kempegowda International Airport (BLR / VOBL)
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Flight Fleet Breakdown */}
+          <Card className="p-4 bg-[#181818] border-[#333333] space-y-3">
+            <div className="flex items-center justify-between border-b border-[#333333] pb-2">
+              <span className="text-xs font-semibold text-[#FFFFFF]">Flight Fleet Status</span>
+              <Plane className="w-4 h-4 text-[#FFFFFF]" />
+            </div>
+            <div className="space-y-1.5 text-xs">
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Scheduled:</span>
+                <span className="font-mono text-[#FFFFFF] font-medium">{flights.scheduled}</span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Boarding:</span>
+                <span className="font-mono text-[#FFFFFF] font-medium">{flights.boarding}</span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Delayed:</span>
+                <span className="font-mono text-[#E5E5E5] font-medium">{flights.delayed}</span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Arrived / Complete:</span>
+                <span className="font-mono text-[#737373] font-medium">{flights.arrived}</span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3] pt-1 border-t border-[#333333]">
+                <span>Unallocated Flights:</span>
+                <span className="font-mono text-[#FFFFFF] font-medium">{unallocatedFlights}</span>
+              </div>
+            </div>
+          </Card>
+
+          {/* Gate Facility Breakdown */}
+          <Card className="p-4 bg-[#181818] border-[#333333] space-y-3">
+            <div className="flex items-center justify-between border-b border-[#333333] pb-2">
+              <span className="text-xs font-semibold text-[#FFFFFF]">Gate Facility Status</span>
+              <DoorClosed className="w-4 h-4 text-[#FFFFFF]" />
+            </div>
+            <div className="space-y-1.5 text-xs">
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Available (Open):</span>
+                <span className="font-mono text-[#FFFFFF] font-medium">{gates.available}</span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Occupied (In-Use):</span>
+                <span className="font-mono text-[#E5E5E5] font-medium">{gates.occupied}</span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Maintenance / Closed:</span>
+                <span className="font-mono text-[#737373] font-medium">{gates.maintenance}</span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Total Capacity:</span>
+                <span className="font-mono text-[#FFFFFF] font-medium">{gates.total} stands</span>
+              </div>
+            </div>
+          </Card>
+
+          {/* Terminal Distribution */}
+          <Card className="p-4 bg-[#181818] border-[#333333] space-y-3">
+            <div className="flex items-center justify-between border-b border-[#333333] pb-2">
+              <span className="text-xs font-semibold text-[#FFFFFF]">Terminal Distribution</span>
+              <Building2 className="w-4 h-4 text-[#FFFFFF]" />
+            </div>
+            <div className="space-y-1.5 text-xs">
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Terminal 1 (Domestic):</span>
+                <span className="font-mono text-[#FFFFFF] font-medium">Code C / D</span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Terminal 2 (Int'l / Premium):</span>
+                <span className="font-mono text-[#E5E5E5] font-medium">Code E / F</span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Key Carriers:</span>
+                <span className="text-[#A3A3A3] text-[11px] truncate">6E, AI, QP, EK, SQ</span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3] pt-1">
+                <Link to="/airport-map" className="text-[#FFFFFF] text-[11px] hover:underline flex items-center gap-1">
+                  <span>View Terminal Aprons</span>
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+            </div>
+          </Card>
+
+          {/* Active Feasibility */}
+          <Card className="p-4 bg-[#181818] border-[#333333] space-y-3">
+            <div className="flex items-center justify-between border-b border-[#333333] pb-2">
+              <span className="text-xs font-semibold text-[#FFFFFF]">Scenario Feasibility</span>
+              <Calculator className="w-4 h-4 text-[#FFFFFF]" />
+            </div>
+            <div className="space-y-1.5 text-xs">
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Active Scenario:</span>
+                <span className="font-mono text-[#FFFFFF] font-medium truncate max-w-[120px]">
+                  {math ? math.simulation_id : 'None'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Board Dimensions:</span>
+                <span className="font-mono text-[#FFFFFF] font-medium">
+                  {math ? `${math.matrix_size} × ${math.matrix_size}` : '—'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Exact Valid (PIE):</span>
+                <span className="font-mono text-[#FFFFFF] font-medium">
+                  {math ? math.exact_valid_assignments.toLocaleString() : '—'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-[#A3A3A3]">
+                <span>Feasibility Ratio:</span>
+                <span className="font-mono text-[#E5E5E5] font-medium">
+                  {math ? `${math.feasibility_percentage.toFixed(1)}%` : '—'}
+                </span>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      {/* ----------------- 4. ALERTS & NOTIFICATIONS ----------------- */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Bell className="w-4 h-4 text-[#FFFFFF]" />
+            <h2 className="text-xs font-semibold text-[#FFFFFF] uppercase tracking-wider font-mono">
+              Alerts & Notifications
+            </h2>
+          </div>
+          <span className="text-xs text-[#A3A3A3] font-mono">
+            {alerts && alerts.length > 0 ? `${alerts.length} Active` : 'All Clear'}
+          </span>
+        </div>
+
+        {alerts && alerts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {alerts.map((a) => (
+              <div key={a.id} className="p-3 rounded-lg bg-[#181818] border border-[#333333] flex items-start gap-3">
+                <AlertTriangle className="w-4 h-4 text-[#FFFFFF] shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#222222] text-[#E5E5E5] border border-[#333333]">
+                      {a.category || 'OPERATIONAL'}
+                    </span>
+                    <span className="text-xs font-semibold text-[#FFFFFF] truncate">{a.title}</span>
+                  </div>
+                  <p className="text-[11px] text-[#A3A3A3] mt-1 leading-relaxed">{a.explanation}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] flex items-center gap-3 text-xs text-[#A3A3A3]">
+            <CheckCircle2 className="w-4 h-4 text-[#FFFFFF] shrink-0" />
+            <span>No active alerts in the current demonstration dataset.</span>
+          </div>
+        )}
+      </div>
+
+      {/* ----------------- 5. MATHEMATICAL ENGINE & ALLOCATION VALIDATION SECTION ----------------- */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Combinatorial Engine & Theory Evaluation (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <h2 className="gw-section-heading flex items-center gap-2">
-              <Cpu className="w-5 h-5 text-gw-cyan" />
+            <h2 className="text-sm font-semibold text-[#FFFFFF] flex items-center gap-2 uppercase tracking-wider font-mono">
+              <Cpu className="w-4 h-4 text-[#FFFFFF]" />
               <span>Discrete Mathematical Engine</span>
             </h2>
 
             {/* Target Scenario Selector */}
             <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
-              <span className="text-xs text-gw-text-secondary font-mono shrink-0">Target Scenario:</span>
+              <span className="text-xs text-[#A3A3A3] font-mono shrink-0">Target Scenario:</span>
               <select
                 value={selectedSimId}
                 onChange={(e) => handleSimulationChange(e.target.value)}
-                className="bg-gw-bg-secondary border border-[#1e3a5f] rounded-lg px-2.5 py-1 text-xs text-gw-text font-mono focus:border-gw-cyan focus:outline-none cursor-pointer max-w-[240px] truncate"
+                className="bg-[#181818] border border-[#333333] rounded-lg px-2.5 py-1 text-xs text-[#FFFFFF] font-mono focus:border-[#777777] focus:outline-none cursor-pointer max-w-[240px] truncate"
               >
                 {simulationOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value} className="bg-gw-bg-secondary text-gw-text">
+                  <option key={opt.value} value={opt.value} className="bg-[#181818] text-[#FFFFFF]">
                     {opt.label}
                   </option>
                 ))}
@@ -669,18 +645,18 @@ export const Dashboard = () => {
             </div>
           </div>
 
-          <Card className="space-y-5">
+          <Card className="space-y-5 p-5 bg-[#181818] border-[#333333]">
             {math ? (
               <>
-                <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#1e3a5f]/40">
+                <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#333333]">
                   <div>
-                    <h3 className="text-base font-bold text-gw-text flex items-center gap-2">
+                    <h3 className="text-base font-bold text-[#FFFFFF] flex items-center gap-2">
                       <span>{math.simulation_name}</span>
-                      <Badge variant="cyan" size="sm" className="font-mono">
+                      <Badge variant="default" size="sm" className="font-mono text-[#FFFFFF] border-[#555555]">
                         {math.matrix_size} × {math.matrix_size} Board
                       </Badge>
                     </h3>
-                    <p className="text-xs text-gw-text-secondary mt-1">
+                    <p className="text-xs text-[#A3A3A3] mt-1">
                       Exact combinatorial calculation derived via Rook Polynomial dynamic programming and Principle of Inclusion-Exclusion.
                     </p>
                   </div>
@@ -694,45 +670,45 @@ export const Dashboard = () => {
                 {/* Mathematical Formulations Display */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Formula Box 1: Rook Polynomial */}
-                  <div className="p-3.5 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/60 space-y-2">
+                  <div className="p-3.5 rounded-xl bg-[#111111] border border-[#333333] space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-mono uppercase tracking-wider text-gw-text-secondary">
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#A3A3A3]">
                         1. Rook Polynomial R(B, x)
                       </span>
-                      <Badge variant="warning" size="sm" className="font-mono text-[10px]">
+                      <Badge variant="default" size="sm" className="font-mono text-[10px] text-[#FFFFFF]">
                         Deg {math.rook_coefficients.length - 1}
                       </Badge>
                     </div>
-                    <div className="gw-formula-box text-xs break-all font-mono py-2 text-gw-warning">
+                    <div className="text-xs break-all font-mono py-2 text-[#FFFFFF]">
                       {math.rook_polynomial}
                     </div>
-                    <p className="text-[11px] text-gw-text-secondary leading-relaxed">
-                      Coefficients <span className="font-mono text-gw-text">rₖ</span> represent non-attacking rooks on forbidden cells.
+                    <p className="text-[11px] text-[#A3A3A3] leading-relaxed">
+                      Coefficients <span className="font-mono text-[#FFFFFF]">rₖ</span> represent non-attacking rooks on forbidden cells.
                     </p>
                   </div>
 
                   {/* Formula Box 2: PIE Exact Sum */}
-                  <div className="p-3.5 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/60 space-y-2">
+                  <div className="p-3.5 rounded-xl bg-[#111111] border border-[#333333] space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-mono uppercase tracking-wider text-gw-text-secondary">
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#A3A3A3]">
                         2. Inclusion-Exclusion (PIE)
                       </span>
-                      <Badge variant="success" size="sm" className="font-mono text-[10px]">
+                      <Badge variant="default" size="sm" className="font-mono text-[10px] text-[#FFFFFF]">
                         Exact Integer
                       </Badge>
                     </div>
-                    <div className="gw-formula-box text-xs break-all font-mono py-2 text-gw-success">
+                    <div className="text-xs break-all font-mono py-2 text-[#FFFFFF]">
                       N = Σ [(-1)ᵏ · rₖ · (n - k)!] = {math.exact_valid_assignments.toLocaleString()}
                     </div>
-                    <p className="text-[11px] text-gw-text-secondary leading-relaxed">
+                    <p className="text-[11px] text-[#A3A3A3] leading-relaxed">
                       Exact number of bijective assignments violating zero restriction constraints out of{' '}
-                      <span className="font-mono text-gw-text">{math.total_possible_assignments.toLocaleString()}</span>.
+                      <span className="font-mono text-[#FFFFFF]">{math.total_possible_assignments.toLocaleString()}</span>.
                     </p>
                   </div>
                 </div>
 
                 {/* Combinatorial Breakdown Visualization */}
-                <div className="pt-2 border-t border-[#1e3a5f]/40 flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div className="pt-2 border-t border-[#333333] flex flex-col sm:flex-row items-center justify-between gap-6">
                   <div className="w-full sm:w-48 h-36 relative shrink-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -746,7 +722,7 @@ export const Dashboard = () => {
                           dataKey="value"
                         >
                           {feasibilityChartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} stroke="#0f172a" strokeWidth={2} />
+                            <Cell key={`cell-${index}`} fill={entry.color} stroke="#090909" strokeWidth={2} />
                           ))}
                         </Pie>
                         <Tooltip
@@ -754,9 +730,9 @@ export const Dashboard = () => {
                             if (active && payload && payload.length) {
                               const data = payload[0].payload
                               return (
-                                <div className="p-2 rounded bg-gw-bg-secondary border border-[#1e3a5f] text-xs font-mono shadow-lg">
-                                  <div className="font-bold text-gw-text">{data.name}</div>
-                                  <div className="text-gw-cyan">{data.value.toLocaleString()} assignments</div>
+                                <div className="p-2 rounded bg-[#181818] border border-[#333333] text-xs font-mono shadow-lg">
+                                  <div className="font-bold text-[#FFFFFF]">{data.name}</div>
+                                  <div className="text-[#E5E5E5]">{data.value.toLocaleString()} assignments</div>
                                 </div>
                               )
                             }
@@ -766,40 +742,40 @@ export const Dashboard = () => {
                       </PieChart>
                     </ResponsiveContainer>
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                      <span className="text-xs font-bold font-mono text-gw-cyan">
+                      <span className="text-xs font-bold font-mono text-[#FFFFFF]">
                         {math.feasibility_percentage.toFixed(0)}%
                       </span>
-                      <span className="text-[9px] uppercase tracking-wider text-gw-text-secondary">Valid</span>
+                      <span className="text-[9px] uppercase tracking-wider text-[#A3A3A3]">Valid</span>
                     </div>
                   </div>
 
-                  <div className="flex-1 space-y-2.5 text-xs text-gw-text-secondary w-full">
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-gw-bg-secondary/50 border border-[#1e3a5f]/40">
+                  <div className="flex-1 space-y-2.5 text-xs text-[#A3A3A3] w-full">
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-[#111111] border border-[#333333]">
                       <span className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-gw-cyan" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#FFFFFF]" />
                         <span>Valid Assignments (N)</span>
                       </span>
-                      <span className="font-mono font-bold text-gw-cyan">
+                      <span className="font-mono font-bold text-[#FFFFFF]">
                         {math.exact_valid_assignments.toLocaleString()}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-gw-bg-secondary/50 border border-[#1e3a5f]/40">
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-[#111111] border border-[#333333]">
                       <span className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#1e3a5f]" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#333333]" />
                         <span>Infeasible Permutations</span>
                       </span>
-                      <span className="font-mono text-gw-text-secondary">
+                      <span className="font-mono text-[#A3A3A3]">
                         {(math.total_possible_assignments - math.exact_valid_assignments).toLocaleString()}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-gw-bg-secondary/50 border border-[#1e3a5f]/40">
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-[#111111] border border-[#333333]">
                       <span className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-gw-warning" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#737373]" />
                         <span>Forbidden Matrix Cells</span>
                       </span>
-                      <span className="font-mono text-gw-warning">
+                      <span className="font-mono text-[#FFFFFF]">
                         {math.forbidden_assignment_count} / {math.matrix_size * math.matrix_size} ({math.restriction_density}%)
                       </span>
                     </div>
@@ -808,13 +784,13 @@ export const Dashboard = () => {
               </>
             ) : (
               <div className="p-8 text-center space-y-3">
-                <AlertTriangle className="w-10 h-10 text-gw-warning mx-auto" />
-                <h3 className="text-sm font-bold text-gw-text">No Balanced Scenario Selected</h3>
-                <p className="text-xs text-gw-text-secondary max-w-md mx-auto">
+                <AlertTriangle className="w-10 h-10 text-[#A3A3A3] mx-auto" />
+                <h3 className="text-sm font-bold text-[#FFFFFF]">No Balanced Scenario Selected</h3>
+                <p className="text-xs text-[#A3A3A3] max-w-md mx-auto">
                   The selected scenario has an unbalanced flight/gate configuration or an uninitialized restriction matrix.
                   Select a valid n × n scenario to view exact mathematical derivations.
                 </p>
-                <Link to="/simulator?tab=scenarios">
+                <Link to="/scenarios">
                   <Button variant="outline" size="sm" icon={Layers}>
                     Manage Scenarios
                   </Button>
@@ -824,87 +800,95 @@ export const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Right Column: Live Allocation Generator & Conflict Audit (5 cols) */}
+        {/* Right Column: Allocation Generator & Conflict Audit (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="gw-section-heading flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-gw-success" />
+            <h2 className="text-sm font-semibold text-[#FFFFFF] flex items-center gap-2 uppercase tracking-wider font-mono">
+              <ShieldCheck className="w-4 h-4 text-[#FFFFFF]" />
               <span>Allocation Generation & Audit</span>
             </h2>
-            <Link to="/simulator" className="text-xs text-gw-cyan hover:underline flex items-center gap-0.5">
-              <span>Simulator</span>
+            <Link to="/workspace" className="text-xs text-[#FFFFFF] hover:underline flex items-center gap-0.5">
+              <span>Workspace</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <Card className="space-y-4">
+          <Card className="space-y-4 p-5 bg-[#181818] border-[#333333]">
             <div className="space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-gw-text">On-Demand Generation Engine</span>
-                <Badge variant={allocationSample ? 'success' : 'default'} size="sm" className="font-mono text-[10px]">
+                <span className="text-xs font-semibold text-[#FFFFFF]">On-Demand Generation Engine</span>
+                <Badge variant={allocationSample ? 'default' : 'default'} size="sm" className="font-mono text-[10px] text-[#FFFFFF]">
                   {allocationSample ? 'Sample Loaded' : 'Ready'}
                 </Badge>
               </div>
-              <p className="text-xs text-gw-text-secondary leading-relaxed">
-                Backtracking engine with independent Phase 17 conflict detection. Distinguishes exact theoretical counts from materialized plans.
+              <p className="text-xs text-[#A3A3A3] leading-relaxed">
+                Backtracking engine with independent conflict audit. Distinguishes exact theoretical counts from materialized plans.
               </p>
             </div>
 
             {/* Clear Callout Distinguishing Exact Theoretical vs Materialized Plans */}
-            <div className="p-3 rounded-lg bg-gw-bg-secondary/80 border border-[#1e3a5f]/80 text-[11px] text-gw-text-secondary space-y-1">
-              <div className="flex items-center gap-1.5 font-semibold text-gw-cyan">
+            <div className="p-3 rounded-lg bg-[#111111] border border-[#333333] text-[11px] text-[#A3A3A3] space-y-1">
+              <div className="flex items-center gap-1.5 font-semibold text-[#FFFFFF]">
                 <Info className="w-3.5 h-3.5 shrink-0" />
                 <span>Exact Total vs. Generated Sample</span>
               </div>
               <p className="leading-relaxed">
                 The PIE engine proves there are{' '}
-                <strong className="text-gw-text">{math ? math.exact_valid_assignments.toLocaleString() : 'N'}</strong>{' '}
+                <strong className="text-[#FFFFFF]">{math ? math.exact_valid_assignments.toLocaleString() : 'N'}</strong>{' '}
                 valid assignments. The allocation generator produces materialized plans on demand with zero conflict tolerance.
               </p>
             </div>
 
             {/* Allocation Results Panel */}
             {allocationSample ? (
-              <div className="space-y-3 pt-2 border-t border-[#1e3a5f]/40">
+              <div className="space-y-3 pt-2 border-t border-[#333333]">
                 <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-                  <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 space-y-0.5">
-                    <span className="text-[10px] text-gw-text-secondary uppercase block">Generated Plans</span>
-                    <span className="text-lg font-bold text-gw-text">
+                  <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333] space-y-0.5">
+                    <span className="text-[10px] text-[#A3A3A3] uppercase block">Generated Plans</span>
+                    <span className="text-lg font-bold text-[#FFFFFF]">
                       {allocationSample.generated_count}{' '}
-                      <span className="text-xs font-normal text-gw-text-secondary">/ {allocationSample.total_valid_assignments}</span>
+                      <span className="text-xs font-normal text-[#A3A3A3]">/ {allocationSample.total_valid_assignments}</span>
                     </span>
                   </div>
 
-                  <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 space-y-0.5">
-                    <span className="text-[10px] text-gw-text-secondary uppercase block">Conflict Status</span>
-                    <span className="text-lg font-bold text-gw-success flex items-center gap-1">
+                  <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333] space-y-0.5">
+                    <span className="text-[10px] text-[#A3A3A3] uppercase block">Conflict Status</span>
+                    <span className="text-lg font-bold text-[#FFFFFF] flex items-center gap-1">
                       <CheckCircle2 className="w-4 h-4" />
                       <span>100% Valid</span>
                     </span>
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded-lg bg-gw-bg-secondary border border-[#1e3a5f]/60 text-xs space-y-1">
-                  <div className="flex items-center justify-between text-gw-text-secondary">
+                <div className="p-2.5 rounded-lg bg-[#111111] border border-[#333333] text-xs space-y-1">
+                  <div className="flex items-center justify-between text-[#A3A3A3]">
+                    <span>Actual Allocation Conflicts:</span>
+                    <span className="font-mono text-[#FFFFFF] font-medium">{actualAllocationConflicts} (Conflict-Free)</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[#A3A3A3]">
+                    <span>Forbidden Pairs Enforced:</span>
+                    <span className="font-mono text-[#FFFFFF] font-medium">{forbiddenCombinations}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[#A3A3A3]">
                     <span>Algorithm:</span>
-                    <span className="font-mono text-gw-cyan">{allocationSample.algorithm}</span>
+                    <span className="font-mono text-[#FFFFFF]">{allocationSample.algorithm}</span>
                   </div>
-                  <div className="flex items-center justify-between text-gw-text-secondary">
+                  <div className="flex items-center justify-between text-[#A3A3A3]">
                     <span>Validation Engine:</span>
-                    <span className="font-mono text-gw-success">Phase 17 Independent Auditor</span>
+                    <span className="font-mono text-[#FFFFFF]">Independent Conflict Auditor</span>
                   </div>
-                  <div className="flex items-center justify-between text-gw-text-secondary">
+                  <div className="flex items-center justify-between text-[#A3A3A3]">
                     <span>Completion Status:</span>
-                    <span className="font-mono text-gw-text">
+                    <span className="font-mono text-[#FFFFFF]">
                       {allocationSample.generation_complete ? 'Complete (All Generated)' : 'Sample Window (More Exist)'}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 pt-1">
-                  <Link to={`/simulator?sim=${selectedSimId}`} className="flex-1">
+                  <Link to="/workspace" className="flex-1">
                     <Button variant="outline" size="sm" className="w-full justify-center" icon={PlayCircle}>
-                      Open in Simulator
+                      Open Workspace
                     </Button>
                   </Link>
                   <Button
@@ -918,14 +902,14 @@ export const Dashboard = () => {
                 </div>
               </div>
             ) : (
-              <div className="space-y-3 pt-2 border-t border-[#1e3a5f]/40">
-                <p className="text-xs text-gw-text-secondary leading-relaxed">
+              <div className="space-y-3 pt-2 border-t border-[#333333]">
+                <p className="text-xs text-[#A3A3A3] leading-relaxed">
                   Generate and independently audit a batch of 50 conflict-free flight-to-gate assignments for scenario{' '}
-                  <strong className="text-gw-text font-mono">{selectedSimId}</strong>.
+                  <strong className="text-[#FFFFFF] font-mono">{selectedSimId}</strong>.
                 </p>
 
                 {allocationError && (
-                  <div className="p-2.5 rounded-lg bg-gw-danger/10 border border-gw-danger/30 text-xs text-gw-danger flex items-start gap-2">
+                  <div className="p-2.5 rounded-lg bg-[#222222] border border-[#555555] text-xs text-[#FFFFFF] flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                     <span>{allocationError}</span>
                   </div>
@@ -936,7 +920,7 @@ export const Dashboard = () => {
                   icon={PlayCircle}
                   onClick={handleGenerateSample}
                   disabled={isGeneratingSample || !math}
-                  className="w-full justify-center shadow-lg shadow-gw-cyan/10"
+                  className="w-full justify-center"
                 >
                   {isGeneratingSample ? 'Executing Backtracking Search...' : 'Generate 50 Sample Allocations'}
                 </Button>
@@ -946,30 +930,30 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* ----------------- 5. SIMULATION OVERVIEW SECTION ----------------- */}
-      <div className="space-y-4">
+      {/* ----------------- 6. SIMULATION OVERVIEW SECTION ----------------- */}
+      <div className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 className="gw-section-heading flex items-center gap-2">
-              <Layers className="w-5 h-5 text-gw-cyan" />
-              <span>Available Simulation Scenarios</span>
+            <h2 className="text-xs font-semibold text-[#FFFFFF] uppercase tracking-wider font-mono flex items-center gap-2">
+              <Layers className="w-4 h-4 text-[#FFFFFF]" />
+              <span>Registered Simulation Scenarios</span>
             </h2>
-            <p className="text-xs text-gw-text-secondary mt-0.5">
-              Live repository of allocation scenario windows configured in the database layer.
+            <p className="text-xs text-[#A3A3A3] mt-0.5">
+              Allocation scenario windows configured in the database storage layer.
             </p>
           </div>
-          <Link to="/simulator?tab=scenarios">
+          <Link to="/scenarios">
             <Button size="sm" variant="secondary" icon={Layers}>
-              Scenario Manager
+              Scenario Registry
             </Button>
           </Link>
         </div>
 
         {simulations.simulations.length > 0 ? (
-          <Card className="p-0 overflow-hidden border-[#1e3a5f]/60">
+          <Card className="p-0 overflow-hidden border-[#333333] bg-[#181818]">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs divide-y divide-[#1e3a5f]/40">
-                <thead className="bg-gw-bg-secondary/70 text-gw-text-secondary uppercase font-mono text-[10px] tracking-wider">
+              <table className="w-full text-left text-xs divide-y divide-[#333333]/60">
+                <thead className="bg-[#111111] text-[#A3A3A3] uppercase font-mono text-[10px] tracking-wider">
                   <tr>
                     <th className="py-3 px-4">Scenario</th>
                     <th className="py-3 px-4">Dimensions</th>
@@ -979,23 +963,23 @@ export const Dashboard = () => {
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#1e3a5f]/30">
+                <tbody className="divide-y divide-[#333333]/40">
                   {simulations.simulations.map((sim) => {
                     const isSelected = sim.id === selectedSimId
                     return (
                       <tr
                         key={sim.id}
                         className={`transition-colors ${
-                          isSelected ? 'bg-gw-cyan/5' : 'hover:bg-white/[0.02]'
+                          isSelected ? 'bg-[#2A2A2A]' : 'hover:bg-[#222222]'
                         }`}
                       >
                         <td className="py-3.5 px-4">
                           <div className="flex items-center gap-2.5">
-                            <span className="font-mono text-gw-cyan font-bold text-xs">{sim.id}</span>
+                            <span className="font-mono text-[#FFFFFF] font-bold text-xs">{sim.id}</span>
                             <div>
-                              <div className="font-semibold text-gw-text text-xs">{sim.name}</div>
+                              <div className="font-semibold text-[#FFFFFF] text-xs">{sim.name}</div>
                               {sim.description && (
-                                <div className="text-[11px] text-gw-text-secondary truncate max-w-xs">
+                                <div className="text-[11px] text-[#A3A3A3] truncate max-w-xs">
                                   {sim.description}
                                 </div>
                               )}
@@ -1004,30 +988,30 @@ export const Dashboard = () => {
                         </td>
 
                         <td className="py-3.5 px-4 font-mono">
-                          <span className="text-gw-text font-medium">{sim.flight_count} flights</span>
-                          <span className="text-gw-text-secondary"> × </span>
-                          <span className="text-gw-text font-medium">{sim.gate_count} gates</span>
+                          <span className="text-[#FFFFFF] font-medium">{sim.flight_count} flights</span>
+                          <span className="text-[#737373]"> × </span>
+                          <span className="text-[#FFFFFF] font-medium">{sim.gate_count} gates</span>
                         </td>
 
                         <td className="py-3.5 px-4">
-                          <span className="font-mono text-gw-warning text-[11px] bg-gw-warning/5 px-2 py-0.5 rounded border border-gw-warning/20">
+                          <span className="font-mono text-[#E5E5E5] text-[11px] bg-[#222222] px-2 py-0.5 rounded border border-[#333333]">
                             {sim.matrix_status}
                           </span>
                         </td>
 
                         <td className="py-3.5 px-4">
                           {sim.is_valid ? (
-                            <Badge variant="success" size="sm" className="font-mono text-[10px]">
+                            <Badge variant="default" size="sm" className="font-mono text-[10px] text-[#FFFFFF] border-[#555555]">
                               Balanced (n × n)
                             </Badge>
                           ) : (
-                            <Badge variant="danger" size="sm" className="font-mono text-[10px]">
+                            <Badge variant="default" size="sm" className="font-mono text-[10px] text-[#A3A3A3] border-[#333333]">
                               Incomplete
                             </Badge>
                           )}
                         </td>
 
-                        <td className="py-3.5 px-4 font-mono text-[11px] text-gw-text-secondary">
+                        <td className="py-3.5 px-4 font-mono text-[11px] text-[#A3A3A3]">
                           {formatTime(sim.updated_at)}
                         </td>
 
@@ -1039,16 +1023,16 @@ export const Dashboard = () => {
                               className="text-xs h-7 px-2.5"
                               onClick={() => handleSimulationChange(sim.id)}
                             >
-                              {isSelected ? 'Active' : 'Inspect'}
+                              {isSelected ? 'Active' : 'Select'}
                             </Button>
-                            <Link to={`/simulator?sim=${sim.id}`}>
+                            <Link to="/workspace">
                               <Button
                                 size="sm"
                                 variant="outline"
                                 className="text-xs h-7 px-2.5"
                                 icon={PlayCircle}
                               >
-                                Simulate
+                                Allocate
                               </Button>
                             </Link>
                           </div>
@@ -1061,10 +1045,10 @@ export const Dashboard = () => {
             </div>
           </Card>
         ) : (
-          <Card className="p-8 text-center space-y-3">
-            <Layers className="w-8 h-8 text-gw-text-secondary mx-auto" />
-            <p className="text-sm text-gw-text-secondary">No simulation scenarios found in the registry.</p>
-            <Link to="/simulator?tab=scenarios">
+          <Card className="p-8 text-center space-y-3 bg-[#181818] border-[#333333]">
+            <Layers className="w-8 h-8 text-[#A3A3A3] mx-auto" />
+            <p className="text-sm text-[#A3A3A3]">No simulation scenarios found in the registry.</p>
+            <Link to="/scenarios">
               <Button size="sm" icon={PlayCircle}>
                 Create Initial Scenario
               </Button>
@@ -1073,27 +1057,26 @@ export const Dashboard = () => {
         )}
       </div>
 
-      {/* ----------------- 6. OPERATIONAL RECENT ACTIVITY LOG ----------------- */}
-      <div className="space-y-4">
+      {/* ----------------- 7. OPERATIONAL ACTIVITY LOG ----------------- */}
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="gw-section-heading flex items-center gap-2">
-              <Activity className="w-5 h-5 text-gw-cyan" />
-              <span>Operational Activity History</span>
+            <h2 className="text-xs font-semibold text-[#FFFFFF] uppercase tracking-wider font-mono flex items-center gap-2">
+              <Activity className="w-4 h-4 text-[#FFFFFF]" />
+              <span>Operational Activity Stream</span>
             </h2>
-            <p className="text-xs text-gw-text-secondary mt-0.5">
-              Chronological log of genuine database mutations and calculation events.
+            <p className="text-xs text-[#A3A3A3] mt-0.5">
+              Chronological log of database operations and calculation events.
             </p>
           </div>
-          <Badge variant="cyan" size="sm">
-            Live Audit Stream
-          </Badge>
+          <span className="text-xs font-mono text-[#A3A3A3]">
+            Audit Stream
+          </span>
         </div>
 
         {summary?.recent_activities?.length > 0 ? (
-          <Card className="p-0 overflow-hidden divide-y divide-[#1e3a5f]/40">
+          <Card className="p-0 overflow-hidden divide-y divide-[#333333] bg-[#181818] border-[#333333]">
             {summary.recent_activities.map((act) => {
-              // Determine icon
               let Icon = Activity
               if (act.entity_type === 'Flight') Icon = Plane
               else if (act.entity_type === 'Gate') Icon = DoorClosed
@@ -1101,59 +1084,44 @@ export const Dashboard = () => {
               else if (act.entity_type === 'RestrictionMatrix') Icon = Grid3X3
               else if (act.entity_type === 'Allocation') Icon = Calculator
 
-              // Determine color badge
-              const isSuccess = act.status === 'success'
-              const isWarning = act.status === 'warning'
-              const isDanger = act.status === 'danger'
-
               return (
-                <div key={act.id} className="p-3.5 hover:bg-white/[0.02] transition-colors flex items-start gap-3.5">
-                  <div
-                    className={`p-2 rounded-lg shrink-0 mt-0.5 ${
-                      isSuccess
-                        ? 'bg-gw-success/10 text-gw-success border border-gw-success/20'
-                        : isWarning
-                        ? 'bg-gw-warning/10 text-gw-warning border border-gw-warning/20'
-                        : isDanger
-                        ? 'bg-gw-danger/10 text-gw-danger border border-gw-danger/20'
-                        : 'bg-gw-cyan/10 text-gw-cyan border border-gw-cyan/20'
-                    }`}
-                  >
+                <div key={act.id} className="p-3.5 hover:bg-[#222222] transition-colors flex items-start gap-3.5">
+                  <div className="p-2 rounded-lg shrink-0 mt-0.5 bg-[#222222] text-[#FFFFFF] border border-[#333333]">
                     <Icon className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <h4 className="text-sm font-semibold text-gw-text truncate">{act.title}</h4>
-                      <span className="text-[11px] text-gw-text-secondary font-mono shrink-0">
+                      <h4 className="text-sm font-semibold text-[#FFFFFF] truncate">{act.title}</h4>
+                      <span className="text-[11px] text-[#A3A3A3] font-mono shrink-0">
                         {formatTime(act.timestamp)}
                       </span>
                     </div>
-                    <p className="text-xs text-gw-text-secondary mt-0.5 leading-relaxed">{act.detail}</p>
+                    <p className="text-xs text-[#A3A3A3] mt-0.5 leading-relaxed">{act.detail}</p>
                   </div>
                 </div>
               )
             })}
           </Card>
         ) : (
-          <Card className="p-6 text-center text-xs text-gw-text-secondary">
-            No activity events recorded yet. Perform operational actions to populate the live audit log.
+          <Card className="p-6 text-center text-xs text-[#A3A3A3] bg-[#181818] border-[#333333]">
+            No activity events recorded yet. Operational actions will populate this audit log.
           </Card>
         )}
       </div>
 
-      {/* ----------------- 7. QUICK ACCESS OPERATIONAL MODULES ----------------- */}
-      <div className="space-y-4">
+      {/* ----------------- 8. QUICK ACCESS OPERATIONAL MODULES ----------------- */}
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="gw-section-heading flex items-center gap-2">
-              <Layers className="w-5 h-5 text-gw-cyan" />
+            <h2 className="text-xs font-semibold text-[#FFFFFF] uppercase tracking-wider font-mono flex items-center gap-2">
+              <Layers className="w-4 h-4 text-[#FFFFFF]" />
               <span>Operational Modules</span>
             </h2>
-            <p className="text-xs text-gw-text-secondary mt-0.5">
-              Direct navigation to all GateWise functional facilities and mathematical tools.
+            <p className="text-xs text-[#A3A3A3] mt-0.5">
+              Direct access to all GateWise BLR facilities and analytical subsystems.
             </p>
           </div>
-          <span className="text-xs text-gw-text-secondary font-mono">8 Subsystems</span>
+          <span className="text-xs text-[#A3A3A3] font-mono">8 Subsystems</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1165,29 +1133,29 @@ export const Dashboard = () => {
                 to={mod.path}
                 className="group block rounded-xl transition-all duration-200"
               >
-                <Card className="h-full group-hover:border-gw-cyan/50 group-hover:bg-gw-card-hover transition-all flex flex-col justify-between">
+                <Card className="h-full bg-[#181818] border-[#333333] group-hover:border-[#555555] group-hover:bg-[#222222] transition-all flex flex-col justify-between p-4">
                   <div>
                     <div className="flex items-start justify-between gap-3 mb-3">
-                      <div className="p-2.5 rounded-xl bg-gw-cyan/10 border border-gw-cyan/25 text-gw-cyan group-hover:scale-105 transition-transform">
-                        <Icon className="w-5 h-5" />
+                      <div className="p-2 rounded-lg bg-[#222222] border border-[#333333] text-[#FFFFFF] transition-transform">
+                        <Icon className="w-4 h-4" />
                       </div>
                       <Badge variant="default" size="sm" className="font-mono text-[10px]">
                         {mod.tag}
                       </Badge>
                     </div>
 
-                    <h3 className="gw-card-heading group-hover:text-gw-cyan transition-colors flex items-center justify-between">
+                    <h3 className="text-sm font-semibold text-[#FFFFFF] group-hover:text-[#FFFFFF] transition-colors flex items-center justify-between">
                       <span>{mod.title}</span>
-                      <ChevronRight className="w-4 h-4 text-gw-text-secondary group-hover:text-gw-cyan group-hover:translate-x-1 transition-all shrink-0" />
+                      <ChevronRight className="w-4 h-4 text-[#737373] group-hover:text-[#FFFFFF] group-hover:translate-x-1 transition-all shrink-0" />
                     </h3>
 
-                    <p className="text-xs text-gw-text-secondary mt-1.5 leading-relaxed">
+                    <p className="text-xs text-[#A3A3A3] mt-1.5 leading-relaxed">
                       {mod.description}
                     </p>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-[#1e3a5f]/40 flex items-center justify-between text-[11px] text-gw-text-secondary group-hover:text-gw-cyan">
-                    <span>Access Facility</span>
+                  <div className="mt-4 pt-3 border-t border-[#333333] flex items-center justify-between text-[11px] text-[#A3A3A3] group-hover:text-[#FFFFFF]">
+                    <span>Open Module</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </div>
                 </Card>

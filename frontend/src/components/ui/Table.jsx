@@ -10,9 +10,9 @@ export const Table = ({
   minWidth = 'min-w-[640px]',
 }) => {
   return (
-    <div className={`w-full overflow-x-auto rounded-xl border border-[#1e3a5f]/65 bg-gw-card/60 backdrop-blur-md shadow-lg ${className}`}>
-      <table className={`w-full text-left text-sm text-gw-text ${minWidth}`}>
-        <thead className="bg-gw-bg-secondary/90 text-xs uppercase tracking-wider text-gw-text-secondary border-b border-[#1e3a5f]/60 sticky top-0 z-10 backdrop-blur-md">
+    <div className={`w-full overflow-x-auto rounded-xl border border-[#333333] bg-[#181818] shadow-sm ${className}`}>
+      <table className={`w-full text-left text-sm text-[#FFFFFF] ${minWidth}`}>
+        <thead className="bg-[#111111] text-xs uppercase tracking-wider text-[#A3A3A3] border-b border-[#333333] sticky top-0 z-10">
           <tr>
             {columns.map((col, idx) => (
               <th
@@ -26,19 +26,19 @@ export const Table = ({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#1e3a5f]/40">
+        <tbody className="divide-y divide-[#333333]/50">
           {loading ? (
             <tr>
-              <td colSpan={columns.length} className="px-4 py-12 text-center text-gw-text-secondary">
+              <td colSpan={columns.length} className="px-4 py-12 text-center text-[#A3A3A3]">
                 <div className="flex flex-col items-center justify-center gap-3">
-                  <div className="w-6 h-6 border-2 border-gw-cyan border-t-transparent rounded-full animate-spin" />
+                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   <span className="text-xs font-mono uppercase tracking-wider">Loading records...</span>
                 </div>
               </td>
             </tr>
           ) : data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className="px-4 py-12 text-center text-gw-text-secondary">
+              <td colSpan={columns.length} className="px-4 py-12 text-center text-[#A3A3A3]">
                 <div className="flex flex-col items-center justify-center gap-2">
                   <p className="text-sm font-medium">{emptyMessage}</p>
                 </div>
@@ -50,7 +50,7 @@ export const Table = ({
               return (
                 <tr
                   key={rowKey}
-                  className="hover:bg-white/[0.04] transition-colors duration-150 group"
+                  className="hover:bg-[#2A2A2A] transition-colors duration-150 group"
                 >
                   {columns.map((col, colIdx) => (
                     <td

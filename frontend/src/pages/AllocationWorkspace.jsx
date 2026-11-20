@@ -343,15 +343,15 @@ export const AllocationWorkspace = () => {
   return (
     <div className="space-y-6 animate-fadeIn max-w-6xl mx-auto">
       {/* -------------------- 1. WORKSPACE HEADER & STEPS PROGRESS -------------------- */}
-      <div className="border-b border-[#1e3a5f]/60 pb-5 space-y-4">
+      <div className="border-b border-[#333333] pb-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-gw-cyan/10 border border-gw-cyan/30 text-gw-cyan">
+              <div className="p-2 rounded-xl bg-[#222222] border border-[#333333] text-[#FFFFFF]">
                 <Sparkles className="w-5 h-5" />
               </div>
               <h1 className="gw-page-heading">Guided Allocation Workspace</h1>
-              <Badge variant="cyan" size="sm" dot>
+              <Badge variant="outline" size="sm" dot>
                 7-Step Workflow
               </Badge>
             </div>
@@ -365,8 +365,8 @@ export const AllocationWorkspace = () => {
             <span
               className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold border ${
                 isBalanced
-                  ? 'bg-gw-success/10 text-gw-success border-gw-success/30'
-                  : 'bg-gw-warning/10 text-gw-warning border-gw-warning/30'
+                  ? 'bg-[#222222] text-[#FFFFFF] border-[#333333]'
+                  : 'bg-[#181818] text-[#A3A3A3] border-[#333333]'
               }`}
             >
               {selectedFlightIds.length} Flights ↔ {selectedGateIds.length} Gates
@@ -379,7 +379,7 @@ export const AllocationWorkspace = () => {
         <div className="overflow-x-auto pt-2">
           <div className="flex items-center min-w-[700px] justify-between relative">
             {/* Connecting Track */}
-            <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-[#1e3a5f]/60 -translate-y-1/2 z-0" />
+            <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-[#333333] -translate-y-1/2 z-0" />
 
             {STEPS.map((s) => {
               const Icon = s.icon
@@ -402,17 +402,17 @@ export const AllocationWorkspace = () => {
                   <div
                     className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold font-mono transition-all border ${
                       isCurrent
-                        ? 'bg-gw-cyan text-gw-bg border-gw-cyan shadow-lg shadow-gw-cyan/30 scale-110'
+                        ? 'bg-[#FFFFFF] text-[#090909] border-[#FFFFFF] scale-110 shadow-none'
                         : isPassed
-                        ? 'bg-gw-success/20 text-gw-success border-gw-success/50'
-                        : 'bg-gw-bg-secondary text-gw-text-secondary border-[#1e3a5f]'
+                        ? 'bg-[#222222] text-[#FFFFFF] border-[#333333]'
+                        : 'bg-[#181818] text-[#737373] border-[#333333]'
                     }`}
                   >
                     {isPassed ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
                   </div>
                   <span
                     className={`text-[11px] font-medium font-sans whitespace-nowrap ${
-                      isCurrent ? 'text-gw-cyan font-bold' : isPassed ? 'text-gw-text' : 'text-gw-text-secondary'
+                      isCurrent ? 'text-[#FFFFFF] font-bold' : isPassed ? 'text-gw-text' : 'text-gw-text-secondary'
                     }`}
                   >
                     {s.id}. {s.short}
@@ -434,19 +434,19 @@ export const AllocationWorkspace = () => {
         />
       )}
       {errorMsg && (
-        <div className="p-3.5 rounded-xl bg-gw-error/10 border border-gw-error/30 text-xs text-gw-error flex items-start gap-2.5">
-          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+        <div className="p-3.5 rounded-xl bg-[#111111] border border-[#333333] text-xs text-white flex items-start gap-2.5">
+          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#A3A3A3]" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {/* -------------------- STEP 1: SELECT FLIGHTS -------------------- */}
       {currentStep === 1 && (
-        <Card className="p-5 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#1e3a5f]/40">
+        <Card className="p-5 space-y-4 bg-[#181818] border-[#333333]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
             <div>
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
-                <Plane className="w-5 h-5 text-gw-cyan" />
+                <Plane className="w-5 h-5 text-[#FFFFFF]" />
                 <span>Step 1: Select Active Flights</span>
               </h2>
               <p className="text-xs text-gw-text-secondary mt-0.5">
@@ -480,8 +480,8 @@ export const AllocationWorkspace = () => {
                   onClick={() => toggleFlight(flight.id)}
                   className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start justify-between ${
                     isSelected
-                      ? 'bg-gw-cyan/10 border-gw-cyan/40 shadow-sm shadow-gw-cyan/5'
-                      : 'bg-gw-bg-secondary/60 border-[#1e3a5f]/50 hover:border-[#1e3a5f]'
+                      ? 'bg-[#222222] border-[#FFFFFF]'
+                      : 'bg-[#181818] border-[#333333] hover:border-[#555555]'
                   }`}
                 >
                   <div className="space-y-1">
@@ -490,14 +490,14 @@ export const AllocationWorkspace = () => {
                       <span className="text-[10px] font-mono text-gw-text-secondary">({flight.id})</span>
                     </div>
                     <div className="text-xs text-gw-text-secondary">{flight.airline}</div>
-                    <div className="text-[11px] font-mono text-gw-cyan flex items-center gap-1">
-                      <Clock className="w-3 h-3 text-gw-cyan shrink-0" />
+                    <div className="text-[11px] font-mono text-[#FFFFFF] flex items-center gap-1">
+                      <Clock className="w-3 h-3 text-[#FFFFFF] shrink-0" />
                       <span>{flight.arrivalTime} → {flight.departureTime}</span>
                     </div>
                   </div>
                   <div
                     className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
-                      isSelected ? 'bg-gw-cyan border-gw-cyan text-gw-bg' : 'border-[#1e3a5f] bg-gw-bg'
+                      isSelected ? 'bg-[#FFFFFF] border-[#FFFFFF] text-[#090909]' : 'border-[#333333] bg-[#181818]'
                     }`}
                   >
                     {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
@@ -507,9 +507,9 @@ export const AllocationWorkspace = () => {
             })}
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#1e3a5f]/40">
+          <div className="flex items-center justify-between pt-4 border-t border-[#333333]">
             <span className="text-xs font-mono text-gw-text-secondary">
-              Selected: <strong className="text-gw-cyan">{selectedFlightIds.length}</strong> flights
+              Selected: <strong className="text-[#FFFFFF]">{selectedFlightIds.length}</strong> flights
             </span>
             <Button
               size="md"
@@ -525,11 +525,11 @@ export const AllocationWorkspace = () => {
 
       {/* -------------------- STEP 2: SELECT GATES -------------------- */}
       {currentStep === 2 && (
-        <Card className="p-5 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#1e3a5f]/40">
+        <Card className="p-5 space-y-4 bg-[#181818] border-[#333333]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
             <div>
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
-                <DoorClosed className="w-5 h-5 text-gw-blue" />
+                <DoorClosed className="w-5 h-5 text-[#FFFFFF]" />
                 <span>Step 2: Select Available Gates</span>
               </h2>
               <p className="text-xs text-gw-text-secondary mt-0.5">
@@ -563,8 +563,8 @@ export const AllocationWorkspace = () => {
                   onClick={() => toggleGate(gate.id)}
                   className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start justify-between ${
                     isSelected
-                      ? 'bg-gw-blue/10 border-gw-blue/40 shadow-sm shadow-gw-blue/5'
-                      : 'bg-gw-bg-secondary/60 border-[#1e3a5f]/50 hover:border-[#1e3a5f]'
+                      ? 'bg-[#222222] border-[#FFFFFF]'
+                      : 'bg-[#181818] border-[#333333] hover:border-[#555555]'
                   }`}
                 >
                   <div className="space-y-1">
@@ -573,13 +573,13 @@ export const AllocationWorkspace = () => {
                       <span className="text-[10px] font-mono text-gw-text-secondary">({gate.id})</span>
                     </div>
                     <div className="text-xs text-gw-text-secondary">{gate.gateType} • {gate.terminal}</div>
-                    <div className="text-[11px] font-mono text-gw-blue">
+                    <div className="text-[11px] font-mono text-[#FFFFFF]">
                       Cap: {gate.maxCapacity} pax
                     </div>
                   </div>
                   <div
                     className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
-                      isSelected ? 'bg-gw-blue border-gw-blue text-gw-bg' : 'border-[#1e3a5f] bg-gw-bg'
+                      isSelected ? 'bg-[#FFFFFF] border-[#FFFFFF] text-[#090909]' : 'border-[#333333] bg-[#181818]'
                     }`}
                   >
                     {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
@@ -589,13 +589,13 @@ export const AllocationWorkspace = () => {
             })}
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#1e3a5f]/40">
+          <div className="flex items-center justify-between pt-4 border-t border-[#333333]">
             <Button variant="ghost" size="md" icon={ArrowLeft} onClick={() => setCurrentStep(1)}>
               Back to Flights
             </Button>
             <div className="flex items-center gap-3">
               <span className="text-xs font-mono text-gw-text-secondary hidden sm:inline">
-                Selected: <strong className="text-gw-blue">{selectedGateIds.length}</strong> gates
+                Selected: <strong className="text-[#FFFFFF]">{selectedGateIds.length}</strong> gates
               </span>
               <Button
                 size="md"
@@ -612,20 +612,20 @@ export const AllocationWorkspace = () => {
 
       {/* -------------------- STEP 3: CONFIGURE RESTRICTIONS MATRIX -------------------- */}
       {currentStep === 3 && (
-        <Card className="p-5 space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#1e3a5f]/40">
+        <Card className="p-5 space-y-5 bg-[#181818] border-[#333333]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
             <div>
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
-                <Grid3X3 className="w-5 h-5 text-gw-warning" />
+                <Grid3X3 className="w-5 h-5 text-[#FFFFFF]" />
                 <span>Step 3: Define Binary Restriction Board B</span>
               </h2>
               <p className="text-xs text-gw-text-secondary mt-0.5">
-                Click cells to toggle restrictions: Green (0) = Allowed Assignment, Amber (1) = Forbidden Assignment.
+                Click cells to toggle restrictions: 0 = Allowed Assignment, 1 = Forbidden Assignment.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <Button variant="outline" size="sm" onClick={applyBlrCompatibilityRestrictions} className="border-cyan-500/40 text-cyan-400 hover:bg-cyan-950/30">
+              <Button variant="outline" size="sm" onClick={applyBlrCompatibilityRestrictions} className="border-[#333333] text-[#FFFFFF] hover:bg-[#222222]">
                 Apply BLR Compatibility Rules
               </Button>
               <Button variant="secondary" size="sm" onClick={applySampleRestrictions}>
@@ -638,20 +638,20 @@ export const AllocationWorkspace = () => {
           </div>
 
           {/* Matrix Stats Banner */}
-          <div className="p-3 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/60 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+          <div className="p-3 rounded-xl bg-[#222222] border border-[#333333] flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
             <div className="flex items-center gap-4">
               <span>
                 Board Size: <strong className="text-gw-text">{selectedFlightIds.length} × {selectedGateIds.length}</strong>
               </span>
               <span>
-                Forbidden: <strong className="text-gw-warning">{restrictionStats.forbidden}</strong>
+                Forbidden: <strong className="text-[#FFFFFF]">{restrictionStats.forbidden}</strong>
               </span>
               <span>
-                Allowed: <strong className="text-gw-success">{restrictionStats.allowed}</strong>
+                Allowed: <strong className="text-[#FFFFFF]">{restrictionStats.allowed}</strong>
               </span>
             </div>
             <div>
-              Density: <strong className="text-gw-cyan">{restrictionStats.density}%</strong>
+              Density: <strong className="text-[#FFFFFF]">{restrictionStats.density}%</strong>
             </div>
           </div>
 
@@ -662,16 +662,16 @@ export const AllocationWorkspace = () => {
                 <tr>
                   <th className="p-2.5 text-xs font-mono text-gw-text-secondary text-left">Flight \ Gate</th>
                   {selectedGates.map((gate) => (
-                    <th key={gate.id} className="p-2.5 text-xs font-mono text-gw-blue font-bold">
+                    <th key={gate.id} className="p-2.5 text-xs font-mono text-[#FFFFFF] font-bold">
                       {gate.gateNumber}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1e3a5f]/40">
+              <tbody className="divide-y divide-[#333333]">
                 {selectedFlights.map((flight, r) => (
                   <tr key={flight.id} className="hover:bg-white/[0.02]">
-                    <td className="p-2.5 text-xs font-mono text-gw-cyan font-bold text-left whitespace-nowrap">
+                    <td className="p-2.5 text-xs font-mono text-[#FFFFFF] font-bold text-left whitespace-nowrap">
                       {flight.flightNumber}
                     </td>
                     {selectedGates.map((gate, c) => {
@@ -683,8 +683,8 @@ export const AllocationWorkspace = () => {
                             onClick={() => toggleCell(r, c)}
                             className={`w-full py-2.5 rounded-lg font-mono text-xs font-bold transition-all border cursor-pointer ${
                               isForbidden
-                                ? 'bg-gw-warning/20 border-gw-warning text-gw-warning shadow-sm shadow-gw-warning/10'
-                                : 'bg-gw-success/15 border-gw-success/35 text-gw-success hover:bg-gw-success/25'
+                                ? 'bg-[#111111] border-2 border-[#555555] text-[#FFFFFF] hover:border-[#FFFFFF]'
+                                : 'bg-[#181818] border border-[#333333] text-[#737373] hover:border-[#FFFFFF] hover:text-[#FFFFFF]'
                             }`}
                             title={`Toggle ${flight.flightNumber} at Gate ${gate.gateNumber} (${isForbidden ? 'Forbidden' : 'Allowed'})`}
                           >
@@ -699,7 +699,7 @@ export const AllocationWorkspace = () => {
             </table>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#1e3a5f]/40">
+          <div className="flex items-center justify-between pt-4 border-t border-[#333333]">
             <Button variant="ghost" size="md" icon={ArrowLeft} onClick={() => setCurrentStep(2)}>
               Back to Gates
             </Button>
@@ -717,29 +717,29 @@ export const AllocationWorkspace = () => {
 
       {/* -------------------- STEP 4: MATHEMATICAL ANALYSIS -------------------- */}
       {currentStep === 4 && mathResult && (
-        <Card className="p-5 space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#1e3a5f]/40">
+        <Card className="p-5 space-y-5 bg-[#181818] border-[#333333]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
             <div>
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
-                <Calculator className="w-5 h-5 text-gw-cyan" />
+                <Calculator className="w-5 h-5 text-[#FFFFFF]" />
                 <span>Step 4: Algebraic Derivations & Feasibility</span>
               </h2>
               <p className="text-xs text-gw-text-secondary mt-0.5">
                 Exact integers derived via dynamic programming Rook Polynomial and Principle of Inclusion-Exclusion.
               </p>
             </div>
-            <Badge variant="cyan" size="sm" className="font-mono">
+            <Badge variant="outline" size="sm" className="font-mono">
               N = {mathResult.exact_valid_assignments.toLocaleString()} Valid
             </Badge>
           </div>
 
           {/* Formulas Display */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-3.5 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/60 space-y-2">
+            <div className="p-3.5 rounded-xl bg-[#222222] border border-[#333333] space-y-2">
               <span className="text-[11px] font-mono uppercase tracking-wider text-gw-text-secondary">
                 1. Rook Polynomial R(B, x)
               </span>
-              <div className="gw-formula-box text-xs break-all font-mono py-2 text-gw-warning">
+              <div className="gw-formula-box text-xs break-all font-mono py-2 text-[#FFFFFF]">
                 {mathResult.rook_polynomial}
               </div>
               <p className="text-[11px] text-gw-text-secondary">
@@ -747,11 +747,11 @@ export const AllocationWorkspace = () => {
               </p>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/60 space-y-2">
+            <div className="p-3.5 rounded-xl bg-[#222222] border border-[#333333] space-y-2">
               <span className="text-[11px] font-mono uppercase tracking-wider text-gw-text-secondary">
                 2. Principle of Inclusion-Exclusion (PIE)
               </span>
-              <div className="gw-formula-box text-xs break-all font-mono py-2 text-gw-success">
+              <div className="gw-formula-box text-xs break-all font-mono py-2 text-[#FFFFFF]">
                 N = Σ [(-1)ᵏ · rₖ · (n - k)!] = {mathResult.exact_valid_assignments.toLocaleString()}
               </div>
               <p className="text-[11px] text-gw-text-secondary">
@@ -762,8 +762,8 @@ export const AllocationWorkspace = () => {
 
           {/* PIE Itemized Breakdown Table */}
           <div className="overflow-x-auto">
-            <table className="w-full text-xs font-mono text-left divide-y divide-[#1e3a5f]/40 min-w-[500px]">
-              <thead className="bg-gw-bg-secondary/60 text-gw-text-secondary uppercase">
+            <table className="w-full text-xs font-mono text-left divide-y divide-[#333333] min-w-[500px]">
+              <thead className="bg-[#111111] text-gw-text-secondary uppercase">
                 <tr>
                   <th className="p-2.5">Term k</th>
                   <th className="p-2.5">Rook Coeff (r_k)</th>
@@ -772,7 +772,7 @@ export const AllocationWorkspace = () => {
                   <th className="p-2.5 text-right">Contribution</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1e3a5f]/30">
+              <tbody className="divide-y divide-[#333333]">
                 {(mathResult.itemized_terms || []).map((t) => {
                   const coeff = t.coefficient ?? t.rook_coefficient ?? 0
                   const fact = t.factorial_remaining ?? t.factorial_value ?? 0
@@ -781,10 +781,10 @@ export const AllocationWorkspace = () => {
                   return (
                     <tr key={t.k} className="hover:bg-white/[0.02]">
                       <td className="p-2.5 font-bold text-gw-text">k = {t.k}</td>
-                      <td className="p-2.5 text-gw-warning">r_{t.k} = {coeff.toLocaleString()}</td>
+                      <td className="p-2.5 text-[#FFFFFF]">r_{t.k} = {coeff.toLocaleString()}</td>
                       <td className="p-2.5 text-gw-text-secondary">({selectedFlightIds.length - t.k})! = {fact.toLocaleString()}</td>
                       <td className="p-2.5">{isPos ? '+' : '-'}</td>
-                      <td className={`p-2.5 text-right font-bold ${contrib >= 0 ? 'text-gw-success' : 'text-gw-error'}`}>
+                      <td className="p-2.5 text-right font-bold text-[#FFFFFF]">
                         {contrib > 0 ? `+${contrib.toLocaleString()}` : contrib.toLocaleString()}
                       </td>
                     </tr>
@@ -794,7 +794,7 @@ export const AllocationWorkspace = () => {
             </table>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#1e3a5f]/40">
+          <div className="flex items-center justify-between pt-4 border-t border-[#333333]">
             <Button variant="ghost" size="md" icon={ArrowLeft} onClick={() => setCurrentStep(3)}>
               Modify Restrictions
             </Button>
@@ -841,11 +841,11 @@ export const AllocationWorkspace = () => {
       )}
 
       {currentStep >= 6 && allocationResult && (
-        <Card className="p-5 space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#1e3a5f]/40">
+        <Card className="p-5 space-y-5 bg-[#181818] border-[#333333]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
             <div>
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
-                <PlayCircle className="w-5 h-5 text-gw-success" />
+                <PlayCircle className="w-5 h-5 text-[#FFFFFF]" />
                 <span>Step {currentStep}: Generated Schedule & Audit</span>
               </h2>
               <p className="text-xs text-gw-text-secondary mt-0.5">
@@ -858,7 +858,7 @@ export const AllocationWorkspace = () => {
               <select
                 value={selectedPlanIndex}
                 onChange={(e) => setSelectedPlanIndex(Number(e.target.value))}
-                className="bg-gw-bg-secondary border border-[#1e3a5f] rounded-lg px-2.5 py-1 text-xs text-gw-text font-mono focus:border-gw-cyan focus:outline-none cursor-pointer"
+                className="bg-[#222222] border border-[#333333] rounded-lg px-2.5 py-1 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer"
               >
                 {allocationResult.allocations.map((a, idx) => (
                   <option key={a.allocation_id} value={idx}>
@@ -874,7 +874,7 @@ export const AllocationWorkspace = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Plan Pairings List */}
-                <div className="p-3.5 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/60 space-y-2">
+                <div className="p-3.5 rounded-xl bg-[#222222] border border-[#333333] space-y-2">
                   <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary">
                     Flight-to-Gate Pairings (Plan #{selectedPlanIndex + 1})
                   </span>
@@ -882,11 +882,11 @@ export const AllocationWorkspace = () => {
                     {allocationResult.allocations[selectedPlanIndex].assignments.map((asgn) => (
                       <div
                         key={asgn.flight_id}
-                        className="p-2 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f]/40 flex items-center justify-between text-xs font-mono"
+                        className="p-2 rounded-lg bg-[#181818] border border-[#333333] flex items-center justify-between text-xs font-mono"
                       >
-                        <span className="text-gw-cyan font-bold">{asgn.flight_number}</span>
+                        <span className="text-[#FFFFFF] font-bold">{asgn.flight_number}</span>
                         <ArrowRight className="w-3.5 h-3.5 text-gw-text-secondary" />
-                        <span className="text-gw-success font-bold">Gate {asgn.gate_number}</span>
+                        <span className="text-[#FFFFFF] font-bold">Gate {asgn.gate_number}</span>
                         <span className="text-[10px] text-gw-text-secondary">({asgn.terminal})</span>
                       </div>
                     ))}
@@ -894,29 +894,29 @@ export const AllocationWorkspace = () => {
                 </div>
 
                 {/* Conflict Audit Card */}
-                <div className="p-3.5 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/60 space-y-3">
+                <div className="p-3.5 rounded-xl bg-[#222222] border border-[#333333] space-y-3">
                   <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary">
                     Independent Conflict Audit Verification
                   </span>
                   <div className="space-y-2 text-xs">
-                    <div className="flex items-center gap-2 text-gw-success">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <div className="flex items-center gap-2 text-[#FFFFFF]">
+                      <CheckCircle2 className="w-4 h-4 shrink-0 text-[#FFFFFF]" />
                       <span>Zero Wingspan / Dimensional Conflicts</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gw-success">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <div className="flex items-center gap-2 text-[#FFFFFF]">
+                      <CheckCircle2 className="w-4 h-4 shrink-0 text-[#FFFFFF]" />
                       <span>Zero Gate Double-Booking (Bijective)</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gw-success">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <div className="flex items-center gap-2 text-[#FFFFFF]">
+                      <CheckCircle2 className="w-4 h-4 shrink-0 text-[#FFFFFF]" />
                       <span>Zero Flight Double-Allocations</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gw-success">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <div className="flex items-center gap-2 text-[#FFFFFF]">
+                      <CheckCircle2 className="w-4 h-4 shrink-0 text-[#FFFFFF]" />
                       <span>Zero Forbidden Restriction Cell Violations</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gw-success">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <div className="flex items-center gap-2 text-[#FFFFFF]">
+                      <CheckCircle2 className="w-4 h-4 shrink-0 text-[#FFFFFF]" />
                       <span>Complete 100% Matching Attained</span>
                     </div>
                   </div>
@@ -924,7 +924,7 @@ export const AllocationWorkspace = () => {
               </div>
 
               {/* Bipartite Graph Visualization of Selected Plan */}
-              <div className="p-4 rounded-xl bg-gw-bg-secondary/40 border border-[#1e3a5f]/50">
+              <div className="p-4 rounded-xl bg-[#111111] border border-[#333333]">
                 <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary block mb-2">
                   Bipartite Graph Matching Visualization
                 </span>
@@ -942,7 +942,7 @@ export const AllocationWorkspace = () => {
             </div>
           )}
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#1e3a5f]/40">
+          <div className="flex items-center justify-between pt-4 border-t border-[#333333]">
             <Button variant="ghost" size="md" icon={ArrowLeft} onClick={() => setCurrentStep(4)}>
               Back to Math
             </Button>
@@ -959,9 +959,9 @@ export const AllocationWorkspace = () => {
 
       {/* -------------------- STEP 7: SAVE & EXPORT -------------------- */}
       {currentStep === 7 && savedSimulationId && (
-        <Card className="p-6 space-y-6 text-center">
-          <div className="w-12 h-12 rounded-2xl bg-gw-success/10 border border-gw-success/30 text-gw-success flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-6 h-6" />
+        <Card className="p-6 space-y-6 text-center bg-[#181818] border-[#333333]">
+          <div className="w-12 h-12 rounded-2xl bg-[#222222] border border-[#333333] text-[#FFFFFF] flex items-center justify-center mx-auto">
+            <CheckCircle2 className="w-6 h-6 text-[#FFFFFF]" />
           </div>
 
           <div className="space-y-1">
@@ -972,9 +972,9 @@ export const AllocationWorkspace = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto pt-2">
-            <div className="p-4 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/60 space-y-3 flex flex-col justify-between">
+            <div className="p-4 rounded-xl bg-[#222222] border border-[#333333] space-y-3 flex flex-col justify-between">
               <div>
-                <FileText className="w-6 h-6 text-gw-cyan mx-auto mb-2" />
+                <FileText className="w-6 h-6 text-[#FFFFFF] mx-auto mb-2" />
                 <h3 className="text-xs font-bold text-gw-text">Scenario PDF Report</h3>
                 <p className="text-[11px] text-gw-text-secondary mt-1">
                   Branded report with rook polynomials, PIE itemization, and allocations.
@@ -990,9 +990,9 @@ export const AllocationWorkspace = () => {
               </Button>
             </div>
 
-            <div className="p-4 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/60 space-y-3 flex flex-col justify-between">
+            <div className="p-4 rounded-xl bg-[#222222] border border-[#333333] space-y-3 flex flex-col justify-between">
               <div>
-                <Download className="w-6 h-6 text-gw-success mx-auto mb-2" />
+                <Download className="w-6 h-6 text-[#FFFFFF] mx-auto mb-2" />
                 <h3 className="text-xs font-bold text-gw-text">Allocation CSV</h3>
                 <p className="text-[11px] text-gw-text-secondary mt-1">
                   Tabular CSV of flight-to-gate assignment pairings.
@@ -1008,9 +1008,9 @@ export const AllocationWorkspace = () => {
               </Button>
             </div>
 
-            <div className="p-4 rounded-xl bg-gw-bg-secondary/70 border border-[#1e3a5f]/60 space-y-3 flex flex-col justify-between">
+            <div className="p-4 rounded-xl bg-[#222222] border border-[#333333] space-y-3 flex flex-col justify-between">
               <div>
-                <Calculator className="w-6 h-6 text-gw-warning mx-auto mb-2" />
+                <Calculator className="w-6 h-6 text-[#FFFFFF] mx-auto mb-2" />
                 <h3 className="text-xs font-bold text-gw-text">Math Derivation CSV</h3>
                 <p className="text-[11px] text-gw-text-secondary mt-1">
                   Itemized rook coefficients and alternating PIE terms.
@@ -1027,7 +1027,7 @@ export const AllocationWorkspace = () => {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#1e3a5f]/40 flex items-center justify-center gap-3">
+          <div className="pt-4 border-t border-[#333333] flex items-center justify-center gap-3">
             <Button
               variant="outline"
               size="md"

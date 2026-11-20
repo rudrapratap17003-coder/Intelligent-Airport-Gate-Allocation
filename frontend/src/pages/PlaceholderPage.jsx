@@ -1,7 +1,7 @@
 import React from 'react'
 import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
-import { Sparkles, Terminal } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 
 export const PlaceholderPage = ({
   title,
@@ -14,9 +14,9 @@ export const PlaceholderPage = ({
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#1e3a5f]/40">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#333333]">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-gw-cyan/10 border border-gw-cyan/20 text-gw-cyan shrink-0">
+          <div className="p-2.5 rounded-xl bg-[#111111] border border-[#333333] text-white shrink-0">
             <Icon className="w-6 h-6" />
           </div>
           <div>
@@ -25,16 +25,16 @@ export const PlaceholderPage = ({
           </div>
         </div>
         {phase && (
-          <Badge variant="cyan" size="md" className="self-start sm:self-auto shrink-0">
+          <Badge variant="default" size="md" className="self-start sm:self-auto shrink-0">
             Scheduled: {phase}
           </Badge>
         )}
       </div>
 
       {/* Main Showcase Card */}
-      <Card className="border-dashed border-2 border-[#1e3a5f]/80">
+      <Card className="border-dashed border-2 border-[#333333] bg-[#181818]">
         <div className="py-10 px-4 text-center max-w-lg mx-auto space-y-4">
-          <div className="w-12 h-12 mx-auto rounded-full bg-gw-bg-secondary flex items-center justify-center text-gw-cyan border border-[#1e3a5f]">
+          <div className="w-12 h-12 mx-auto rounded-full bg-[#111111] flex items-center justify-center text-white border border-[#333333]">
             <Icon className="w-6 h-6 animate-pulse" />
           </div>
 

@@ -272,14 +272,14 @@ export const GateManagement = () => {
     {
       header: 'Gate ID',
       key: 'id',
-      render: (row) => <span className="font-mono text-xs text-gw-cyan">{row.id}</span>
+      render: (row) => <span className="font-mono text-xs text-[#FFFFFF]">{row.id}</span>
     },
     {
       header: 'Gate No.',
       key: 'gateNumber',
       render: (row) => (
         <div className="flex items-center gap-2">
-          <DoorClosed className="w-4 h-4 text-gw-cyan" />
+          <DoorClosed className="w-4 h-4 text-[#FFFFFF]" />
           <span className="font-bold text-sm font-mono text-gw-text">{row.gateNumber}</span>
         </div>
       )
@@ -288,7 +288,7 @@ export const GateManagement = () => {
       header: 'Terminal',
       key: 'terminal',
       render: (row) => (
-        <span className="font-mono text-xs text-gw-text px-2 py-0.5 rounded bg-gw-bg-secondary border border-[#1e3a5f]">
+        <span className="font-mono text-xs text-gw-text px-2 py-0.5 rounded bg-[#181818] border border-[#333333]">
           {row.terminal}
         </span>
       )
@@ -297,14 +297,8 @@ export const GateManagement = () => {
       header: 'Gate Type',
       key: 'gateType',
       render: (row) => {
-        const variant =
-          row.gateType === 'International'
-            ? 'cyan'
-            : row.gateType === 'Universal'
-            ? 'blue'
-            : 'default'
         return (
-          <Badge variant={variant} size="sm">
+          <Badge variant="outline" size="sm" className="font-mono">
             {row.gateType}
           </Badge>
         )
@@ -332,14 +326,8 @@ export const GateManagement = () => {
       header: 'Status',
       key: 'status',
       render: (row) => {
-        const variant =
-          row.status === 'Available'
-            ? 'success'
-            : row.status === 'Occupied'
-            ? 'warning'
-            : 'error'
         return (
-          <Badge variant={variant} size="sm" dot>
+          <Badge variant="outline" size="sm">
             {row.status}
           </Badge>
         )
@@ -354,7 +342,7 @@ export const GateManagement = () => {
           <button
             type="button"
             onClick={() => handleOpenEditModal(row)}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-gw-cyan hover:bg-gw-cyan/10 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
             title="Edit Gate"
           >
             <Edit2 className="w-4 h-4" />
@@ -362,7 +350,7 @@ export const GateManagement = () => {
           <button
             type="button"
             onClick={() => handleOpenDeleteModal(row)}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-gw-error hover:bg-gw-error/10 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
             title="Delete Gate"
           >
             <Trash2 className="w-4 h-4" />
@@ -375,11 +363,11 @@ export const GateManagement = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* -------------------- 1. HEADER -------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#1e3a5f]/50">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#333333]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">Gate Management</h1>
-            <Badge variant="cyan" size="sm" className="font-mono">
+            <Badge variant="outline" size="sm" className="font-mono">
               {gates.length} Registered
             </Badge>
           </div>
@@ -413,7 +401,6 @@ export const GateManagement = () => {
             size="md"
             icon={Plus}
             onClick={handleOpenAddModal}
-            className="shadow-lg shadow-gw-cyan/10"
           >
             Add New Gate
           </Button>
@@ -520,11 +507,11 @@ export const GateManagement = () => {
       />
 
       {/* Architecture Notice */}
-      <div className="p-3.5 rounded-xl bg-gw-bg-secondary/40 border border-[#1e3a5f]/50 flex items-center justify-between text-xs text-gw-text-secondary">
+      <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] flex items-center justify-between text-xs text-gw-text-secondary">
         <div className="flex items-center gap-2">
-          <Info className="w-4 h-4 text-gw-cyan shrink-0" />
+          <Info className="w-4 h-4 text-[#FFFFFF] shrink-0" />
           <span>
-            Airport gates are stored locally (<code className="font-mono text-gw-cyan">localStorage: gatewise_gates_data</code>) ready for multi-gate simulation scenarios.
+            Airport gates are stored locally (<code className="font-mono text-[#FFFFFF]">localStorage: gatewise_gates_data</code>) ready for multi-gate simulation scenarios.
           </span>
         </div>
         <span className="font-mono text-[11px] text-gw-text-secondary hidden md:inline">
@@ -643,8 +630,8 @@ export const GateManagement = () => {
       >
         {gateToDelete && (
           <div className="space-y-3">
-            <div className="p-3 rounded-xl bg-gw-error/10 border border-gw-error/30 text-xs text-gw-error flex items-start gap-2.5">
-              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+            <div className="p-3 rounded-xl bg-[#111111] border border-[#333333] text-xs text-white flex items-start gap-2.5">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#A3A3A3]" />
               <div>
                 Are you sure you want to remove gate{' '}
                 <strong className="font-mono text-gw-text">{gateToDelete.gateNumber}</strong> ({gateToDelete.terminal} - {gateToDelete.gateType})?

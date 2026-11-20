@@ -19,11 +19,11 @@ export const About = () => {
   return (
     <div className="space-y-8 animate-fadeIn max-w-6xl mx-auto">
       {/* ----------------- 1. HEADER & HERO ----------------- */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-[#1e3a5f]/50">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-[#333333]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">About GateWise & Mathematical Methodology</h1>
-            <Badge variant="cyan" size="sm" dot>
+            <Badge variant="default" size="sm" dot>
               Phase 28 Active
             </Badge>
           </div>
@@ -34,7 +34,7 @@ export const About = () => {
 
         <div className="flex items-center gap-3 shrink-0">
           <Link to="/airport-map">
-            <Button size="md" variant="outline" className="border-gw-cyan/40 text-gw-cyan">
+            <Button size="md" variant="outline">
               Airport Map
             </Button>
           </Link>
@@ -44,7 +44,7 @@ export const About = () => {
             </Button>
           </Link>
           <Link to="/math-explorer">
-            <Button size="md" icon={BookOpen} className="shadow-lg shadow-gw-cyan/10">
+            <Button size="md" icon={BookOpen}>
               Math Explorer
             </Button>
           </Link>
@@ -52,33 +52,33 @@ export const About = () => {
       </div>
 
       {/* ----------------- BLR DIGITAL TWIN DATA ARCHITECTURE ----------------- */}
-      <Card className="p-6 border-cyan-800/60 bg-[#071322] space-y-4">
-        <div className="flex items-center gap-2 pb-3 border-b border-[#1e3a5f]/40">
-          <Plane className="w-5 h-5 text-gw-cyan" />
-          <h2 className="text-base font-bold text-gw-text">GateWise BLR — Bengaluru Airport Digital Twin Prototype</h2>
+      <Card className="p-6 border-[#333333] bg-[#181818] space-y-4">
+        <div className="flex items-center gap-2 pb-3 border-b border-[#333333]">
+          <Plane className="w-5 h-5 text-white" />
+          <h2 className="text-base font-bold text-white">GateWise BLR — Bengaluru Airport Digital Twin Prototype</h2>
         </div>
         <p className="text-sm text-gw-text-secondary leading-relaxed">
           GateWise BLR is an academic operational digital twin modeled specifically around <strong>Kempegowda International Airport (BLR / VOBL)</strong> in Devanahalli, Bengaluru. It simulates airport gate allocations, turnaround occupancy windows, and terminal operational constraints across <strong>Terminal 1 (Dedicated Domestic)</strong> and <strong>Terminal 2 (International & Premium Domestic)</strong>.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
-          <div className="p-3.5 rounded-xl bg-[#09182b] border border-cyan-500/30 space-y-1.5">
-            <div className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wide">
+          <div className="p-3.5 rounded-xl bg-[#111111] border border-[#333333] space-y-1.5">
+            <div className="text-xs font-mono font-bold text-white uppercase tracking-wide">
               Tier 1: Verified Public Data
             </div>
             <p className="text-[11px] text-gw-text-secondary leading-relaxed">
               Official IATA (BLR) / ICAO (VOBL) identifiers, coordinates (13°11'56" N), runways (09L/27R CAT I & 09R/27L CAT III-B), airline terminal allocations, and published terminal opening dates.
             </p>
           </div>
-          <div className="p-3.5 rounded-xl bg-[#09182b] border border-amber-500/30 space-y-1.5">
-            <div className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wide">
+          <div className="p-3.5 rounded-xl bg-[#111111] border border-[#333333] space-y-1.5">
+            <div className="text-xs font-mono font-bold text-white uppercase tracking-wide">
               Tier 2: Configurable Demo Data
             </div>
             <p className="text-[11px] text-gw-text-secondary leading-relaxed">
               Demonstration apron stands (Contact Aerobridge vs Remote Bus Apron), maximum wingspan limits, passenger capacity thresholds, and jetway configurations.
             </p>
           </div>
-          <div className="p-3.5 rounded-xl bg-[#09182b] border border-emerald-500/30 space-y-1.5">
-            <div className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wide">
+          <div className="p-3.5 rounded-xl bg-[#111111] border border-[#333333] space-y-1.5">
+            <div className="text-xs font-mono font-bold text-white uppercase tracking-wide">
               Tier 3: Simulated Operational Data
             </div>
             <p className="text-[11px] text-gw-text-secondary leading-relaxed">
@@ -86,16 +86,16 @@ export const About = () => {
             </p>
           </div>
         </div>
-        <p className="text-[11px] text-gw-text-secondary italic pt-1 border-t border-[#1e3a5f]/40">
+        <p className="text-[11px] text-gw-text-secondary italic pt-1 border-t border-[#333333]">
           * Disclaimer: Academic research prototype. Not connected to BIAL internal operational systems, live AODB data, or airline operational feeds.
         </p>
       </Card>
 
       {/* ----------------- 2. SYSTEM OVERVIEW ----------------- */}
-      <Card className="p-6 border-[#1e3a5f]/80 space-y-4">
-        <div className="flex items-center gap-2 pb-3 border-b border-[#1e3a5f]/40">
-          <Plane className="w-5 h-5 text-gw-cyan" />
-          <h2 className="text-base font-bold text-gw-text">System Overview & Educational Purpose</h2>
+      <Card className="p-6 border-[#333333] bg-[#181818] space-y-4">
+        <div className="flex items-center gap-2 pb-3 border-b border-[#333333]">
+          <Plane className="w-5 h-5 text-white" />
+          <h2 className="text-base font-bold text-white">System Overview & Educational Purpose</h2>
         </div>
         <p className="text-sm text-gw-text-secondary leading-relaxed">
           <strong>GateWise</strong> is an educational and operational discrete mathematics platform designed to address the
@@ -113,22 +113,22 @@ export const About = () => {
 
       {/* ----------------- 3. MATHEMATICAL FOUNDATION ----------------- */}
       <div className="space-y-4">
-        <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
-          <Calculator className="w-5 h-5 text-gw-cyan" />
+        <h2 className="text-base font-bold text-white flex items-center gap-2">
+          <Calculator className="w-5 h-5 text-white" />
           Discrete Mathematical Formulations
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Card 1: Restriction Board */}
-          <Card className="p-5 border-gw-cyan/30 bg-gw-bg-secondary/40 space-y-3">
-            <span className="text-xs uppercase font-mono tracking-wider text-gw-cyan font-bold flex items-center gap-1.5">
-              <Grid3X3 className="w-4 h-4" />
+          <Card className="p-5 border-[#333333] bg-[#181818] space-y-3">
+            <span className="text-xs uppercase font-mono tracking-wider text-white font-bold flex items-center gap-1.5">
+              <Grid3X3 className="w-4 h-4 text-white" />
               1. Binary Restriction Board B
             </span>
             <p className="text-xs text-gw-text-secondary leading-relaxed">
               Let $B$ be an $n \times n$ binary matrix where:
             </p>
-            <div className="p-3 rounded-lg bg-gw-bg-tertiary font-mono text-xs text-gw-text space-y-1 border border-[#1e3a5f]">
+            <div className="p-3 rounded-lg bg-[#111111] font-mono text-xs text-white space-y-1 border border-[#333333]">
               <div>B[i][j] = 0 : Flight i is ALLOWED at Gate j</div>
               <div>B[i][j] = 1 : Flight i is FORBIDDEN from Gate j</div>
             </div>
@@ -138,15 +138,15 @@ export const About = () => {
           </Card>
 
           {/* Card 2: Permutation Universe */}
-          <Card className="p-5 border-gw-success/30 bg-gw-bg-secondary/40 space-y-3">
-            <span className="text-xs uppercase font-mono tracking-wider text-gw-success font-bold flex items-center gap-1.5">
-              <Layers className="w-4 h-4" />
+          <Card className="p-5 border-[#333333] bg-[#181818] space-y-3">
+            <span className="text-xs uppercase font-mono tracking-wider text-white font-bold flex items-center gap-1.5">
+              <Layers className="w-4 h-4 text-white" />
               2. Permutation Universe S₀
             </span>
             <p className="text-xs text-gw-text-secondary leading-relaxed">
               Without restrictions, $n$ flights can be assigned to $n$ gates in exactly $n!$ ways:
             </p>
-            <div className="p-3 rounded-lg bg-gw-bg-tertiary font-mono text-xs text-gw-success font-bold text-center border border-[#1e3a5f]">
+            <div className="p-3 rounded-lg bg-[#111111] font-mono text-xs text-white font-bold text-center border border-[#333333]">
               S₀ = n! = n × (n - 1) × ... × 1
             </div>
             <p className="text-xs text-gw-text-secondary leading-relaxed">
@@ -155,15 +155,15 @@ export const About = () => {
           </Card>
 
           {/* Card 3: Rook Polynomial */}
-          <Card className="p-5 border-purple-500/30 bg-gw-bg-secondary/40 space-y-3">
-            <span className="text-xs uppercase font-mono tracking-wider text-purple-400 font-bold flex items-center gap-1.5">
-              <Cpu className="w-4 h-4" />
+          <Card className="p-5 border-[#333333] bg-[#181818] space-y-3">
+            <span className="text-xs uppercase font-mono tracking-wider text-white font-bold flex items-center gap-1.5">
+              <Cpu className="w-4 h-4 text-white" />
               3. Rook Polynomial R(B, x)
             </span>
             <p className="text-xs text-gw-text-secondary leading-relaxed">
               The generating function for non-attacking rook placements on forbidden cells of board $B$:
             </p>
-            <div className="p-3 rounded-lg bg-gw-bg-tertiary font-mono text-xs text-purple-300 font-bold text-center border border-[#1e3a5f]">
+            <div className="p-3 rounded-lg bg-[#111111] font-mono text-xs text-white font-bold text-center border border-[#333333]">
               R(B, x) = r₀ + r₁x + r₂x² + ... + rₙxⁿ
             </div>
             <p className="text-xs text-gw-text-secondary leading-relaxed">
@@ -172,15 +172,15 @@ export const About = () => {
           </Card>
 
           {/* Card 4: Principle of Inclusion-Exclusion */}
-          <Card className="p-5 border-gw-warning/30 bg-gw-bg-secondary/40 space-y-3">
-            <span className="text-xs uppercase font-mono tracking-wider text-gw-warning font-bold flex items-center gap-1.5">
-              <Calculator className="w-4 h-4" />
+          <Card className="p-5 border-[#333333] bg-[#181818] space-y-3">
+            <span className="text-xs uppercase font-mono tracking-wider text-white font-bold flex items-center gap-1.5">
+              <Calculator className="w-4 h-4 text-white" />
               4. Principle of Inclusion-Exclusion
             </span>
             <p className="text-xs text-gw-text-secondary leading-relaxed">
               The master equation combining rook polynomial coefficients with remaining factorial terms:
             </p>
-            <div className="p-3 rounded-lg bg-gw-bg-tertiary font-mono text-xs text-gw-warning font-bold text-center border border-[#1e3a5f]">
+            <div className="p-3 rounded-lg bg-[#111111] font-mono text-xs text-white font-bold text-center border border-[#333333]">
               N = ∑ₖ₌₀ⁿ (-1)ᵏ · rₖ · (n - k)!
             </div>
             <p className="text-xs text-gw-text-secondary leading-relaxed">
@@ -191,15 +191,15 @@ export const About = () => {
       </div>
 
       {/* ----------------- 4. ARCHITECTURE & TECH STACK ----------------- */}
-      <Card className="p-6 border-[#1e3a5f]/80 space-y-6">
-        <h2 className="text-base font-bold text-gw-text flex items-center gap-2 pb-3 border-b border-[#1e3a5f]/40">
-          <Code2 className="w-5 h-5 text-gw-cyan" />
+      <Card className="p-6 border-[#333333] bg-[#181818] space-y-6">
+        <h2 className="text-base font-bold text-white flex items-center gap-2 pb-3 border-b border-[#333333]">
+          <Code2 className="w-5 h-5 text-white" />
           Technical Stack & Engineering Design
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] space-y-2">
-            <div className="flex items-center gap-2 text-gw-cyan font-bold text-xs uppercase font-mono">
+          <div className="p-4 rounded-xl bg-[#111111] border border-[#333333] space-y-2">
+            <div className="flex items-center gap-2 text-white font-bold text-xs uppercase font-mono">
               <Terminal className="w-4 h-4" />
               Backend Engine
             </div>
@@ -212,8 +212,8 @@ export const About = () => {
             </ul>
           </div>
 
-          <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] space-y-2">
-            <div className="flex items-center gap-2 text-gw-success font-bold text-xs uppercase font-mono">
+          <div className="p-4 rounded-xl bg-[#111111] border border-[#333333] space-y-2">
+            <div className="flex items-center gap-2 text-white font-bold text-xs uppercase font-mono">
               <Code2 className="w-4 h-4" />
               Frontend Interface
             </div>
@@ -226,8 +226,8 @@ export const About = () => {
             </ul>
           </div>
 
-          <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] space-y-2">
-            <div className="flex items-center gap-2 text-purple-400 font-bold text-xs uppercase font-mono">
+          <div className="p-4 rounded-xl bg-[#111111] border border-[#333333] space-y-2">
+            <div className="flex items-center gap-2 text-white font-bold text-xs uppercase font-mono">
               <ShieldCheck className="w-4 h-4" />
               Quality & Verification
             </div>
@@ -243,8 +243,8 @@ export const About = () => {
       </Card>
 
       {/* ----------------- 5. NAVIGATION QUICK JUMP ----------------- */}
-      <Card className="p-6 border-[#1e3a5f]/80 text-center space-y-4 bg-gradient-to-br from-gw-bg-secondary via-gw-bg-secondary/60 to-gw-cyan/5">
-        <h3 className="text-base font-bold text-gw-text">Explore the GateWise Platform</h3>
+      <Card className="p-6 border-[#333333] text-center space-y-4 bg-[#181818]">
+        <h3 className="text-base font-bold text-white">Explore the GateWise Platform</h3>
         <p className="text-xs text-gw-text-secondary max-w-xl mx-auto leading-relaxed">
           Experience real-time discrete mathematics in action. Run custom flight allocations, explore rook placement configurations, and analyze scenario bottlenecks.
         </p>

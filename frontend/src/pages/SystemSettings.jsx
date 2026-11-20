@@ -72,11 +72,11 @@ export const SystemSettings = () => {
   return (
     <div className="space-y-6 animate-fadeIn max-w-6xl mx-auto">
       {/* -------------------- HEADER -------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#1e3a5f]/50">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#333333]">
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">System Settings & Health</h1>
-            <Badge variant="cyan" size="sm" dot>
+            <Badge variant="default" size="sm" dot>
               System Online
             </Badge>
           </div>
@@ -120,73 +120,73 @@ export const SystemSettings = () => {
 
       {/* -------------------- RUNTIME INFRASTRUCTURE STATUS -------------------- */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="p-4 space-y-3 border-[#1e3a5f]/80">
+        <Card className="p-4 space-y-3 border-[#333333] bg-[#181818]">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary">
               Backend Server
             </span>
-            <div className="p-1.5 rounded-lg bg-gw-cyan/10 text-gw-cyan border border-gw-cyan/20">
+            <div className="p-1.5 rounded-lg bg-[#111111] text-white border border-[#333333]">
               <Server className="w-4 h-4" />
             </div>
           </div>
           <div className="space-y-1">
             <div className="text-xl font-bold font-mono text-gw-text">FastAPI v0.115+</div>
-            <div className="text-xs text-gw-success flex items-center gap-1.5 font-medium">
-              <span className="w-2 h-2 rounded-full bg-gw-success animate-pulse" />
+            <div className="text-xs text-white flex items-center gap-1.5 font-medium">
+              <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
               REST API Online • 127.0.0.1:8000
             </div>
           </div>
-          <p className="text-[11px] text-gw-text-secondary pt-1 border-t border-[#1e3a5f]/40 font-mono">
+          <p className="text-[11px] text-gw-text-secondary pt-1 border-t border-[#333333] font-mono">
             Python 3.14 Core Engine
           </p>
         </Card>
 
-        <Card className="p-4 space-y-3 border-[#1e3a5f]/80">
+        <Card className="p-4 space-y-3 border-[#333333] bg-[#181818]">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary">
               Authoritative Storage Layer
             </span>
-            <div className="p-1.5 rounded-lg bg-gw-blue/10 text-gw-blue border border-gw-blue/20">
+            <div className="p-1.5 rounded-lg bg-[#111111] text-white border border-[#333333]">
               <Database className="w-4 h-4" />
             </div>
           </div>
           <div className="space-y-1">
             <div className="text-xl font-bold font-mono text-gw-text">SQLite / SQLAlchemy 2.x</div>
-            <div className="text-xs text-gw-success flex items-center gap-1.5 font-medium">
-              <span className="w-2 h-2 rounded-full bg-gw-success" />
+            <div className="text-xs text-white flex items-center gap-1.5 font-medium">
+              <span className="w-2 h-2 rounded-full bg-white" />
               Synchronized & Persistent
             </div>
           </div>
-          <p className="text-[11px] text-gw-text-secondary pt-1 border-t border-[#1e3a5f]/40 font-mono">
+          <p className="text-[11px] text-gw-text-secondary pt-1 border-t border-[#333333] font-mono">
             Tables: flights, gates, simulations, restrictions
           </p>
         </Card>
 
-        <Card className="p-4 space-y-3 border-[#1e3a5f]/80">
+        <Card className="p-4 space-y-3 border-[#333333] bg-[#181818]">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary">
               Discrete Math Engine
             </span>
-            <div className="p-1.5 rounded-lg bg-gw-warning/10 text-gw-warning border border-gw-warning/20">
+            <div className="p-1.5 rounded-lg bg-[#111111] text-white border border-[#333333]">
               <Cpu className="w-4 h-4" />
             </div>
           </div>
           <div className="space-y-1">
-            <div className="text-xl font-bold font-mono text-gw-warning">Rook-Poly & PIE</div>
+            <div className="text-xl font-bold font-mono text-white">Rook-Poly & PIE</div>
             <div className="text-xs text-gw-text-secondary flex items-center gap-1.5 font-mono">
               Arbitrary-Precision Integer Arithmetic
             </div>
           </div>
-          <p className="text-[11px] text-gw-text-secondary pt-1 border-t border-[#1e3a5f]/40 font-mono">
+          <p className="text-[11px] text-gw-text-secondary pt-1 border-t border-[#333333] font-mono">
             Zero Mocking • Pure Combinatorics
           </p>
         </Card>
       </div>
 
       {/* -------------------- PRODUCT POSITIONING STATEMENT -------------------- */}
-      <Card className="p-5 border-gw-cyan/30 bg-gw-bg-secondary/40 space-y-3">
+      <Card className="p-5 border-[#333333] bg-[#181818] space-y-3">
         <div className="flex items-center gap-2">
-          <Info className="w-5 h-5 text-gw-cyan" />
+          <Info className="w-5 h-5 text-white" />
           <h3 className="font-bold text-sm text-gw-text">System Purpose & Architectural Boundaries</h3>
         </div>
         <p className="text-xs text-gw-text-secondary leading-relaxed">

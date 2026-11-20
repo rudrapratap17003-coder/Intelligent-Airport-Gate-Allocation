@@ -3,11 +3,11 @@ import { motion } from 'framer-motion'
 import { buttonPressProps } from '../../lib/animations'
 
 const variants = {
-  primary: 'bg-gw-cyan text-gw-bg font-semibold hover:bg-[#32d4f5] active:bg-[#1bb8d6] focus:ring-gw-cyan shadow-md shadow-gw-cyan/15 hover:shadow-gw-cyan/25',
-  secondary: 'bg-gw-card text-gw-text hover:bg-gw-card-hover border border-[#1e3a5f] hover:border-gw-cyan/40 focus:ring-gw-blue shadow-sm',
-  outline: 'bg-transparent border border-gw-cyan/40 text-gw-cyan hover:bg-gw-cyan/10 active:bg-gw-cyan/20 focus:ring-gw-cyan',
-  danger: 'bg-gw-error text-white hover:bg-red-600 active:bg-red-700 focus:ring-gw-error shadow-md shadow-red-500/15',
-  ghost: 'bg-transparent text-gw-text-secondary hover:text-gw-text hover:bg-white/5 active:bg-white/10 focus:ring-gw-cyan/50'
+  primary: 'bg-[#FFFFFF] text-[#090909] font-semibold hover:bg-[#E5E5E5] active:bg-[#CCCCCC] focus:ring-white shadow-xs',
+  secondary: 'bg-[#222222] text-[#FFFFFF] hover:bg-[#2A2A2A] border border-[#333333] hover:border-[#555555] focus:ring-white shadow-xs',
+  outline: 'bg-transparent border border-[#555555] text-[#FFFFFF] hover:bg-[#222222] active:bg-[#2A2A2A] hover:border-[#777777] focus:ring-white',
+  danger: 'bg-[#222222] text-[#FFFFFF] border border-[#555555] hover:bg-[#2A2A2A] active:bg-[#333333] focus:ring-white',
+  ghost: 'bg-transparent text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222] active:bg-[#2A2A2A] focus:ring-white/50'
 }
 
 const sizes = {
@@ -44,12 +44,12 @@ export const Button = ({
       disabled={isActionDisabled}
       aria-busy={loading ? 'true' : 'false'}
       whileTap={!isActionDisabled ? buttonPressProps.whileTap : undefined}
-      whileHover={!isActionDisabled ? { scale: 1.02 } : undefined}
+      whileHover={!isActionDisabled ? { scale: 1.01 } : undefined}
       onClick={handleClick}
       className={`
         inline-flex items-center justify-center gap-2 transition-all duration-150 font-medium
-        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gw-bg
-        disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none
+        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#090909]
+        disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer select-none
         ${variants[variant] || variants.primary}
         ${sizes[size] || sizes.md}
         ${className}

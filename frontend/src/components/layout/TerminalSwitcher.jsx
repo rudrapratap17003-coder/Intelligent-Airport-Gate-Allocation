@@ -15,7 +15,7 @@ export const TerminalSwitcher = ({ compact = false }) => {
     <div
       role="radiogroup"
       aria-label="Select Airport Terminal View"
-      className="inline-flex items-center bg-[#0d1e36] p-1 rounded-xl border border-[#1e3a5f]/80 shadow-inner"
+      className="inline-flex items-center bg-[#181818] p-1 rounded-xl border border-[#333333]"
     >
       {options.map((opt) => {
         const Icon = opt.icon
@@ -31,16 +31,16 @@ export const TerminalSwitcher = ({ compact = false }) => {
               flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer
               ${
                 isSelected
-                  ? 'bg-gw-cyan text-[#0a1628] font-semibold shadow-xs shadow-gw-cyan/30'
-                  : 'text-gw-text-secondary hover:text-gw-text hover:bg-white/5'
+                  ? 'bg-[#FFFFFF] text-[#090909] font-semibold shadow-xs'
+                  : 'text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#2A2A2A]'
               }
             `}
             title={`${opt.label} — ${opt.desc}`}
           >
-            <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-[#0a1628]' : 'text-gw-text-secondary'}`} />
+            <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-[#090909]' : 'text-[#A3A3A3]'}`} />
             <span>{opt.label}</span>
             {opt.id === 'T2' && !compact && (
-              <span className={`text-[9px] px-1 py-0.2 rounded font-mono ${isSelected ? 'bg-black/20 text-[#0a1628]' : 'bg-[#1e3a5f] text-gw-cyan'}`}>
+              <span className={`text-[9px] px-1 py-0.2 rounded font-mono ${isSelected ? 'bg-black/20 text-[#090909]' : 'bg-[#222222] text-[#E5E5E5] border border-[#333333]'}`}>
                 Code F
               </span>
             )}

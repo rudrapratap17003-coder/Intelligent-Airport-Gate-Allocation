@@ -13,10 +13,10 @@ const icons = {
 }
 
 const styles = {
-  success: 'bg-[#0f2a24]/90 border-gw-success/40 text-gw-success shadow-[0_8px_30px_rgba(34,197,94,0.15)]',
-  warning: 'bg-[#2b2210]/90 border-gw-warning/40 text-gw-warning shadow-[0_8px_30px_rgba(245,158,11,0.15)]',
-  error: 'bg-[#2d1214]/90 border-gw-error/40 text-gw-error shadow-[0_8px_30px_rgba(239,68,68,0.15)]',
-  info: 'bg-[#0c2236]/90 border-gw-cyan/40 text-gw-cyan shadow-[0_8px_30px_rgba(36,200,232,0.15)]'
+  success: 'bg-[#181818] border-[#555555] text-[#FFFFFF] shadow-xl',
+  warning: 'bg-[#181818] border-[#333333] text-[#E5E5E5] shadow-xl',
+  error: 'bg-[#181818] border-[#555555] text-[#FFFFFF] shadow-xl',
+  info: 'bg-[#181818] border-[#333333] text-[#FFFFFF] shadow-xl'
 }
 
 export const ToastProvider = ({ children }) => {
@@ -60,11 +60,10 @@ export const ToastProvider = ({ children }) => {
     <ToastContext.Provider value={{ showToast, success, error, warning, info, removeToast }}>
       {children}
 
-      {/* Floating Top-Right Toast Container */}
+      {/* Global Toast Container */}
       <div
-        className="fixed top-4 right-4 z-[9999] flex flex-col gap-2.5 max-w-sm sm:max-w-md w-full pointer-events-none px-2"
+        className="fixed bottom-4 right-4 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none"
         aria-live="polite"
-        aria-atomic="true"
       >
         <AnimatePresence>
           {toasts.map((toast) => {
@@ -79,18 +78,22 @@ export const ToastProvider = ({ children }) => {
                 animate="animate"
                 exit="exit"
                 layout
-                className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl border backdrop-blur-xl ${style}`}
+                className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl border backdrop-blur-md ${style}`}
               >
                 <Icon className="w-5 h-5 shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
-                  {toast.title && <h5 className="font-semibold text-sm leading-snug">{toast.title}</h5>}
-                  {toast.message && <p className="text-xs text-slate-200 mt-0.5 leading-relaxed">{toast.message}</p>}
+                  {toast.title && (
+                    <h5 className="font-semibold text-sm leading-snug">{toast.title}</h5>
+                  )}
+                  {toast.message && (
+                    <p className="text-xs text-[#A3A3A3] mt-0.5 leading-relaxed">{toast.message}</p>
+                  )}
                 </div>
                 <button
                   type="button"
                   onClick={() => removeToast(toast.id)}
-                  aria-label="Dismiss alert"
-                  className="text-slate-400 hover:text-white p-1 rounded-md transition-colors cursor-pointer shrink-0"
+                  aria-label="Dismiss toast"
+                  className="text-[#A3A3A3] hover:text-[#FFFFFF] p-1 rounded-md transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -111,4 +114,4 @@ export const useToast = () => {
   return context
 }
 
-export default ToastProvider
+export default ToastContext

@@ -65,13 +65,13 @@ export const TerminalManagement = () => {
   return (
     <div className="space-y-6">
       {/* Header and Terminal Switcher Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#1e3a5f]/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#333333]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-mono text-gw-cyan font-bold tracking-wider uppercase">
+            <span className="text-xs font-mono text-[#A3A3A3] font-bold tracking-wider uppercase">
               Bengaluru Airport Digital Twin
             </span>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-mono">
+            <span className="text-[10px] px-2 py-0.5 rounded bg-[#222222] border border-[#333333] text-[#FFFFFF] font-mono">
               VOBL / BLR
             </span>
           </div>
@@ -84,14 +84,14 @@ export const TerminalManagement = () => {
         </div>
 
         {/* Tab Controls */}
-        <div className="flex items-center gap-2 bg-[#091524] p-1.5 rounded-xl border border-[#1e3a5f]">
+        <div className="flex items-center gap-2 bg-[#181818] p-1.5 rounded-xl border border-[#333333]">
           <button
             type="button"
             onClick={() => handleTabChange('T1')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               activeTab === 'T1'
-                ? 'bg-gw-cyan text-[#091524] shadow-xs shadow-gw-cyan/30'
-                : 'text-gw-text-secondary hover:text-gw-text hover:bg-white/5'
+                ? 'bg-[#FFFFFF] text-[#090909]'
+                : 'text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222]'
             }`}
           >
             <Plane className="w-3.5 h-3.5" />
@@ -102,36 +102,36 @@ export const TerminalManagement = () => {
             onClick={() => handleTabChange('T2')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               activeTab === 'T2'
-                ? 'bg-gw-cyan text-[#091524] shadow-xs shadow-gw-cyan/30'
-                : 'text-gw-text-secondary hover:text-gw-text hover:bg-white/5'
+                ? 'bg-[#FFFFFF] text-[#090909]'
+                : 'text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222]'
             }`}
           >
             <Building2 className="w-3.5 h-3.5" />
             <span>Terminal 2 (Int'l / Premium)</span>
-            <span className="text-[9px] px-1 py-0.2 rounded bg-black/20 text-[#091524] font-mono">Code F</span>
+            <span className="text-[9px] px-1 py-0.2 rounded bg-[#222222] text-[#FFFFFF] font-mono border border-[#333333]">Code F</span>
           </button>
         </div>
       </div>
 
       {/* Academic Simulation Notice */}
-      <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-800/40 text-xs text-cyan-200/90 flex items-start gap-3">
-        <Info className="w-4 h-4 text-gw-cyan shrink-0 mt-0.5" />
+      <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] text-xs flex items-start gap-3">
+        <Info className="w-4 h-4 text-[#FFFFFF] shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <p className="font-semibold text-gw-cyan">
+          <p className="font-semibold text-[#FFFFFF]">
             Data Classification Notice — Academic Digital Twin Prototype
           </p>
           <p className="text-gw-text-secondary text-[11px] leading-relaxed">
-            Terminal roles and airline assignments are derived from official published BIAL specifications (<span className="text-cyan-300">Verified Public Data</span>). Stand configurations and physical capacities are configured for demonstration (<span className="text-amber-300">Configurable Demonstration Data</span>). Flight schedules and real-time allocations are generated for academic analysis (<span className="text-emerald-300">Simulated Operational Data</span>).
+            Terminal roles and airline assignments are derived from official published BIAL specifications (<span className="text-[#FFFFFF]">Verified Public Data</span>). Stand configurations and physical capacities are configured for demonstration (<span className="text-[#A3A3A3]">Configurable Demonstration Data</span>). Flight schedules and real-time allocations are generated for academic analysis (<span className="text-[#E5E5E5]">Simulated Operational Data</span>).
           </p>
         </div>
       </div>
 
       {loading && !terminalData ? (
         <div className="h-64 flex items-center justify-center">
-          <RefreshCw className="w-6 h-6 text-gw-cyan animate-spin" />
+          <RefreshCw className="w-6 h-6 text-[#FFFFFF] animate-spin" />
         </div>
       ) : error ? (
-        <div className="p-4 rounded-xl bg-red-950/30 border border-red-800/50 text-red-200 text-sm">
+        <div className="p-4 rounded-xl bg-[#181818] border border-[#333333] text-[#A3A3A3] text-sm">
           {error}
         </div>
       ) : (
@@ -143,7 +143,7 @@ export const TerminalManagement = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between text-xs text-gw-text-secondary mb-1">
                     <span>Terminal Role</span>
-                    <Building2 className="w-4 h-4 text-gw-cyan" />
+                    <Building2 className="w-4 h-4 text-[#FFFFFF]" />
                   </div>
                   <div className="text-base font-bold text-gw-text">
                     {activeTab === 'T1' ? 'Dedicated Domestic' : 'International & Full-Service'}
@@ -158,7 +158,7 @@ export const TerminalManagement = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between text-xs text-gw-text-secondary mb-1">
                     <span>Aircraft Envelope</span>
-                    <Maximize2 className="w-4 h-4 text-emerald-400" />
+                    <Maximize2 className="w-4 h-4 text-[#FFFFFF]" />
                   </div>
                   <div className="text-base font-bold text-gw-text">
                     Up to {terminalData.max_wingspan_m}m Wingspan
@@ -173,7 +173,7 @@ export const TerminalManagement = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between text-xs text-gw-text-secondary mb-1">
                     <span>Apron Stands</span>
-                    <DoorClosed className="w-4 h-4 text-blue-400" />
+                    <DoorClosed className="w-4 h-4 text-[#FFFFFF]" />
                   </div>
                   <div className="text-base font-bold text-gw-text flex items-center gap-1.5">
                     <Counter value={terminalData.statistics.total_stands} className="text-xl font-bold text-gw-text" />
@@ -189,7 +189,7 @@ export const TerminalManagement = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between text-xs text-gw-text-secondary mb-1">
                     <span>Stand Utilization</span>
-                    <Layers className="w-4 h-4 text-amber-400" />
+                    <Layers className="w-4 h-4 text-[#FFFFFF]" />
                   </div>
                   <div className="text-base font-bold text-gw-text flex items-center gap-1">
                     <Counter value={terminalData.statistics.stand_utilization_pct} suffix="%" className="text-xl font-bold text-gw-text" />
@@ -208,7 +208,7 @@ export const TerminalManagement = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-sm flex items-center gap-2">
-                    <Plane className="w-4 h-4 text-gw-cyan" />
+                    <Plane className="w-4 h-4 text-[#FFFFFF]" />
                     <span>Primary Operating Airlines</span>
                   </CardTitle>
                 </CardHeader>
@@ -220,10 +220,10 @@ export const TerminalManagement = () => {
                     {terminalData.primary_airlines.map((airline) => (
                       <div
                         key={airline.code}
-                        className="p-2.5 rounded-lg bg-[#091524] border border-[#1e3a5f]/80 flex items-center justify-between"
+                        className="p-2.5 rounded-lg bg-[#181818] border border-[#333333] flex items-center justify-between"
                       >
                         <div className="flex items-center gap-2">
-                          <span className="w-7 h-7 rounded-md bg-gw-cyan/15 text-gw-cyan font-mono font-bold text-xs flex items-center justify-center border border-gw-cyan/30">
+                          <span className="w-7 h-7 rounded-md bg-[#222222] text-[#FFFFFF] font-mono font-bold text-xs flex items-center justify-center border border-[#333333]">
                             {airline.code}
                           </span>
                           <div>
@@ -231,7 +231,7 @@ export const TerminalManagement = () => {
                             <div className="text-[10px] text-gw-text-secondary">{airline.type}</div>
                           </div>
                         </div>
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#FFFFFF]" />
                       </div>
                     ))}
                   </div>
@@ -242,14 +242,14 @@ export const TerminalManagement = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-sm flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    <ShieldCheck className="w-4 h-4 text-[#FFFFFF]" />
                     <span>Terminal Compatibility & Restriction Rules</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-xs">
-                  <div className="p-3 rounded-lg bg-[#091524] border border-[#1e3a5f]/80 space-y-2">
+                  <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-2">
                     <div className="flex items-center gap-2 font-semibold text-gw-text">
-                      <span className="w-2 h-2 rounded-full bg-gw-cyan" />
+                      <span className="w-2 h-2 rounded-full bg-[#FFFFFF]" />
                       <span>Flight Eligibility Boundary</span>
                     </div>
                     <p className="text-gw-text-secondary text-[11px]">
@@ -259,9 +259,9 @@ export const TerminalManagement = () => {
                     </p>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-[#091524] border border-[#1e3a5f]/80 space-y-2">
+                  <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-2">
                     <div className="flex items-center gap-2 font-semibold text-gw-text">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      <span className="w-2 h-2 rounded-full bg-[#FFFFFF]" />
                       <span>Wingspan & Jetway Capabilities</span>
                     </div>
                     <p className="text-gw-text-secondary text-[11px]">
@@ -278,7 +278,7 @@ export const TerminalManagement = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
-                  <DoorClosed className="w-4 h-4 text-gw-cyan" />
+                  <DoorClosed className="w-4 h-4 text-[#FFFFFF]" />
                   <span>{activeTab === 'T1' ? 'Terminal 1' : 'Terminal 2'} Apron Stands & Docking Positions</span>
                 </CardTitle>
                 <div className="text-xs text-gw-text-secondary font-mono">
@@ -288,7 +288,7 @@ export const TerminalManagement = () => {
               <CardContent>
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs text-left">
-                    <thead className="bg-[#091524] text-gw-text-secondary border-b border-[#1e3a5f] font-mono uppercase text-[11px]">
+                    <thead className="bg-[#181818] text-gw-text-secondary border-b border-[#333333] font-mono uppercase text-[11px]">
                       <tr>
                         <th className="py-2.5 px-3">Gate / Stand</th>
                         <th className="py-2.5 px-3">Type</th>
@@ -299,48 +299,36 @@ export const TerminalManagement = () => {
                         <th className="py-2.5 px-3">Operational Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#1e3a5f]/40 font-mono">
+                    <tbody className="divide-y divide-[#333333] font-mono">
                       {stands.map((s) => (
                         <tr key={s.id} className="hover:bg-white/5 transition-colors">
                           <td className="py-2.5 px-3 font-bold text-gw-text flex items-center gap-2">
-                            <span className="w-6 h-6 rounded bg-gw-cyan/15 text-gw-cyan text-xs flex items-center justify-center border border-gw-cyan/30">
+                            <span className="w-6 h-6 rounded bg-[#222222] text-[#FFFFFF] text-xs flex items-center justify-center border border-[#333333]">
                               {s.gate_number}
                             </span>
                             <span>{s.stand_number}</span>
                           </td>
                           <td className="py-2.5 px-3 text-gw-text-secondary">{s.stand_type}</td>
                           <td className="py-2.5 px-3">
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                              s.aircraft_category === 'Code F'
-                                ? 'bg-purple-900/40 text-purple-300 border border-purple-500/30'
-                                : s.aircraft_category === 'Code E'
-                                ? 'bg-blue-900/40 text-blue-300 border border-blue-500/30'
-                                : 'bg-emerald-900/40 text-emerald-300 border border-emerald-500/30'
-                            }`}>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#222222] text-[#FFFFFF] border border-[#333333]">
                               {s.aircraft_category}
                             </span>
                           </td>
                           <td className="py-2.5 px-3 text-gw-text">{s.max_wingspan_m} m</td>
                           <td className="py-2.5 px-3">
                             {s.has_jetway ? (
-                              <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                              <span className="text-[#FFFFFF] font-semibold flex items-center gap-1">
                                 <CheckCircle2 className="w-3 h-3" /> Aerobridge
                               </span>
                             ) : (
-                              <span className="text-amber-400 font-semibold flex items-center gap-1">
+                              <span className="text-[#A3A3A3] font-semibold flex items-center gap-1">
                                 Bus Gate
                               </span>
                             )}
                           </td>
                           <td className="py-2.5 px-3 text-gw-text-secondary">{s.max_capacity} pax</td>
                           <td className="py-2.5 px-3">
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                              s.status.toLowerCase() === 'available'
-                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                                : s.status.toLowerCase() === 'occupied'
-                                ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30'
-                                : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                            }`}>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#222222] text-[#FFFFFF] border border-[#333333]">
                               {s.status.toUpperCase()}
                             </span>
                           </td>

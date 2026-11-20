@@ -236,11 +236,11 @@ export const CalculationEngine = () => {
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* ----------------- 1. HEADER & SIMULATION SELECTOR ----------------- */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#1e3a5f]/50">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#333333]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">Step-by-Step Integrated Mathematical Workflow</h1>
-            <Badge variant="cyan" size="sm" dot>
+            <Badge variant="outline" size="sm" dot>
               Phase 14 End-to-End
             </Badge>
           </div>
@@ -251,7 +251,7 @@ export const CalculationEngine = () => {
 
         {/* Scenario Switcher */}
         <div className="flex items-center gap-3 shrink-0">
-          <div className="flex items-center gap-2 bg-gw-bg-secondary p-1.5 rounded-xl border border-[#1e3a5f]">
+          <div className="flex items-center gap-2 bg-[#222222] p-1.5 rounded-xl border border-[#333333]">
             <span className="text-xs font-mono text-gw-text-secondary pl-2">Scenario:</span>
             <select
               value={selectedSimId}
@@ -259,7 +259,7 @@ export const CalculationEngine = () => {
                 setSelectedSimId(e.target.value)
                 setCurrentStep(1)
               }}
-              className="bg-gw-bg-tertiary text-gw-text font-mono text-xs px-3 py-1.5 rounded-lg border border-[#1e3a5f] focus:outline-none focus:border-gw-cyan"
+              className="bg-[#181818] text-[#FFFFFF] font-mono text-xs px-3 py-1.5 rounded-lg border border-[#333333] focus:outline-none focus:border-[#FFFFFF]"
             >
               {allSimulations.map((sim) => (
                 <option key={sim.id} value={sim.id}>
@@ -270,7 +270,7 @@ export const CalculationEngine = () => {
           </div>
 
           <Link to={`/simulator?sim=${selectedSimId}`}>
-            <Button size="md" icon={PlayCircle} className="shadow-lg shadow-gw-cyan/10">
+            <Button size="md" icon={PlayCircle} className="shadow-none">
               Run Simulator
             </Button>
           </Link>
@@ -278,7 +278,7 @@ export const CalculationEngine = () => {
       </div>
 
       {/* ----------------- 2. INTERACTIVE STEP PROGRESS BAR (6 STEPS) ----------------- */}
-      <Card className="p-4 border-[#1e3a5f]/80 bg-gw-bg-secondary/40">
+      <Card className="p-4 border-[#333333] bg-[#181818]">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Stepper Buttons */}
           <div className="flex flex-wrap items-center gap-2">
@@ -298,23 +298,23 @@ export const CalculationEngine = () => {
                   title={isStepBlocked ? 'Blocked: Fix validation errors in Step 2 first' : step.title}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
                     isActive
-                      ? 'bg-gw-cyan text-gw-bg-primary font-bold shadow-md shadow-gw-cyan/20'
+                      ? 'bg-[#FFFFFF] text-[#090909] font-bold border border-[#FFFFFF] shadow-none'
                       : isCompleted
-                      ? 'bg-gw-bg-tertiary text-gw-cyan border border-gw-cyan/30'
+                      ? 'bg-[#222222] text-[#FFFFFF] border border-[#333333]'
                       : isStepBlocked
-                      ? 'bg-gw-bg-tertiary/20 text-gw-text-secondary/40 border border-gw-danger/20 cursor-not-allowed'
-                      : 'bg-gw-bg-tertiary/50 text-gw-text-secondary border border-[#1e3a5f]/40 hover:text-gw-text'
+                      ? 'bg-[#181818] text-[#737373] border border-[#333333] cursor-not-allowed'
+                      : 'bg-[#222222] text-gw-text-secondary border border-[#333333] hover:text-[#FFFFFF] hover:bg-[#2A2A2A]'
                   }`}
                 >
                   <span
                     className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
                       isActive
-                        ? 'bg-gw-bg-primary text-gw-cyan font-bold'
+                        ? 'bg-[#090909] text-[#FFFFFF] font-bold'
                         : isCompleted
-                        ? 'bg-gw-cyan/20 text-gw-cyan'
+                        ? 'bg-[#383838] text-[#FFFFFF]'
                         : isStepBlocked
-                        ? 'bg-gw-danger/20 text-gw-danger'
-                        : 'bg-gw-bg-secondary text-gw-text-secondary'
+                        ? 'bg-[#333333] text-[#737373]'
+                        : 'bg-[#181818] text-[#737373]'
                     }`}
                   >
                     {isStepBlocked ? '!' : isCompleted ? '✓' : step.id}
@@ -341,7 +341,7 @@ export const CalculationEngine = () => {
               variant="outline"
               icon={isAutoPlaying ? Pause : Play}
               onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-              className={isAutoPlaying ? 'border-gw-cyan text-gw-cyan' : ''}
+              className={isAutoPlaying ? 'border-[#FFFFFF] text-[#FFFFFF]' : ''}
               disabled={isValidationBlocking && currentStep >= 2}
             >
               {isAutoPlaying ? 'Pause' : 'Auto-Play'}
@@ -361,16 +361,16 @@ export const CalculationEngine = () => {
       {/* ----------------- 3. ERROR & LOADING STATES ----------------- */}
       {isLoading && (
         <div className="p-12 text-center space-y-4">
-          <div className="w-12 h-12 border-2 border-gw-cyan border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-sm font-mono text-gw-cyan">Evaluating Discrete Mathematics Pipeline...</p>
+          <div className="w-12 h-12 border-2 border-[#FFFFFF] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm font-mono text-[#FFFFFF]">Evaluating Discrete Mathematics Pipeline...</p>
         </div>
       )}
 
       {error && (
-        <Card className="p-6 border-gw-danger/30 bg-gw-danger/5 text-center space-y-3">
-          <AlertCircle className="w-8 h-8 text-gw-danger mx-auto" />
+        <Card className="p-6 border-[#333333] bg-[#181818] text-center space-y-3">
+          <AlertCircle className="w-8 h-8 text-[#A3A3A3] mx-auto" />
           <h3 className="text-base font-bold text-gw-text">Calculation Engine Error</h3>
-          <p className="text-xs text-gw-danger font-mono">{error}</p>
+          <p className="text-xs text-[#A3A3A3] font-mono">{error}</p>
           <Button size="sm" icon={RotateCcw} onClick={() => loadCompleteWorkflow(selectedSimId)}>
             Retry Workflow
           </Button>
@@ -384,22 +384,22 @@ export const CalculationEngine = () => {
           {/* STEP 1: SELECT SIMULATION & MATRIX IDENTITY                       */}
           {/* ================================================================= */}
           {currentStep === 1 && (
-            <Card className="p-6 border-[#1e3a5f]/80 space-y-6 animate-fadeIn">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1e3a5f]/50">
+            <Card className="p-6 border-[#333333] bg-[#181818] space-y-6 animate-fadeIn">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#333333]">
                 <div className="space-y-1">
-                  <span className="text-xs font-mono uppercase tracking-wider text-gw-cyan font-bold">
+                  <span className="text-xs font-mono uppercase tracking-wider text-[#FFFFFF] font-bold">
                     STEP 1 OF 6 — SIMULATION MANAGEMENT & IDENTITY
                   </span>
                   <h2 className="text-lg font-bold text-gw-text flex items-center gap-2">
-                    <Grid3X3 className="w-5 h-5 text-gw-cyan" />
+                    <Grid3X3 className="w-5 h-5 text-[#FFFFFF]" />
                     Simulation Overview & Restriction Matrix Board B
                   </h2>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="cyan" size="sm" className="font-mono">
+                  <Badge variant="outline" size="sm" className="font-mono">
                     {rowsCount} Flights × {colsCount} Gates
                   </Badge>
-                  <Badge variant={isSquare ? 'emerald' : 'warning'} size="sm">
+                  <Badge variant={isSquare ? 'default' : 'warning'} size="sm">
                     {isSquare ? 'Square Board (n × n)' : 'Rectangular Board (m × n)'}
                   </Badge>
                 </div>
@@ -407,24 +407,24 @@ export const CalculationEngine = () => {
 
               {/* Simulation Metadata Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
-                <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f] space-y-1">
+                <div className="p-3 rounded-lg bg-[#222222] border border-[#333333] space-y-1">
                   <span className="text-gw-text-secondary text-[10px] uppercase">Scenario Name</span>
                   <div className="font-bold text-gw-text truncate">{simDetails?.name || selectedSimId}</div>
-                  <span className="text-[10px] text-gw-cyan">{selectedSimId}</span>
+                  <span className="text-[10px] text-[#FFFFFF]">{selectedSimId}</span>
                 </div>
-                <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f] space-y-1">
+                <div className="p-3 rounded-lg bg-[#222222] border border-[#333333] space-y-1">
                   <span className="text-gw-text-secondary text-[10px] uppercase">Selected Flights</span>
                   <div className="font-bold text-gw-text">{rowsCount} Flights Active</div>
                   <span className="text-[10px] text-gw-text-secondary">Rows 1 to {rowsCount}</span>
                 </div>
-                <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f] space-y-1">
+                <div className="p-3 rounded-lg bg-[#222222] border border-[#333333] space-y-1">
                   <span className="text-gw-text-secondary text-[10px] uppercase">Selected Gates</span>
                   <div className="font-bold text-gw-text">{colsCount} Gates Available</div>
                   <span className="text-[10px] text-gw-text-secondary">Columns 1 to {colsCount}</span>
                 </div>
-                <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f] space-y-1">
+                <div className="p-3 rounded-lg bg-[#222222] border border-[#333333] space-y-1">
                   <span className="text-gw-text-secondary text-[10px] uppercase">Matrix Identity Preservation</span>
-                  <div className="font-bold text-gw-success flex items-center gap-1.5">
+                  <div className="font-bold text-[#FFFFFF] flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     <span>Metadata Active</span>
                   </div>
@@ -434,7 +434,7 @@ export const CalculationEngine = () => {
 
               {/* Matrix Board Display */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                <div className="lg:col-span-7 overflow-x-auto p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f]">
+                <div className="lg:col-span-7 overflow-x-auto p-4 rounded-xl bg-[#222222] border border-[#333333]">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="text-xs font-semibold uppercase font-mono tracking-wider text-gw-text">
                       Binary Restriction Board B:
@@ -450,7 +450,7 @@ export const CalculationEngine = () => {
                       {Array.from({ length: colsCount }).map((_, c) => {
                         const gateId = matrixData?.columnGateIds?.[c] || simDetails?.gate_ids?.[c] || `G${c + 1}`
                         return (
-                          <div key={c} className="w-12 text-center font-mono text-[10px] text-gw-cyan font-bold truncate" title={gateId}>
+                          <div key={c} className="w-12 text-center font-mono text-[10px] text-[#FFFFFF] font-bold truncate" title={gateId}>
                             {gateId}
                           </div>
                         )
@@ -471,8 +471,8 @@ export const CalculationEngine = () => {
                                 key={c}
                                 className={`w-12 h-10 rounded flex items-center justify-center font-mono text-xs font-bold border transition-colors ${
                                   val === 1
-                                    ? 'bg-gw-warning/20 border-gw-warning/60 text-gw-warning'
-                                    : 'bg-gw-bg-secondary border-[#1e3a5f] text-gw-cyan'
+                                    ? 'bg-[#111111] border-2 border-[#555555] text-[#FFFFFF]'
+                                    : 'bg-[#181818] border border-[#333333] text-[#737373]'
                                 }`}
                               >
                                 {val}
@@ -487,28 +487,28 @@ export const CalculationEngine = () => {
 
                 {/* Key Principles Callout */}
                 <div className="lg:col-span-5 space-y-4">
-                  <Card className="p-4 border-[#1e3a5f] bg-gw-bg-secondary/60 space-y-3">
-                    <span className="text-xs font-mono uppercase text-gw-cyan font-bold flex items-center gap-1.5">
+                  <Card className="p-4 border-[#333333] bg-[#222222] space-y-3">
+                    <span className="text-xs font-mono uppercase text-[#FFFFFF] font-bold flex items-center gap-1.5">
                       <Info className="w-4 h-4" />
                       Binary Matrix Semantics
                     </span>
                     <ul className="space-y-2 text-xs text-gw-text-secondary leading-relaxed">
                       <li className="flex items-start gap-2">
-                        <span className="w-2 h-2 rounded-full bg-gw-cyan mt-1 shrink-0" />
+                        <span className="w-2 h-2 rounded-full bg-[#FFFFFF] mt-1 shrink-0" />
                         <span>
-                          <strong className="text-gw-cyan font-mono">B[i][j] = 0 (Permitted):</strong> Flight $i$ is allowed to park at Gate $j$.
+                          <strong className="text-[#FFFFFF] font-mono">B[i][j] = 0 (Permitted):</strong> Flight $i$ is allowed to park at Gate $j$.
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="w-2 h-2 rounded-full bg-gw-warning mt-1 shrink-0" />
+                        <span className="w-2 h-2 rounded-full bg-[#A3A3A3] mt-1 shrink-0" />
                         <span>
-                          <strong className="text-gw-warning font-mono">B[i][j] = 1 (Forbidden):</strong> Flight $i$ cannot park at Gate $j$ (aircraft dimension, curfew, or international gate restriction).
+                          <strong className="text-[#A3A3A3] font-mono">B[i][j] = 1 (Forbidden):</strong> Flight $i$ cannot park at Gate $j$ (aircraft dimension, curfew, or international gate restriction).
                         </span>
                       </li>
                     </ul>
                   </Card>
 
-                  <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] flex items-center justify-between text-xs font-mono">
+                  <div className="p-4 rounded-xl bg-[#222222] border border-[#333333] flex items-center justify-between text-xs font-mono">
                     <span className="text-gw-text-secondary">Manage matrix or toggle forbidden cells:</span>
                     <Link to={`/restrictions?sim=${selectedSimId}`}>
                       <Button size="sm" variant="outline" icon={ExternalLink}>
@@ -525,19 +525,19 @@ export const CalculationEngine = () => {
           {/* STEP 2: RESTRICTION MATRIX VALIDATION                             */}
           {/* ================================================================= */}
           {currentStep === 2 && (
-            <Card className="p-6 border-[#1e3a5f]/80 space-y-6 animate-fadeIn">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1e3a5f]/50">
+            <Card className="p-6 border-[#333333] bg-[#181818] space-y-6 animate-fadeIn">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#333333]">
                 <div className="space-y-1">
-                  <span className="text-xs font-mono uppercase tracking-wider text-gw-cyan font-bold">
+                  <span className="text-xs font-mono uppercase tracking-wider text-[#FFFFFF] font-bold">
                     STEP 2 OF 6 — MATRIX VALIDATION ENGINE
                   </span>
                   <h2 className="text-lg font-bold text-gw-text flex items-center gap-2">
-                    <ShieldCheck className="w-5 h-5 text-gw-cyan" />
+                    <ShieldCheck className="w-5 h-5 text-[#FFFFFF]" />
                     Structural, Binary & Reference Integrity Audit
                   </h2>
                 </div>
                 <Badge
-                  variant={validationReport?.isValid ? 'emerald' : 'danger'}
+                  variant={validationReport?.isValid ? 'success' : 'danger'}
                   size="sm"
                   className="font-mono"
                 >
@@ -547,8 +547,8 @@ export const CalculationEngine = () => {
 
               {/* Blocking Error Alert */}
               {isValidationBlocking && (
-                <div className="p-4 rounded-xl bg-gw-danger/10 border border-gw-danger/40 space-y-2">
-                  <div className="flex items-center gap-2 text-gw-danger font-bold text-sm">
+                <div className="p-4 rounded-xl bg-[#222222] border border-[#555555] space-y-2">
+                  <div className="flex items-center gap-2 text-[#FFFFFF] font-bold text-sm">
                     <AlertTriangle className="w-5 h-5 shrink-0" />
                     <span>MATHEMATICAL CALCULATIONS BLOCKED</span>
                   </div>
@@ -561,13 +561,13 @@ export const CalculationEngine = () => {
               {/* Validation Categories Checklist */}
               {validationReport && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] space-y-2">
+                  <div className="p-4 rounded-xl bg-[#222222] border border-[#333333] space-y-2">
                     <div className="flex items-center justify-between text-xs font-mono">
                       <span className="text-gw-text-secondary uppercase">Structural & Dimensions</span>
                       {validationReport.errors.some(e => e.category === 'STRUCTURAL') ? (
-                        <span className="text-gw-danger font-bold">Failed</span>
+                        <span className="text-[#FFFFFF] font-bold">Failed</span>
                       ) : (
-                        <span className="text-gw-success font-bold">Passed</span>
+                        <span className="text-[#FFFFFF] font-bold">Passed</span>
                       )}
                     </div>
                     <div className="text-sm font-bold text-gw-text">
@@ -578,13 +578,13 @@ export const CalculationEngine = () => {
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] space-y-2">
+                  <div className="p-4 rounded-xl bg-[#222222] border border-[#333333] space-y-2">
                     <div className="flex items-center justify-between text-xs font-mono">
                       <span className="text-gw-text-secondary uppercase">Binary Value Integrity</span>
                       {validationReport.errors.some(e => e.category === 'VALUE') ? (
-                        <span className="text-gw-danger font-bold">Failed</span>
+                        <span className="text-[#FFFFFF] font-bold">Failed</span>
                       ) : (
-                        <span className="text-gw-success font-bold">Passed</span>
+                        <span className="text-[#FFFFFF] font-bold">Passed</span>
                       )}
                     </div>
                     <div className="text-sm font-bold text-gw-text">
@@ -595,13 +595,13 @@ export const CalculationEngine = () => {
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-[#1e3a5f] space-y-2">
+                  <div className="p-4 rounded-xl bg-[#222222] border border-[#333333] space-y-2">
                     <div className="flex items-center justify-between text-xs font-mono">
                       <span className="text-gw-text-secondary uppercase">Reference Mapping</span>
                       {validationReport.errors.some(e => e.category === 'REFERENCE') ? (
-                        <span className="text-gw-danger font-bold">Failed</span>
+                        <span className="text-[#FFFFFF] font-bold">Failed</span>
                       ) : (
-                        <span className="text-gw-success font-bold">Passed</span>
+                        <span className="text-[#FFFFFF] font-bold">Passed</span>
                       )}
                     </div>
                     <div className="text-sm font-bold text-gw-text">
@@ -623,11 +623,11 @@ export const CalculationEngine = () => {
                   {validationReport?.errors?.map((err, i) => (
                     <div
                       key={i}
-                      className="p-3 rounded-lg bg-gw-danger/10 border border-gw-danger/30 flex items-start gap-3 text-xs"
+                      className="p-3 rounded-lg bg-[#111111] border border-[#333333] flex items-start gap-3 text-xs"
                     >
-                      <AlertCircle className="w-4 h-4 text-gw-danger shrink-0 mt-0.5" />
+                      <AlertCircle className="w-4 h-4 text-white shrink-0 mt-0.5" />
                       <div className="space-y-0.5">
-                        <span className="font-bold text-gw-danger font-mono">
+                        <span className="font-bold text-white font-mono">
                           [{err.rule}] {err.message}
                         </span>
                         {err.details && <p className="text-[11px] text-gw-text-secondary">{err.details}</p>}
@@ -638,11 +638,11 @@ export const CalculationEngine = () => {
                   {validationReport?.warnings?.map((warn, i) => (
                     <div
                       key={i}
-                      className="p-3 rounded-lg bg-gw-warning/10 border border-gw-warning/30 flex items-start gap-3 text-xs"
+                      className="p-3 rounded-lg bg-[#181818] border border-[#333333] flex items-start gap-3 text-xs"
                     >
-                      <AlertTriangle className="w-4 h-4 text-gw-warning shrink-0 mt-0.5" />
+                      <AlertTriangle className="w-4 h-4 text-[#A3A3A3] shrink-0 mt-0.5" />
                       <div className="space-y-0.5">
-                        <span className="font-bold text-gw-warning font-mono">
+                        <span className="font-bold text-[#FFFFFF] font-mono">
                           [{warn.rule}] {warn.message}
                         </span>
                         {warn.details && <p className="text-[11px] text-gw-text-secondary">{warn.details}</p>}
@@ -651,7 +651,7 @@ export const CalculationEngine = () => {
                   ))}
 
                   {validationReport?.errors?.length === 0 && (
-                    <div className="p-3 rounded-lg bg-gw-success/10 border border-gw-success/30 flex items-center gap-3 text-xs text-gw-success">
+                    <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] flex items-center gap-3 text-xs text-[#FFFFFF]">
                       <CheckCircle2 className="w-4 h-4 shrink-0" />
                       <span>All matrix structural integrity and reference checks passed. Matrix is ready for algebraic rook polynomial evaluation.</span>
                     </div>
@@ -667,8 +667,8 @@ export const CalculationEngine = () => {
           {currentStep === 3 && (
             <div className="space-y-6 animate-fadeIn">
               {isValidationBlocking ? (
-                <Card className="p-8 text-center space-y-3 border-gw-danger/40">
-                  <AlertTriangle className="w-8 h-8 text-gw-danger mx-auto" />
+                <Card className="p-8 text-center space-y-3 border-[#333333] bg-[#181818]">
+                  <AlertTriangle className="w-8 h-8 text-[#A3A3A3] mx-auto" />
                   <h3 className="text-base font-bold text-gw-text">Step 3 Blocked</h3>
                   <p className="text-xs text-gw-text-secondary">Please resolve validation errors in Step 2 to compute the Rook Polynomial.</p>
                   <Button size="sm" onClick={() => setCurrentStep(2)}>Go to Step 2</Button>
@@ -691,35 +691,35 @@ export const CalculationEngine = () => {
           {currentStep === 4 && (
             <div className="space-y-6 animate-fadeIn">
               {isValidationBlocking ? (
-                <Card className="p-8 text-center space-y-3 border-gw-danger/40">
-                  <AlertTriangle className="w-8 h-8 text-gw-danger mx-auto" />
+                <Card className="p-8 text-center space-y-3 border-[#333333] bg-[#181818]">
+                  <AlertTriangle className="w-8 h-8 text-[#A3A3A3] mx-auto" />
                   <h3 className="text-base font-bold text-gw-text">Step 4 Blocked</h3>
                   <p className="text-xs text-gw-text-secondary">Please resolve validation errors in Step 2 to evaluate Inclusion–Exclusion.</p>
                   <Button size="sm" onClick={() => setCurrentStep(2)}>Go to Step 2</Button>
                 </Card>
               ) : pieResult ? (
-                <Card className="p-6 border-[#1e3a5f]/80 space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1e3a5f]/50">
+                <Card className="p-6 border-[#333333] bg-[#181818] space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#333333]">
                     <div className="space-y-1">
-                      <span className="text-xs font-mono uppercase tracking-wider text-gw-cyan font-bold">
+                      <span className="text-xs font-mono uppercase tracking-wider text-[#FFFFFF] font-bold">
                         STEP 4 OF 6 — INCLUSION–EXCLUSION COUNTING ENGINE
                       </span>
                       <h2 className="text-lg font-bold text-gw-text flex items-center gap-2">
-                        <Calculator className="w-5 h-5 text-gw-cyan" />
+                        <Calculator className="w-5 h-5 text-[#FFFFFF]" />
                         Exact Conflict-Free Valid Assignment Derivation
                       </h2>
                     </div>
-                    <Badge variant={pieResult.validAssignments > 0n ? 'emerald' : 'danger'} size="sm" className="font-mono">
+                    <Badge variant={pieResult.validAssignments > 0n ? 'success' : 'danger'} size="sm" className="font-mono">
                       N = {pieResult.validAssignments.toString()} Valid Assignments
                     </Badge>
                   </div>
 
                   {/* Mathematical Formula Banner */}
-                  <div className="p-4 rounded-xl bg-gw-bg-tertiary border border-gw-cyan/30 text-center space-y-1.5">
+                  <div className="p-4 rounded-xl bg-[#222222] border border-[#333333] text-center space-y-1.5">
                     <span className="text-xs font-mono text-gw-text-secondary uppercase">
                       Authoritative Discrete Mathematics Formula:
                     </span>
-                    <div className="text-base sm:text-lg font-mono font-bold text-gw-cyan">
+                    <div className="text-base sm:text-lg font-mono font-bold text-[#FFFFFF]">
                       {pieResult.formula}
                     </div>
                     <p className="text-[11px] text-gw-text-secondary">
@@ -740,9 +740,9 @@ export const CalculationEngine = () => {
                       </span>
                     </div>
 
-                    <div className="overflow-x-auto border border-[#1e3a5f] rounded-xl">
+                    <div className="overflow-x-auto border border-[#333333] rounded-xl">
                       <table className="w-full text-left text-xs font-mono">
-                        <thead className="bg-gw-bg-secondary text-gw-text-secondary uppercase text-[10px] border-b border-[#1e3a5f]">
+                        <thead className="bg-[#111111] text-gw-text-secondary uppercase text-[10px] border-b border-[#333333]">
                           <tr>
                             <th className="py-2.5 px-3">k</th>
                             <th className="py-2.5 px-2 text-center">Sign</th>
@@ -754,32 +754,22 @@ export const CalculationEngine = () => {
                             <th className="py-2.5 px-4 text-right">Cumulative Sum</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-[#1e3a5f]/30">
+                        <tbody className="divide-y divide-[#333333]">
                           {pieResult.terms.map((term) => (
-                            <tr key={term.k} className="hover:bg-gw-bg-tertiary/40 transition-colors">
+                            <tr key={term.k} className="hover:bg-[#222222]/40 transition-colors">
                               <td className="py-2.5 px-3 font-bold text-gw-text">k = {term.k}</td>
                               <td className="py-2.5 px-2 text-center">
-                                <span
-                                  className={`px-1.5 py-0.5 rounded font-bold ${
-                                    term.isPositive
-                                      ? 'bg-gw-success/10 text-gw-success'
-                                      : 'bg-gw-danger/10 text-gw-danger'
-                                  }`}
-                                >
+                                <span className="px-1.5 py-0.5 rounded font-bold bg-[#222222] text-[#FFFFFF]">
                                   {term.signSymbol}1
                                 </span>
                               </td>
-                              <td className="py-2.5 px-3 text-right text-gw-cyan font-bold">
+                              <td className="py-2.5 px-3 text-right text-[#FFFFFF] font-bold">
                                 {term.rookCoefficient.toString()}
                               </td>
                               <td className="py-2.5 px-3 text-right text-gw-text-secondary">
                                 {term.remainingPermutations.toString()}
                               </td>
-                              <td
-                                className={`py-2.5 px-4 text-right font-bold ${
-                                  term.isPositive ? 'text-gw-success' : 'text-gw-danger'
-                                }`}
-                              >
+                              <td className="py-2.5 px-4 text-right font-bold text-[#FFFFFF]">
                                 {term.signSymbol}{term.magnitude.toString()}
                               </td>
                               <td className="py-2.5 px-4 text-right text-gw-text font-bold">
@@ -794,21 +784,21 @@ export const CalculationEngine = () => {
 
                   {/* Summary Metric Cards */}
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs font-mono">
-                    <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f]">
+                    <div className="p-3 rounded-lg bg-[#222222] border border-[#333333]">
                       <span className="text-gw-text-secondary block mb-0.5 text-[10px] uppercase">Unrestricted Total</span>
                       <span className="text-base font-bold text-gw-text">{pieResult.totalPossibleAssignments.toString()}</span>
                     </div>
-                    <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f]">
+                    <div className="p-3 rounded-lg bg-[#222222] border border-[#333333]">
                       <span className="text-gw-text-secondary block mb-0.5 text-[10px] uppercase">Positive Sum (+)</span>
-                      <span className="text-base font-bold text-gw-success">+{pieResult.positiveTermsSum.toString()}</span>
+                      <span className="text-base font-bold text-[#FFFFFF]">+{pieResult.positiveTermsSum.toString()}</span>
                     </div>
-                    <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f]">
+                    <div className="p-3 rounded-lg bg-[#222222] border border-[#333333]">
                       <span className="text-gw-text-secondary block mb-0.5 text-[10px] uppercase">Negative Sum (−)</span>
-                      <span className="text-base font-bold text-gw-danger">-{pieResult.negativeTermsSum.toString()}</span>
+                      <span className="text-base font-bold text-[#A3A3A3]">-{pieResult.negativeTermsSum.toString()}</span>
                     </div>
-                    <div className="p-3 rounded-lg bg-gw-bg-tertiary border border-[#1e3a5f]">
+                    <div className="p-3 rounded-lg bg-[#222222] border border-[#333333]">
                       <span className="text-gw-text-secondary block mb-0.5 text-[10px] uppercase">Feasibility Ratio</span>
-                      <span className="text-base font-bold text-gw-cyan">{pieResult.feasibilityPercentage.toFixed(2)}%</span>
+                      <span className="text-base font-bold text-[#FFFFFF]">{pieResult.feasibilityPercentage.toFixed(2)}%</span>
                     </div>
                   </div>
                 </Card>
@@ -822,8 +812,8 @@ export const CalculationEngine = () => {
           {currentStep === 5 && (
             <div className="space-y-6 animate-fadeIn">
               {isValidationBlocking ? (
-                <Card className="p-8 text-center space-y-3 border-gw-danger/40">
-                  <AlertTriangle className="w-8 h-8 text-gw-danger mx-auto" />
+                <Card className="p-8 text-center space-y-3 border-[#333333] bg-[#181818]">
+                  <AlertTriangle className="w-8 h-8 text-[#A3A3A3] mx-auto" />
                   <h3 className="text-base font-bold text-gw-text">Step 5 Blocked</h3>
                   <p className="text-xs text-gw-text-secondary">Please resolve validation errors in Step 2 to generate flight-to-gate allocations.</p>
                   <Button size="sm" onClick={() => setCurrentStep(2)}>Go to Step 2</Button>
@@ -845,22 +835,22 @@ export const CalculationEngine = () => {
           {/* STEP 6: CROSS-VERIFICATION & FINAL SYNTHESIS                      */}
           {/* ================================================================= */}
           {currentStep === 6 && (
-            <Card className="p-6 border-[#1e3a5f]/80 space-y-6 animate-fadeIn">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1e3a5f]/50">
+            <Card className="p-6 border-[#333333] space-y-6 animate-fadeIn">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#333333]">
                 <div className="space-y-1">
-                  <span className="text-xs font-mono uppercase tracking-wider text-gw-cyan font-bold">
+                  <span className="text-xs font-mono uppercase tracking-wider text-[#A3A3A3] font-bold">
                     STEP 6 OF 6 — ALGORITHMIC CROSS-VERIFICATION & SYNTHESIS
                   </span>
                   <h2 className="text-lg font-bold text-gw-text flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-gw-success" />
+                    <CheckCircle2 className="w-5 h-5 text-[#FFFFFF]" />
                     Cross-Verification: Algebraic PIE vs. Backtracking Enumeration
                   </h2>
                 </div>
                 {crossVerificationReport && (
                   <Badge
-                    variant={crossVerificationReport.verified ? 'emerald' : 'warning'}
+                    variant="outline"
                     size="sm"
-                    className="font-mono"
+                    className="font-mono text-[#FFFFFF] border-[#333333]"
                   >
                     {crossVerificationReport.status}
                   </Badge>
@@ -869,26 +859,26 @@ export const CalculationEngine = () => {
 
               {/* Side-by-Side Comparison Box */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="p-5 border-gw-cyan/40 bg-gw-bg-secondary text-center space-y-2">
+                <Card className="p-5 border-[#333333] bg-[#181818] text-center space-y-2">
                   <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary block">
                     Principle of Inclusion–Exclusion (Phase 12)
                   </span>
-                  <div className="text-3xl font-mono font-bold text-gw-cyan">
+                  <div className="text-3xl font-mono font-bold text-[#FFFFFF]">
                     {pieResult?.validAssignments?.toString() ?? '—'}
                   </div>
-                  <span className="text-[11px] text-gw-cyan/80 font-mono">
+                  <span className="text-[11px] text-[#A3A3A3] font-mono">
                     Exact Combinatorial Ground Truth ($N$)
                   </span>
                 </Card>
 
-                <Card className="p-5 border-gw-success/40 bg-gw-bg-secondary text-center space-y-2">
+                <Card className="p-5 border-[#333333] bg-[#181818] text-center space-y-2">
                   <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary block">
                     Exhaustive Backtracking Enumeration (Phase 13)
                   </span>
-                  <div className="text-3xl font-mono font-bold text-gw-success">
+                  <div className="text-3xl font-mono font-bold text-[#FFFFFF]">
                     {backtrackingResult?.totalFound?.toString() ?? '—'}
                   </div>
-                  <span className="text-[11px] text-gw-success/80 font-mono">
+                  <span className="text-[11px] text-[#A3A3A3] font-mono">
                     Materialized Conflict-Free Plans
                   </span>
                 </Card>
@@ -899,16 +889,16 @@ export const CalculationEngine = () => {
                 <div
                   className={`p-4 rounded-xl border flex items-start gap-3 text-xs leading-relaxed ${
                     crossVerificationReport.verified
-                      ? 'bg-gw-success/10 border-gw-success/40 text-gw-success'
+                      ? 'bg-[#181818] border-[#333333] text-[#FFFFFF]'
                       : crossVerificationReport.status === 'INCOMPLETE_SEARCH'
-                      ? 'bg-gw-warning/10 border-gw-warning/40 text-gw-warning'
-                      : 'bg-gw-danger/10 border-gw-danger/40 text-gw-danger'
+                      ? 'bg-[#181818] border-[#333333] text-[#A3A3A3]'
+                      : 'bg-[#181818] border-[#333333] text-[#FFFFFF]'
                   }`}
                 >
                   {crossVerificationReport.verified ? (
-                    <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5 text-gw-success" />
+                    <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5 text-[#FFFFFF]" />
                   ) : (
-                    <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-gw-warning" />
+                    <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-[#A3A3A3]" />
                   )}
                   <div className="space-y-1">
                     <span className="font-bold text-sm">
@@ -924,13 +914,13 @@ export const CalculationEngine = () => {
               {/* Educational Experience: The 3 Core Algorithms */}
               <div className="space-y-3 pt-2">
                 <h4 className="text-xs font-semibold uppercase font-mono tracking-wider text-gw-text flex items-center gap-2">
-                  <BookOpen className="w-4 h-4 text-gw-cyan" />
+                  <BookOpen className="w-4 h-4 text-[#FFFFFF]" />
                   Educational Architecture: Comparing the Three Core Paradigms
                 </h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                  <Card className="p-4 border-[#1e3a5f] bg-gw-bg-tertiary/70 space-y-2">
-                    <div className="flex items-center gap-2 font-mono font-bold text-gw-cyan">
+                  <Card className="p-4 border-[#333333] bg-[#181818] space-y-2">
+                    <div className="flex items-center gap-2 font-mono font-bold text-[#FFFFFF]">
                       <Grid3X3 className="w-4 h-4" />
                       <span>1. Rook Polynomial</span>
                     </div>
@@ -939,8 +929,8 @@ export const CalculationEngine = () => {
                     </p>
                   </Card>
 
-                  <Card className="p-4 border-[#1e3a5f] bg-gw-bg-tertiary/70 space-y-2">
-                    <div className="flex items-center gap-2 font-mono font-bold text-gw-success">
+                  <Card className="p-4 border-[#333333] bg-[#181818] space-y-2">
+                    <div className="flex items-center gap-2 font-mono font-bold text-[#FFFFFF]">
                       <Calculator className="w-4 h-4" />
                       <span>2. Inclusion–Exclusion</span>
                     </div>
@@ -949,8 +939,8 @@ export const CalculationEngine = () => {
                     </p>
                   </Card>
 
-                  <Card className="p-4 border-[#1e3a5f] bg-gw-bg-tertiary/70 space-y-2">
-                    <div className="flex items-center gap-2 font-mono font-bold text-gw-warning">
+                  <Card className="p-4 border-[#333333] bg-[#181818] space-y-2">
+                    <div className="flex items-center gap-2 font-mono font-bold text-[#FFFFFF]">
                       <Cpu className="w-4 h-4" />
                       <span>3. Backtracking Engine</span>
                     </div>
@@ -962,7 +952,7 @@ export const CalculationEngine = () => {
               </div>
 
               {/* Action Buttons & Report Export */}
-              <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-[#1e3a5f]/40">
+              <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-[#333333]">
                 <Button
                   size="md"
                   variant="primary"

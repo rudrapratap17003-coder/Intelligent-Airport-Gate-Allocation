@@ -5,15 +5,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Info,
-  Clock,
-  Cpu,
-  ShieldCheck,
   CheckCircle2,
   Ban,
   Layers,
-  HelpCircle,
-  Eye,
-  Grid
+  ShieldCheck
 } from 'lucide-react'
 import Card from '../ui/Card'
 import Badge from '../ui/Badge'
@@ -30,17 +25,14 @@ export const RookPolynomialVisualizer = ({
   onCalculated,
   className = ''
 }) => {
-  // Calculation result state
   const [result, setResult] = useState(null)
   const [isCalculating, setIsCalculating] = useState(false)
   const [error, setError] = useState(null)
 
-  // Interactive arrangement navigation state
   const [selectedDegree, setSelectedDegree] = useState(1)
   const [arrangementIndex, setArrangementIndex] = useState(0)
   const [highlightAttacks, setHighlightAttacks] = useState(true)
 
-  // Execute rook polynomial computation
   const handleCalculate = useCallback(() => {
     if (!matrix || matrix.length === 0 || !matrix[0] || matrix[0].length === 0) {
       setError('Matrix is empty or not loaded.')
@@ -53,7 +45,6 @@ export const RookPolynomialVisualizer = ({
       const res = rookPolynomialService.computeRookPolynomial(matrix)
       setResult(res)
 
-      // Set initial degree to 1 if forbidden cells exist, else 0
       if (res.forbiddenCount > 0 && res.coefficients.length > 1) {
         setSelectedDegree(1)
       } else {
@@ -72,14 +63,12 @@ export const RookPolynomialVisualizer = ({
     }
   }, [matrix, onCalculated])
 
-  // Automatically compute on matrix change if autoCalculate is enabled
   React.useEffect(() => {
     if (autoCalculate && matrix && matrix.length > 0 && matrix[0] && matrix[0].length > 0) {
       handleCalculate()
     }
   }, [autoCalculate, matrix, handleCalculate])
 
-  // Available placements for the currently selected degree
   const currentDegreePlacements = useMemo(() => {
     if (!result || !result.placementsByDegree || selectedDegree === 0) {
       return []
@@ -87,7 +76,6 @@ export const RookPolynomialVisualizer = ({
     return result.placementsByDegree[selectedDegree] || []
   }, [result, selectedDegree])
 
-  // Active placement coordinates for the board
   const activeArrangement = useMemo(() => {
     if (!currentDegreePlacements || currentDegreePlacements.length === 0) {
       return []
@@ -96,7 +84,6 @@ export const RookPolynomialVisualizer = ({
     return currentDegreePlacements[idx] || []
   }, [currentDegreePlacements, arrangementIndex])
 
-  // Precompute row and column sets attacked by placed rooks
   const attackedRays = useMemo(() => {
     const attackedRows = new Set()
     const attackedCols = new Set()
@@ -111,41 +98,38 @@ export const RookPolynomialVisualizer = ({
     return { attackedRows, attackedCols, rookCellMap }
   }, [activeArrangement])
 
-  // Matrix dimensions
   const numRows = matrix?.length || 0
   const numCols = matrix?.[0]?.length || 0
 
-  // Normalized result metadata
   const matrixRows = result?.matrixDimensions?.rows ?? result?.dimensions?.rows ?? numRows
   const matrixCols = result?.matrixDimensions?.columns ?? result?.dimensions?.columns ?? numCols
   const totalForbidden = result?.forbiddenCellCount ?? result?.forbiddenCount ?? 0
-  const coefficientsList = (result?.coefficientsNumeric || result?.coefficients || []).map(Number)
 
   return (
     <div className={`space-y-6 ${className}`}>
-      {/* ----------------- 1. ACTION & SCENARIO HEADER ----------------- */}
-      <Card className="p-5 border-[#1e3a5f]/80 bg-gw-bg-secondary/70">
+      {/* 1. ACTION & SCENARIO HEADER */}
+      <Card className="p-5 border-[#333333] bg-[#181818]">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-mono uppercase tracking-wider text-gw-cyan font-bold flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-gw-cyan" />
-                Phase 11 Combinatorial Engine
+              <span className="text-xs font-mono uppercase tracking-wider text-[#FFFFFF] font-bold flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-[#FFFFFF]" />
+                Rook Polynomial Engine
               </span>
               {scenarioId && (
-                <Badge variant="cyan" size="sm" className="font-mono">
+                <Badge variant="default" size="sm" className="font-mono text-[#FFFFFF] border-[#555555]">
                   {scenarioId}
                 </Badge>
               )}
-              <Badge variant="default" size="sm" className="font-mono">
+              <Badge variant="default" size="sm" className="font-mono text-[#A3A3A3]">
                 {numRows} × {numCols} Board
               </Badge>
             </div>
-            <h3 className="text-lg font-bold text-gw-text">
+            <h3 className="text-lg font-bold text-[#FFFFFF]">
               Rook Polynomial Analysis — {scenarioName}
             </h3>
-            <p className="text-xs text-gw-text-secondary">
-              Enumerate non-attacking rook configurations on forbidden cells $B$ using dynamic programming with column bitmasks.
+            <p className="text-xs text-[#A3A3A3]">
+              Enumerate non-attacking rook configurations on forbidden cells B using dynamic programming with column bitmasks.
             </p>
           </div>
 
@@ -156,7 +140,7 @@ export const RookPolynomialVisualizer = ({
               icon={Calculator}
               onClick={handleCalculate}
               disabled={isCalculating || numRows === 0 || numCols === 0}
-              className="shadow-lg shadow-gw-cyan/10 font-mono"
+              className="font-mono"
             >
               {isCalculating ? 'Computing Polynomial...' : 'CALCULATE ROOK POLYNOMIAL'}
             </Button>
@@ -164,117 +148,117 @@ export const RookPolynomialVisualizer = ({
         </div>
 
         {error && (
-          <div className="mt-4 p-3 rounded-lg bg-gw-error/15 border border-gw-error/30 text-xs text-gw-error flex items-center gap-2">
+          <div className="mt-4 p-3 rounded-lg bg-[#222222] border border-[#555555] text-xs text-[#FFFFFF] flex items-center gap-2">
             <Ban className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
       </Card>
 
-      {/* ----------------- 2. POLYNOMIAL EXPRESSION & METRICS ----------------- */}
+      {/* 2. POLYNOMIAL EXPRESSION & METRICS */}
       {result && (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 font-mono">
-            <Card className="p-3 text-center bg-gw-bg-secondary/40 border-[#1e3a5f]/60">
-              <span className="text-[10px] uppercase tracking-wider text-gw-text-secondary block font-sans font-medium">
+            <Card className="p-3 text-center bg-[#181818] border-[#333333]">
+              <span className="text-[10px] uppercase tracking-wider text-[#A3A3A3] block font-sans font-medium">
                 Scenario
               </span>
-              <span className="text-sm font-bold text-gw-text truncate block mt-0.5" title={scenarioName}>
+              <span className="text-sm font-bold text-[#FFFFFF] truncate block mt-0.5" title={scenarioName}>
                 {scenarioId || 'Active'}
               </span>
-              <span className="text-[10px] text-gw-text-secondary font-sans truncate block">
+              <span className="text-[10px] text-[#737373] font-sans truncate block">
                 {scenarioName}
               </span>
             </Card>
 
-            <Card className="p-3 text-center bg-gw-bg-secondary/40 border-[#1e3a5f]/60">
-              <span className="text-[10px] uppercase tracking-wider text-gw-cyan block font-sans font-medium">
+            <Card className="p-3 text-center bg-[#181818] border-[#333333]">
+              <span className="text-[10px] uppercase tracking-wider text-[#A3A3A3] block font-sans font-medium">
                 Dimensions
               </span>
-              <span className="text-lg font-extrabold text-gw-cyan mt-0.5 block">
+              <span className="text-lg font-extrabold text-[#FFFFFF] mt-0.5 block">
                 {matrixRows} × {matrixCols}
               </span>
-              <span className="text-[10px] text-gw-text-secondary font-sans">
+              <span className="text-[10px] text-[#737373] font-sans">
                 Rows × Columns
               </span>
             </Card>
 
-            <Card className="p-3 text-center bg-gw-bg-secondary/40 border-[#1e3a5f]/60">
-              <span className="text-[10px] uppercase tracking-wider text-gw-error block font-sans font-medium">
+            <Card className="p-3 text-center bg-[#181818] border-[#333333]">
+              <span className="text-[10px] uppercase tracking-wider text-[#A3A3A3] block font-sans font-medium">
                 Forbidden Cells (r₁)
               </span>
-              <span className="text-lg font-extrabold text-gw-error mt-0.5 block">
+              <span className="text-lg font-extrabold text-[#FFFFFF] mt-0.5 block">
                 {totalForbidden}
               </span>
-              <span className="text-[10px] text-gw-text-secondary font-sans">
+              <span className="text-[10px] text-[#737373] font-sans">
                 1-Rook positions
               </span>
             </Card>
 
-            <Card className="p-3 text-center bg-gw-bg-secondary/40 border-[#1e3a5f]/60">
-              <span className="text-[10px] uppercase tracking-wider text-gw-warning block font-sans font-medium">
+            <Card className="p-3 text-center bg-[#181818] border-[#333333]">
+              <span className="text-[10px] uppercase tracking-wider text-[#A3A3A3] block font-sans font-medium">
                 Degree (k)
               </span>
-              <span className="text-lg font-extrabold text-gw-warning mt-0.5 block">
+              <span className="text-lg font-extrabold text-[#FFFFFF] mt-0.5 block">
                 deg = {result.degree}
               </span>
-              <span className="text-[10px] text-gw-text-secondary font-sans">
+              <span className="text-[10px] text-[#737373] font-sans">
                 min(m, n) = {Math.min(matrixRows, matrixCols)}
               </span>
             </Card>
 
-            <Card className="p-3 text-center bg-gw-bg-secondary/40 border-[#1e3a5f]/60">
-              <span className="text-[10px] uppercase tracking-wider text-gw-success block font-sans font-medium">
+            <Card className="p-3 text-center bg-[#181818] border-[#333333]">
+              <span className="text-[10px] uppercase tracking-wider text-[#A3A3A3] block font-sans font-medium">
                 Compute Time
               </span>
-              <span className="text-lg font-extrabold text-gw-success mt-0.5 block">
+              <span className="text-lg font-extrabold text-[#FFFFFF] mt-0.5 block">
                 {result.computationTimeMs} ms
               </span>
-              <span className="text-[10px] text-gw-text-secondary font-sans">
+              <span className="text-[10px] text-[#737373] font-sans">
                 Client DP Execution
               </span>
             </Card>
 
-            <Card className="p-3 text-center bg-gw-bg-secondary/40 border-[#1e3a5f]/60">
-              <span className="text-[10px] uppercase tracking-wider text-gw-blue block font-sans font-medium">
+            <Card className="p-3 text-center bg-[#181818] border-[#333333]">
+              <span className="text-[10px] uppercase tracking-wider text-[#A3A3A3] block font-sans font-medium">
                 Algorithm
               </span>
-              <span className="text-xs font-bold text-gw-blue mt-1 block truncate" title={result.algorithm}>
+              <span className="text-xs font-bold text-[#FFFFFF] mt-1 block truncate" title={result.algorithm}>
                 Bitmask DP
               </span>
-              <span className="text-[10px] text-gw-text-secondary font-sans">
+              <span className="text-[10px] text-[#737373] font-sans">
                 O(m · 2^min(m,n))
               </span>
             </Card>
           </div>
 
           {/* Formatted Polynomial Equation Banner */}
-          <Card className="p-6 border-gw-cyan/40 bg-gw-bg-secondary/80 space-y-3 shadow-xl shadow-gw-cyan/5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#1e3a5f]/50 pb-3">
+          <Card className="p-6 border-[#333333] bg-[#181818] space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#333333] pb-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-gw-cyan" />
-                <h4 className="text-sm font-bold uppercase tracking-wider font-mono text-gw-text">
+                <Sparkles className="w-5 h-5 text-[#FFFFFF]" />
+                <h4 className="text-sm font-bold uppercase tracking-wider font-mono text-[#FFFFFF]">
                   Evaluated Rook Polynomial Formula R(B, x)
                 </h4>
               </div>
-              <Badge variant="cyan" size="sm" className="font-mono">
+              <Badge variant="default" size="sm" className="font-mono text-[#FFFFFF] border-[#555555]">
                 Exact Integer Form
               </Badge>
             </div>
 
-            <div className="p-4 rounded-xl bg-gw-bg-primary/80 border border-[#1e3a5f] overflow-x-auto text-center">
-              <div className="text-xl sm:text-2xl md:text-3xl font-mono font-extrabold text-gw-cyan tracking-wide">
+            <div className="p-4 rounded-xl bg-[#111111] border border-[#333333] overflow-x-auto text-center">
+              <div className="text-xl sm:text-2xl md:text-3xl font-mono font-extrabold text-[#FFFFFF] tracking-wide">
                 R(B, x) = {result.polynomial}
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-gw-text-secondary font-mono">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#A3A3A3] font-mono">
               <span>
-                Standard form: <strong className="text-gw-text">R(x) = r₀ + r₁x + r₂x² + ... + rₖxᵏ</strong>
+                Standard form: <strong className="text-[#FFFFFF]">R(x) = r₀ + r₁x + r₂x² + ... + rₖxᵏ</strong>
               </span>
               <span>
                 {result.isTransposed && (
-                  <span className="text-gw-blue">
+                  <span className="text-[#A3A3A3]">
                     * Transposed internally (columns &gt; rows) for optimal DP state complexity.
                   </span>
                 )}
@@ -282,19 +266,19 @@ export const RookPolynomialVisualizer = ({
             </div>
           </Card>
 
-          {/* ----------------- 3. COEFFICIENTS ITEMIZATION ----------------- */}
-          <Card className="p-5 space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-[#1e3a5f]/50">
+          {/* 3. COEFFICIENTS ITEMIZATION */}
+          <Card className="p-5 space-y-4 bg-[#181818] border-[#333333]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#333333]">
               <div>
                 <h4 className="gw-card-heading flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-gw-cyan" />
+                  <Layers className="w-4 h-4 text-[#FFFFFF]" />
                   Individual Coefficients Breakdown (r₀ through r_{result.degree})
                 </h4>
-                <p className="text-xs text-gw-text-secondary mt-0.5">
+                <p className="text-xs text-[#A3A3A3] mt-0.5">
                   Click any coefficient card below to visualize its corresponding non-attacking rook arrangements on the board.
                 </p>
               </div>
-              <span className="text-xs font-mono text-gw-text-secondary">
+              <span className="text-xs font-mono text-[#737373]">
                 {result.coefficients.length} Terms Total
               </span>
             </div>
@@ -311,15 +295,15 @@ export const RookPolynomialVisualizer = ({
                     }}
                     className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
                       isSelected
-                        ? 'bg-gw-cyan/15 border-gw-cyan shadow-md shadow-gw-cyan/10'
-                        : 'bg-gw-bg-secondary/50 border-[#1e3a5f]/60 hover:border-gw-cyan/50 hover:bg-gw-bg-secondary/80'
+                        ? 'bg-[#383838] border-[#FFFFFF]'
+                        : 'bg-[#111111] border-[#333333] hover:border-[#555555] hover:bg-[#222222]'
                     }`}
                   >
                     <div
                       className={`w-10 h-10 rounded-xl font-mono font-bold flex items-center justify-center shrink-0 border ${
                         isSelected
-                          ? 'bg-gw-cyan text-gw-bg font-extrabold border-gw-cyan'
-                          : 'bg-gw-cyan/10 border-gw-cyan/30 text-gw-cyan'
+                          ? 'bg-[#FFFFFF] text-[#090909] font-extrabold border-[#FFFFFF]'
+                          : 'bg-[#222222] border-[#333333] text-[#FFFFFF]'
                       }`}
                     >
                       r{k}
@@ -327,15 +311,15 @@ export const RookPolynomialVisualizer = ({
 
                     <div className="text-xs font-mono space-y-1 flex-1">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-gw-text text-sm">
+                        <span className="font-bold text-[#FFFFFF] text-sm">
                           r{k} = {coeff.toLocaleString()}
                         </span>
-                        <Badge variant={coeff > 0 ? (isSelected ? 'cyan' : 'default') : 'warning'} size="sm">
+                        <Badge variant="default" size="sm" className={isSelected ? 'text-[#FFFFFF] border-[#FFFFFF]' : 'text-[#A3A3A3]'}>
                           {k} {k === 1 ? 'rook' : 'rooks'}
                         </Badge>
                       </div>
 
-                      <p className="text-[11px] text-gw-text-secondary leading-relaxed font-sans">
+                      <p className="text-[11px] text-[#A3A3A3] leading-relaxed font-sans">
                         {k === 0 ? (
                           <span>Trivial baseline: 1 way to place 0 rooks (the unconstrained board).</span>
                         ) : k === 1 ? (
@@ -343,7 +327,7 @@ export const RookPolynomialVisualizer = ({
                         ) : coeff > 0 ? (
                           <span>{coeff} ways to place {k} non-attacking rooks on forbidden cells.</span>
                         ) : (
-                          <span className="text-gw-warning">Impossible to place {k} non-attacking rooks on this board.</span>
+                          <span className="text-[#737373]">Impossible to place {k} non-attacking rooks on this board.</span>
                         )}
                       </p>
                     </div>
@@ -353,34 +337,34 @@ export const RookPolynomialVisualizer = ({
             </div>
           </Card>
 
-          {/* ----------------- 4. INTERACTIVE ROOK PLACEMENT BOARD ----------------- */}
-          <Card className="p-5 space-y-5 border-2 border-[#1e3a5f]/80">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#1e3a5f]/50">
+          {/* 4. INTERACTIVE ROOK PLACEMENT BOARD */}
+          <Card className="p-5 space-y-5 border border-[#333333] bg-[#181818]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-lg bg-gw-cyan/15 border border-gw-cyan/30 flex items-center justify-center text-sm font-bold text-gw-cyan">
+                  <span className="w-6 h-6 rounded-lg bg-[#222222] border border-[#333333] flex items-center justify-center text-sm font-bold text-[#FFFFFF]">
                     ♜
                   </span>
                   <h4 className="gw-card-heading">
                     Interactive Non-Attacking Rook Board Visualizer
                   </h4>
-                  <Badge variant="cyan" size="sm" className="font-mono">
+                  <Badge variant="default" size="sm" className="font-mono text-[#FFFFFF] border-[#555555]">
                     Degree k = {selectedDegree}
                   </Badge>
                 </div>
-                <p className="text-xs text-gw-text-secondary">
+                <p className="text-xs text-[#A3A3A3]">
                   Visual proof of non-attacking placements: every placed rook excludes its entire row and column from other rooks.
                 </p>
               </div>
 
               {/* Attack Ray Toggle */}
               <div className="flex items-center gap-2">
-                <label className="flex items-center gap-2 text-xs font-mono text-gw-text cursor-pointer select-none">
+                <label className="flex items-center gap-2 text-xs font-mono text-[#FFFFFF] cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={highlightAttacks}
                     onChange={(e) => setHighlightAttacks(e.target.checked)}
-                    className="rounded border-[#1e3a5f] bg-gw-bg-secondary text-gw-cyan focus:ring-gw-cyan cursor-pointer"
+                    className="rounded border-[#333333] bg-[#222222] text-[#FFFFFF] focus:ring-white cursor-pointer"
                   />
                   <span>Show Attack Rays</span>
                 </label>
@@ -388,10 +372,10 @@ export const RookPolynomialVisualizer = ({
             </div>
 
             {/* Controls Bar: Degree Selector Tabs & Arrangement Navigator */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-3 rounded-xl bg-gw-bg-primary/70 border border-[#1e3a5f]">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-3 rounded-xl bg-[#111111] border border-[#333333]">
               {/* Degree Selector Buttons */}
               <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-xs font-mono text-gw-text-secondary mr-1">Rooks (k):</span>
+                <span className="text-xs font-mono text-[#A3A3A3] mr-1">Rooks (k):</span>
                 {result.coefficients.map((coeff, k) => (
                   <button
                     key={k}
@@ -402,8 +386,8 @@ export const RookPolynomialVisualizer = ({
                     }}
                     className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all border cursor-pointer ${
                       selectedDegree === k
-                        ? 'bg-gw-cyan text-gw-bg border-gw-cyan shadow-sm shadow-gw-cyan/20'
-                        : 'bg-gw-bg-secondary text-gw-text-secondary border-[#1e3a5f] hover:text-gw-text hover:border-gw-cyan/40'
+                        ? 'bg-[#FFFFFF] text-[#090909] border-[#FFFFFF]'
+                        : 'bg-[#181818] text-[#A3A3A3] border-[#333333] hover:text-[#FFFFFF] hover:border-[#555555]'
                     }`}
                   >
                     k = {k} ({coeff})
@@ -411,12 +395,12 @@ export const RookPolynomialVisualizer = ({
                 ))}
               </div>
 
-              {/* Arrangement Navigator (for k >= 1 and r_k > 0) */}
+              {/* Arrangement Navigator */}
               {selectedDegree > 0 && currentDegreePlacements.length > 0 && (
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-xs font-mono text-gw-text-secondary">
-                    Arrangement <strong className="text-gw-cyan">{arrangementIndex + 1}</strong> of{' '}
-                    <strong className="text-gw-text">{currentDegreePlacements.length}</strong>
+                  <span className="text-xs font-mono text-[#A3A3A3]">
+                    Arrangement <strong className="text-[#FFFFFF]">{arrangementIndex + 1}</strong> of{' '}
+                    <strong className="text-[#FFFFFF]">{currentDegreePlacements.length}</strong>
                   </span>
 
                   <div className="flex items-center gap-1">
@@ -445,8 +429,8 @@ export const RookPolynomialVisualizer = ({
 
             {/* Board Notice for k = 0 */}
             {selectedDegree === 0 && (
-              <div className="p-4 rounded-xl bg-gw-bg-primary/80 border border-gw-cyan/30 text-xs text-gw-text flex items-center gap-3">
-                <Info className="w-5 h-5 text-gw-cyan shrink-0" />
+              <div className="p-4 rounded-xl bg-[#111111] border border-[#333333] text-xs text-[#FFFFFF] flex items-center gap-3">
+                <Info className="w-5 h-5 text-[#FFFFFF] shrink-0" />
                 <div>
                   <strong>Degree k = 0 (r₀ = 1):</strong> Represents the empty placement (zero rooks placed).
                   There are no conflicts or attack rays. This serves as the combinatorial baseline representing all unconstrained permutations.
@@ -456,7 +440,7 @@ export const RookPolynomialVisualizer = ({
 
             {/* Board Notice if r_k = 0 for k > 0 */}
             {selectedDegree > 0 && currentDegreePlacements.length === 0 && (
-              <div className="p-4 rounded-xl bg-gw-warning/10 border border-gw-warning/30 text-xs text-gw-warning flex items-center gap-3">
+              <div className="p-4 rounded-xl bg-[#111111] border border-[#333333] text-xs text-[#A3A3A3] flex items-center gap-3">
                 <Ban className="w-5 h-5 shrink-0" />
                 <div>
                   <strong>Zero Placements Possible:</strong> r_{selectedDegree} = 0.
@@ -467,33 +451,31 @@ export const RookPolynomialVisualizer = ({
 
             {/* Board Grid Display */}
             {numRows > 0 && numCols > 0 && (
-              <div className="overflow-x-auto rounded-xl border border-[#1e3a5f] bg-gw-bg-primary/60 shadow-inner p-3">
+              <div className="overflow-x-auto rounded-xl border border-[#333333] bg-[#111111] p-3">
                 <table className="border-collapse select-none w-full min-w-[500px]">
                   <thead>
                     <tr>
-                      {/* Top-left corner */}
-                      <th className="p-2.5 text-left font-mono text-[11px] text-gw-text-secondary uppercase tracking-wider border-b border-r border-[#1e3a5f]/60 min-w-[130px] sticky left-0 z-20 bg-gw-bg-secondary">
+                      <th className="p-2.5 text-left font-mono text-[11px] text-[#A3A3A3] uppercase tracking-wider border-b border-r border-[#333333] min-w-[130px] sticky left-0 z-20 bg-[#181818]">
                         Flight \ Gate
                       </th>
 
-                      {/* Gate Column Headers */}
                       {Array.from({ length: numCols }, (_, c) => {
                         const gate = gates[c]
                         const isColAttacked = highlightAttacks && attackedRays.attackedCols.has(c)
                         return (
                           <th
                             key={c}
-                            className={`p-2.5 text-center font-mono text-xs border-b border-[#1e3a5f]/60 min-w-[70px] transition-colors ${
+                            className={`p-2.5 text-center font-mono text-xs border-b border-[#333333] min-w-[70px] transition-colors ${
                               isColAttacked
-                                ? 'bg-gw-cyan/20 text-gw-cyan font-bold border-b-2 border-gw-cyan'
-                                : 'text-gw-text-secondary'
+                                ? 'bg-[#222222] text-[#FFFFFF] font-bold border-b-2 border-white'
+                                : 'text-[#A3A3A3]'
                             }`}
                           >
                             <div className="flex flex-col items-center">
-                              <span className="font-bold text-gw-text">
+                              <span className="font-bold text-[#FFFFFF]">
                                 {gate?.gateNumber || `G${c + 1}`}
                               </span>
-                              <span className="text-[9px] text-gw-text-secondary opacity-75">
+                              <span className="text-[9px] text-[#737373]">
                                 Col {c + 1}
                               </span>
                             </div>
@@ -503,7 +485,7 @@ export const RookPolynomialVisualizer = ({
                     </tr>
                   </thead>
 
-                  <tbody className="divide-y divide-[#1e3a5f]/40">
+                  <tbody className="divide-y divide-[#333333]">
                     {Array.from({ length: numRows }, (_, r) => {
                       const flight = flights[r]
                       const isRowAttacked = highlightAttacks && attackedRays.attackedRows.has(r)
@@ -512,28 +494,26 @@ export const RookPolynomialVisualizer = ({
                         <tr
                           key={r}
                           className={`transition-colors ${
-                            isRowAttacked ? 'bg-gw-cyan/[0.04]' : 'hover:bg-white/[0.01]'
+                            isRowAttacked ? 'bg-[#222222]/40' : 'hover:bg-[#181818]'
                           }`}
                         >
-                          {/* Flight Row Header */}
                           <td
-                            className={`p-2.5 font-mono text-xs border-r border-[#1e3a5f]/60 sticky left-0 z-10 transition-colors ${
+                            className={`p-2.5 font-mono text-xs border-r border-[#333333] sticky left-0 z-10 transition-colors ${
                               isRowAttacked
-                                ? 'bg-gw-cyan/15 text-gw-cyan font-bold border-r-2 border-gw-cyan'
-                                : 'bg-gw-bg-secondary text-gw-text-secondary'
+                                ? 'bg-[#222222] text-[#FFFFFF] font-bold border-r-2 border-white'
+                                : 'bg-[#181818] text-[#A3A3A3]'
                             }`}
                           >
                             <div className="flex items-center justify-between gap-2">
-                              <span className="font-bold text-gw-text">
+                              <span className="font-bold text-[#FFFFFF]">
                                 {flight?.flightNumber || `Flight ${r + 1}`}
                               </span>
-                              <span className="text-[9px] text-gw-text-secondary opacity-75">
+                              <span className="text-[9px] text-[#737373]">
                                 R{r + 1}
                               </span>
                             </div>
                           </td>
 
-                          {/* Matrix Cells */}
                           {Array.from({ length: numCols }, (_, c) => {
                             const isForbidden = matrix[r]?.[c] === 1
                             const cellKey = `${r}-${c}`
@@ -547,50 +527,49 @@ export const RookPolynomialVisualizer = ({
                             return (
                               <td
                                 key={c}
-                                className={`p-1.5 text-center transition-all relative border border-[#1e3a5f]/30 ${
+                                className={`p-1.5 text-center transition-all relative border border-[#333333] ${
                                   hasRook
-                                    ? 'bg-gw-cyan/25 border-gw-cyan ring-2 ring-gw-cyan shadow-lg shadow-gw-cyan/20'
+                                    ? 'bg-[#FFFFFF] text-[#090909] font-bold border-2 border-[#FFFFFF]'
                                     : isForbidden
                                     ? inAttackZone
-                                      ? 'bg-gw-error/25 border-gw-error/40'
-                                      : 'bg-gw-error/15 border-gw-error/30'
+                                      ? 'bg-[#111111] border-2 border-[#555555]'
+                                      : 'bg-[#111111] border-2 border-[#555555]'
                                     : inAttackZone
-                                    ? 'bg-gw-cyan/[0.05] border-[#1e3a5f]/50'
-                                    : 'bg-gw-bg-secondary/40 hover:bg-white/[0.03]'
+                                    ? 'bg-[#181818]/60 border-[#333333]'
+                                    : 'bg-[#181818] hover:bg-[#222222]'
                                 }`}
                               >
                                 {hasRook ? (
-                                  <div className="py-1 px-1 flex flex-col items-center justify-center animate-scaleIn">
-                                    <span className="text-xl leading-none text-gw-cyan drop-shadow-md">
+                                  <div className="py-1 px-1 flex flex-col items-center justify-center">
+                                    <span className="text-xl leading-none text-[#090909]">
                                       ♜
                                     </span>
-                                    <span className="text-[9px] font-mono font-bold text-gw-cyan mt-0.5">
+                                    <span className="text-[9px] font-mono font-bold text-[#090909] mt-0.5">
                                       Rook {rookNumber}
                                     </span>
                                   </div>
                                 ) : isForbidden ? (
                                   <div className="py-2 px-1 flex flex-col items-center justify-center">
-                                    <span className="text-xs font-mono font-bold text-gw-error">
+                                    <span className="text-xs font-mono font-bold text-[#FFFFFF]">
                                       1
                                     </span>
-                                    <span className="text-[8px] font-mono text-gw-error/70 uppercase">
+                                    <span className="text-[8px] font-mono text-[#A3A3A3] uppercase">
                                       Forbid
                                     </span>
                                   </div>
                                 ) : (
                                   <div className="py-2 px-1 flex flex-col items-center justify-center opacity-60">
-                                    <span className="text-xs font-mono text-gw-text-secondary">
+                                    <span className="text-xs font-mono text-[#737373]">
                                       0
                                     </span>
-                                    <span className="text-[8px] font-mono text-gw-text-secondary/60">
+                                    <span className="text-[8px] font-mono text-[#737373]">
                                       Open
                                     </span>
                                   </div>
                                 )}
 
-                                {/* Subtle attack ray crosshair indicator */}
                                 {inAttackZone && (
-                                  <div className="absolute inset-0 border border-dashed border-gw-cyan/20 pointer-events-none" />
+                                  <div className="absolute inset-0 border border-dashed border-[#555555]/60 pointer-events-none" />
                                 )}
                               </td>
                             )
@@ -605,8 +584,8 @@ export const RookPolynomialVisualizer = ({
 
             {/* Placed Rooks Summary Chips */}
             {activeArrangement.length > 0 && (
-              <div className="space-y-2 pt-2 border-t border-[#1e3a5f]/40">
-                <span className="text-xs font-mono text-gw-text-secondary font-semibold uppercase tracking-wider block">
+              <div className="space-y-2 pt-2 border-t border-[#333333]">
+                <span className="text-xs font-mono text-[#A3A3A3] font-semibold uppercase tracking-wider block">
                   Active Coordinates for Arrangement {arrangementIndex + 1}:
                 </span>
                 <div className="flex flex-wrap items-center gap-2">
@@ -617,10 +596,10 @@ export const RookPolynomialVisualizer = ({
                     return (
                       <div
                         key={rIdx}
-                        className="px-3 py-1.5 rounded-lg bg-gw-cyan/15 border border-gw-cyan/40 text-xs font-mono flex items-center gap-2 text-gw-cyan"
+                        className="px-3 py-1.5 rounded-lg bg-[#222222] border border-[#333333] text-xs font-mono flex items-center gap-2 text-[#FFFFFF]"
                       >
                         <span className="font-bold">♜ Rook {rIdx + 1}:</span>
-                        <span className="text-gw-text">
+                        <span className="text-[#E5E5E5]">
                           {flightName} (Row {rook.row + 1}) ↔ {gateName} (Col {rook.col + 1})
                         </span>
                       </div>
@@ -631,57 +610,57 @@ export const RookPolynomialVisualizer = ({
             )}
           </Card>
 
-          {/* ----------------- 5. EDUCATIONAL EXPLANATION ----------------- */}
-          <Card className="p-5 space-y-4 bg-gw-bg-secondary/60 border-[#1e3a5f]">
-            <div className="flex items-center gap-2.5 pb-2 border-b border-[#1e3a5f]/50">
-              <Info className="w-5 h-5 text-gw-cyan shrink-0" />
+          {/* 5. EDUCATIONAL EXPLANATION */}
+          <Card className="p-5 space-y-4 bg-[#181818] border-[#333333]">
+            <div className="flex items-center gap-2.5 pb-2 border-b border-[#333333]">
+              <Info className="w-5 h-5 text-[#FFFFFF] shrink-0" />
               <h4 className="gw-card-heading">
                 Mathematical Theory & Combinatorial Interpretation
               </h4>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs leading-relaxed text-gw-text-secondary">
-              <div className="p-4 rounded-xl bg-gw-bg-primary/60 border border-[#1e3a5f] space-y-2">
-                <h5 className="font-mono font-bold text-gw-cyan text-sm flex items-center gap-1.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs leading-relaxed text-[#A3A3A3]">
+              <div className="p-4 rounded-xl bg-[#111111] border border-[#333333] space-y-2">
+                <h5 className="font-mono font-bold text-[#FFFFFF] text-sm flex items-center gap-1.5">
                   <span>1. Why is r₀ = 1?</span>
                 </h5>
                 <p>
-                  By combinatorial definition, there is exactly <strong className="text-gw-text">1 way</strong> to place 0 rooks on any board (the empty set).
-                  Algebraically, $r_0$ represents the coefficient of $x^0$, serving as the baseline for unconstrained assignment permutations ($n!$).
+                  By combinatorial definition, there is exactly <strong className="text-[#FFFFFF]">1 way</strong> to place 0 rooks on any board (the empty set).
+                  Algebraically, r₀ represents the coefficient of x⁰, serving as the baseline for unconstrained assignment permutations (n!).
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-gw-bg-primary/60 border border-[#1e3a5f] space-y-2">
-                <h5 className="font-mono font-bold text-gw-cyan text-sm flex items-center gap-1.5">
+              <div className="p-4 rounded-xl bg-[#111111] border border-[#333333] space-y-2">
+                <h5 className="font-mono font-bold text-[#FFFFFF] text-sm flex items-center gap-1.5">
                   <span>2. Why does r₁ equal Forbidden Count?</span>
                 </h5>
                 <p>
                   Placing a single rook requires picking exactly one forbidden cell. Because there are no other rooks on the board to conflict with,
-                  any forbidden cell is mutually non-attacking. Therefore, <strong className="text-gw-text">r₁ is always identical to the count of 1s in matrix B</strong> ({totalForbidden}).
+                  any forbidden cell is mutually non-attacking. Therefore, <strong className="text-[#FFFFFF]">r₁ is always identical to the count of 1s in matrix B</strong> ({totalForbidden}).
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-gw-bg-primary/60 border border-[#1e3a5f] space-y-2">
-                <h5 className="font-mono font-bold text-gw-cyan text-sm flex items-center gap-1.5">
+              <div className="p-4 rounded-xl bg-[#111111] border border-[#333333] space-y-2">
+                <h5 className="font-mono font-bold text-[#FFFFFF] text-sm flex items-center gap-1.5">
                   <span>3. Non-Attacking Rooks & Simultaneous Violations</span>
                 </h5>
                 <p>
-                  In chess, rooks attack along entire rows and columns. In gate allocation, assigning flight i to gate j where bᵢⱼ = 1 is a forbidden violation.
-                  A valid placement of $k$ non-attacking rooks means selecting $k$ distinct flights and $k$ distinct gates that are all simultaneously forbidden.
+                  In chess, rooks attack along entire rows and columns. In gate allocation, assigning flight i to gate j where b_ij = 1 is a forbidden violation.
+                  A valid placement of k non-attacking rooks means selecting k distinct flights and k distinct gates that are all simultaneously forbidden.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-gw-bg-primary/60 border border-gw-warning/40 bg-gw-warning/[0.02] space-y-2">
-                <h5 className="font-mono font-bold text-gw-warning text-sm flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-gw-warning" />
+              <div className="p-4 rounded-xl bg-[#111111] border border-[#333333] space-y-2">
+                <h5 className="font-mono font-bold text-[#FFFFFF] text-sm flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-[#FFFFFF]" />
                   <span>4. Phase 11 Scope vs Phase 12 Valid Assignments</span>
                 </h5>
-                <p className="text-gw-text">
-                  <strong>Important Distinction:</strong> The Rook Polynomial $R(B, x)$ enumerates <strong className="text-gw-error">forbidden conflict combinations</strong> only.
-                  It does <strong className="text-gw-warning">NOT</strong> yet produce the final count of conflict-free flight allocations.
-                  Computing the number of valid allocations $N$ will be performed in <strong className="text-gw-cyan">Phase 12</strong> via the Principle of Inclusion-Exclusion:
-                  <span className="block mt-1 font-mono text-[11px] text-gw-cyan">
-                    N = ∑ₖ₌₀ⁿ (-1)ᵏ · rₖ · (n - k)!
+                <p className="text-[#E5E5E5]">
+                  <strong>Important Distinction:</strong> The Rook Polynomial R(B, x) enumerates <strong className="text-[#FFFFFF]">forbidden conflict combinations</strong> only.
+                  It does <strong className="text-[#FFFFFF]">NOT</strong> yet produce the final count of conflict-free flight allocations.
+                  Computing the number of valid allocations N will be performed via the Principle of Inclusion-Exclusion:
+                  <span className="block mt-1 font-mono text-[11px] text-[#FFFFFF]">
+                    N = ∑ (-1)^k · r_k · (n - k)!
                   </span>
                 </p>
               </div>

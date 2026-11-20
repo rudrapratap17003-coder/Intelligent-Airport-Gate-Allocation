@@ -38,7 +38,7 @@ import comparisonService from '../../lib/comparisonService'
 import simulationService from '../../lib/simulationService'
 import exportService from '../../lib/exportService'
 
-const SCENARIO_PALETTE = ['#00f0ff', '#f59e0b', '#10b981', '#a855f7', '#ec4899', '#3b82f6']
+const SCENARIO_PALETTE = ['#FFFFFF', '#E5E5E5', '#CCCCCC', '#A3A3A3', '#888888', '#666666']
 
 export const ScenarioComparisonView = () => {
   const [allSimulations, setAllSimulations] = useState([])
@@ -162,11 +162,11 @@ export const ScenarioComparisonView = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* ----------------- 1. SCENARIO SELECTION TOOLBAR ----------------- */}
-      <Card className="p-4 space-y-4 bg-gw-bg-secondary/70 border-[#1e3a5f]/60">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#1e3a5f]/40">
+      <Card className="p-4 space-y-4 bg-[#181818] border-[#333333]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
           <div>
             <h3 className="gw-card-heading flex items-center gap-2">
-              <Scale className="w-4 h-4 text-gw-cyan" />
+              <Scale className="w-4 h-4 text-[#FFFFFF]" />
               <span>Multi-Scenario Selection Hub</span>
             </h3>
             <p className="text-xs text-gw-text-secondary mt-0.5">
@@ -236,11 +236,11 @@ export const ScenarioComparisonView = () => {
                   onClick={() => handleToggleSelect(sim.id)}
                   className={`px-3 py-1.5 rounded-lg border text-xs font-mono transition-all flex items-center gap-2 cursor-pointer ${
                     isSelected
-                      ? 'bg-gw-cyan/15 border-gw-cyan text-gw-cyan font-bold shadow-sm shadow-gw-cyan/20'
-                      : 'bg-gw-bg-secondary border-[#1e3a5f]/70 text-gw-text-secondary hover:text-gw-text hover:border-white/20'
+                      ? 'bg-[#FFFFFF] text-[#090909] font-bold border-[#FFFFFF]'
+                      : 'bg-[#222222] border-[#333333] text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#2A2A2A]'
                   }`}
                 >
-                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: isSelected ? '#00f0ff' : '#64748b' }} />
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: isSelected ? '#090909' : '#737373' }} />
                   <span>{sim.name}</span>
                   <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/30 border border-white/5">
                     {sim.id} [{fCount}×{gCount}]
@@ -253,8 +253,8 @@ export const ScenarioComparisonView = () => {
         </div>
 
         {selectedIds.length < 2 && (
-          <div className="p-2.5 rounded-lg bg-gw-cyan/5 border border-gw-cyan/20 text-xs text-gw-cyan flex items-center gap-2">
-            <Info className="w-4 h-4 shrink-0" />
+          <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333] text-xs text-[#FFFFFF] flex items-center gap-2">
+            <Info className="w-4 h-4 shrink-0 text-[#FFFFFF]" />
             <span>Select at least 2 simulation scenarios to generate comparative analytics.</span>
           </div>
         )}
@@ -262,8 +262,8 @@ export const ScenarioComparisonView = () => {
 
       {/* Error state */}
       {error && (
-        <div className="p-3.5 rounded-xl bg-gw-danger/10 border border-gw-danger/30 text-xs text-gw-danger flex items-start gap-2.5">
-          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+        <div className="p-3.5 rounded-xl bg-[#111111] border border-[#333333] text-xs text-white flex items-start gap-2.5">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#A3A3A3]" />
           <div>
             <strong className="block font-bold">Comparison Error:</strong>
             <span>{error}</span>
@@ -277,7 +277,7 @@ export const ScenarioComparisonView = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h3 className="gw-section-heading flex items-center gap-2">
-                <Layers className="w-4 h-4 text-gw-cyan" />
+                <Layers className="w-4 h-4 text-[#FFFFFF]" />
                 <span>Comparative Scenario Cards</span>
               </h3>
               <span className="text-xs text-gw-text-secondary font-mono">
@@ -335,7 +335,7 @@ export const ScenarioComparisonView = () => {
 
                     {sim.is_valid_config ? (
                       <div className="space-y-2 pt-2 text-xs font-mono">
-                        <div className="flex items-center justify-between text-gw-text-secondary pb-1 border-b border-[#1e3a5f]/40">
+                        <div className="flex items-center justify-between text-gw-text-secondary pb-1 border-b border-[#333333]">
                           <span>Feasibility Ratio:</span>
                           <strong className="text-sm font-bold" style={{ color }}>
                             {sim.feasibility_percentage.toFixed(1)}%
@@ -344,7 +344,7 @@ export const ScenarioComparisonView = () => {
 
                         <div className="flex items-center justify-between text-gw-text-secondary">
                           <span>Exact Valid (N):</span>
-                          <span className="text-gw-success font-bold">
+                          <span className="text-[#FFFFFF] font-bold">
                             {sim.exact_valid_assignments.toLocaleString()}
                           </span>
                         </div>
@@ -358,29 +358,29 @@ export const ScenarioComparisonView = () => {
 
                         <div className="flex items-center justify-between text-gw-text-secondary">
                           <span>Forbidden Cells:</span>
-                          <span className="text-gw-warning">
+                          <span className="text-[#FFFFFF]">
                             {sim.forbidden_count} ({sim.restriction_density}%)
                           </span>
                         </div>
 
                         <div className="flex items-center justify-between text-gw-text-secondary">
                           <span>Rook Degree:</span>
-                          <span className="text-gw-cyan">deg {sim.polynomial_degree}</span>
+                          <span className="text-[#FFFFFF]">deg {sim.polynomial_degree}</span>
                         </div>
 
-                        <div className="pt-2 text-[11px] text-gw-text-secondary border-t border-[#1e3a5f]/40 break-all font-mono">
-                          <span className="text-gw-warning">{sim.rook_polynomial}</span>
+                        <div className="pt-2 text-[11px] text-gw-text-secondary border-t border-[#333333] break-all font-mono">
+                          <span className="text-[#A3A3A3]">{sim.rook_polynomial}</span>
                         </div>
                       </div>
                     ) : (
-                      <div className="p-3 rounded-lg bg-gw-danger/10 border border-gw-danger/20 text-xs text-gw-danger">
+                      <div className="p-3 rounded-lg bg-[#111111] border border-[#333333] text-xs text-white">
                         {sim.validation_message}
                       </div>
                     )}
                   </div>
 
-                  <div className="pt-3 border-t border-[#1e3a5f]/40 flex items-center justify-between text-xs">
-                    <Link to={`/simulator?sim=${sim.id}`} className="text-gw-cyan hover:underline flex items-center gap-1">
+                  <div className="pt-3 border-t border-[#333333] flex items-center justify-between text-xs">
+                    <Link to={`/simulator?sim=${sim.id}`} className="text-[#FFFFFF] hover:underline flex items-center gap-1">
                       <span>Simulate</span>
                       <PlayCircle className="w-3.5 h-3.5" />
                     </Link>
@@ -396,13 +396,13 @@ export const ScenarioComparisonView = () => {
 
           {/* ----------------- 3. DETERMINISTIC RULE-BASED INSIGHTS ----------------- */}
           {comparisonData.insights?.length > 0 && (
-            <Card className="space-y-3 bg-gw-bg-secondary/70 border-[#1e3a5f]/60">
-              <div className="flex items-center justify-between pb-2 border-b border-[#1e3a5f]/40">
+            <Card className="space-y-3 bg-[#181818] border-[#333333]">
+              <div className="flex items-center justify-between pb-2 border-b border-[#333333]">
                 <h3 className="gw-card-heading flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-gw-cyan" />
+                  <Sparkles className="w-4 h-4 text-[#FFFFFF]" />
                   <span>Deterministic Mathematical Insights</span>
                 </h3>
-                <Badge variant="cyan" size="sm" className="font-mono text-[10px]">
+                <Badge variant="outline" size="sm" className="font-mono text-[10px]">
                   Rule-Based Derivations
                 </Badge>
               </div>
@@ -411,24 +411,10 @@ export const ScenarioComparisonView = () => {
                 {comparisonData.insights.map((ins, i) => (
                   <div
                     key={i}
-                    className={`p-3 rounded-lg border space-y-1 ${
-                      ins.severity === 'success'
-                        ? 'bg-gw-success/5 border-gw-success/20 text-gw-text'
-                        : ins.severity === 'warning'
-                        ? 'bg-gw-warning/5 border-gw-warning/20 text-gw-text'
-                        : 'bg-gw-cyan/5 border-gw-cyan/20 text-gw-text'
-                    }`}
+                    className="p-3 rounded-lg border border-[#333333] bg-[#222222] text-[#FFFFFF] space-y-1"
                   >
                     <div className="flex items-center gap-2 font-bold font-mono text-[11px]">
-                      <span
-                        className={
-                          ins.severity === 'success'
-                            ? 'text-gw-success'
-                            : ins.severity === 'warning'
-                            ? 'text-gw-warning'
-                            : 'text-gw-cyan'
-                        }
-                      >
+                      <span className="text-[#FFFFFF]">
                         ● {ins.title}
                       </span>
                     </div>
@@ -442,8 +428,8 @@ export const ScenarioComparisonView = () => {
           {/* ----------------- 4. VISUAL COMPARISON CHARTS ----------------- */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Chart 1: Restriction Density vs Feasibility (7 cols) */}
-            <Card className="lg:col-span-7 space-y-3">
-              <div className="pb-2 border-b border-[#1e3a5f]/40">
+            <Card className="lg:col-span-7 space-y-3 bg-[#181818] border-[#333333]">
+              <div className="pb-2 border-b border-[#333333]">
                 <h4 className="text-xs font-bold text-gw-text uppercase font-mono tracking-wider">
                   Restriction Density vs. Feasibility Ratio
                 </h4>
@@ -455,17 +441,17 @@ export const ScenarioComparisonView = () => {
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={comparativeMetricsChartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                    <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                    <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} domain={[0, 100]} unit="%" />
+                    <XAxis dataKey="name" stroke="#333333" tick={{ fill: '#A3A3A3', fontSize: 11 }} />
+                    <YAxis stroke="#333333" tick={{ fill: '#A3A3A3', fontSize: 11 }} domain={[0, 100]} unit="%" />
                     <Tooltip
                       content={({ active, payload }) => {
                         if (active && payload && payload.length) {
                           const data = payload[0].payload
                           return (
-                            <div className="p-2.5 rounded-lg bg-gw-bg-secondary border border-[#1e3a5f] shadow-lg text-xs space-y-1 font-mono">
-                              <div className="font-bold text-gw-text">{data.name} ({data.id})</div>
-                              <div className="text-gw-warning">Density: {data.density}%</div>
-                              <div className="text-gw-cyan">Feasibility: {data.feasibility}%</div>
+                            <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333] shadow-lg text-xs space-y-1 font-mono">
+                              <div className="font-bold text-[#FFFFFF]">{data.name} ({data.id})</div>
+                              <div className="text-[#A3A3A3]">Density: {data.density}%</div>
+                              <div className="text-[#FFFFFF]">Feasibility: {data.feasibility}%</div>
                             </div>
                           )
                         }
@@ -473,16 +459,16 @@ export const ScenarioComparisonView = () => {
                       }}
                     />
                     <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }} />
-                    <Bar dataKey="density" name="Restriction Density (%)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="feasibility" name="Feasibility Ratio (%)" fill="#00f0ff" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="density" name="Restriction Density (%)" fill="#737373" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="feasibility" name="Feasibility Ratio (%)" fill="#FFFFFF" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </Card>
 
             {/* Chart 2: Rook Polynomial Spectra Comparison when dimensions match (5 cols) */}
-            <Card className="lg:col-span-5 space-y-3">
-              <div className="pb-2 border-b border-[#1e3a5f]/40">
+            <Card className="lg:col-span-5 space-y-3 bg-[#181818] border-[#333333]">
+              <div className="pb-2 border-b border-[#333333]">
                 <h4 className="text-xs font-bold text-gw-text uppercase font-mono tracking-wider">
                   Rook Coefficient Spectrum Comparison
                 </h4>
@@ -497,14 +483,14 @@ export const ScenarioComparisonView = () => {
                 <div className="h-64 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={rookComparisonChartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                      <XAxis dataKey="k" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                      <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                      <XAxis dataKey="k" stroke="#333333" tick={{ fill: '#A3A3A3', fontSize: 11 }} />
+                      <YAxis stroke="#333333" tick={{ fill: '#A3A3A3', fontSize: 11 }} />
                       <Tooltip
                         content={({ active, payload }) => {
                           if (active && payload && payload.length) {
                             return (
-                              <div className="p-2.5 rounded-lg bg-gw-bg-secondary border border-[#1e3a5f] shadow-lg text-xs space-y-1 font-mono">
-                                <div className="font-bold text-gw-warning">{payload[0].payload.k}</div>
+                              <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333] shadow-lg text-xs space-y-1 font-mono">
+                                <div className="font-bold text-[#FFFFFF]">{payload[0].payload.k}</div>
                                 {payload.map((p) => (
                                   <div key={p.dataKey} style={{ color: p.color }}>
                                     {p.dataKey}: {p.value.toLocaleString()} placements
@@ -531,7 +517,7 @@ export const ScenarioComparisonView = () => {
                 </div>
               ) : (
                 <div className="h-64 flex flex-col items-center justify-center p-4 text-center space-y-2 text-xs text-gw-text-secondary">
-                  <AlertTriangle className="w-8 h-8 text-gw-warning" />
+                  <AlertTriangle className="w-8 h-8 text-[#FFFFFF]" />
                   <p className="max-w-xs leading-relaxed">
                     Scenarios have different board dimensions (e.g. 6×6 vs 3×3). Direct Rook coefficient superposition is only defined for equal matrix dimensions.
                   </p>
@@ -541,11 +527,11 @@ export const ScenarioComparisonView = () => {
           </div>
 
           {/* ----------------- 5. CELL-BY-CELL RESTRICTION MATRIX DIFFERENCE ----------------- */}
-          <Card className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#1e3a5f]/40">
+          <Card className="space-y-4 bg-[#181818] border-[#333333]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
               <div>
                 <h3 className="gw-card-heading flex items-center gap-2">
-                  <Grid3X3 className="w-4 h-4 text-gw-warning" />
+                  <Grid3X3 className="w-4 h-4 text-[#FFFFFF]" />
                   <span>Restriction Matrix Difference Inspector</span>
                 </h3>
                 <p className="text-xs text-gw-text-secondary mt-0.5">
@@ -555,10 +541,10 @@ export const ScenarioComparisonView = () => {
 
               {comparisonData.matrix_comparison?.is_compatible && (
                 <div className="flex items-center gap-3 text-xs font-mono">
-                  <span className="text-gw-success">
+                  <span className="text-[#FFFFFF]">
                     {comparisonData.matrix_comparison.identical_cells_count} Identical Cells
                   </span>
-                  <span className="text-gw-warning">
+                  <span className="text-[#A3A3A3]">
                     {comparisonData.matrix_comparison.different_cells_count} Differing Cells
                   </span>
                 </div>
@@ -568,7 +554,7 @@ export const ScenarioComparisonView = () => {
             {comparisonData.matrix_comparison?.is_compatible && comparisonData.matrix_comparison.difference_matrix ? (
               <div className="space-y-3">
                 <div className="overflow-x-auto pb-2 flex justify-center">
-                  <div className="inline-block p-4 rounded-xl bg-gw-bg-secondary border border-[#1e3a5f]/70">
+                  <div className="inline-block p-4 rounded-xl bg-[#111111] border border-[#333333]">
                     <div
                       className="grid gap-1.5"
                       style={{
@@ -577,13 +563,13 @@ export const ScenarioComparisonView = () => {
                     >
                       {comparisonData.matrix_comparison.difference_matrix.map((row, r) =>
                         row.map((cell, c) => {
-                          let bgColor = 'bg-white/5 border-white/10 text-gw-text-secondary'
+                          let bgColor = 'bg-[#181818] border border-[#333333] text-[#737373]'
                           let label = '0'
                           if (cell > 0) {
-                            bgColor = 'bg-gw-warning/20 border-gw-warning text-gw-warning font-bold'
+                            bgColor = 'bg-[#FFFFFF] text-[#090909] font-bold border-[#FFFFFF]'
                             label = '+1'
                           } else if (cell < 0) {
-                            bgColor = 'bg-gw-cyan/20 border-gw-cyan text-gw-cyan font-bold'
+                            bgColor = 'bg-[#222222] border-2 border-[#555555] text-[#FFFFFF] font-bold'
                             label = '-1'
                           }
 
@@ -604,36 +590,36 @@ export const ScenarioComparisonView = () => {
 
                 <div className="flex flex-wrap justify-center gap-4 text-xs font-mono pt-1 text-gw-text-secondary">
                   <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded bg-white/5 border border-white/10" />
+                    <span className="w-3 h-3 rounded bg-[#181818] border border-[#333333]" />
                     <span>0: Identical Cell Constraint</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded bg-gw-warning/20 border border-gw-warning" />
+                    <span className="w-3 h-3 rounded bg-[#FFFFFF] border border-[#FFFFFF]" />
                     <span>+1: Restricted in Scenario A, Allowed in B</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded bg-gw-cyan/20 border border-gw-cyan" />
+                    <span className="w-3 h-3 rounded bg-[#222222] border-2 border-[#555555]" />
                     <span>-1: Allowed in Scenario A, Restricted in B</span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="p-6 rounded-lg bg-gw-bg-secondary/50 border border-[#1e3a5f]/40 text-center text-xs text-gw-text-secondary">
+              <div className="p-6 rounded-lg bg-[#181818] border border-[#333333] text-center text-xs text-gw-text-secondary">
                 {comparisonData.matrix_comparison?.explanation}
               </div>
             )}
           </Card>
 
           {/* ----------------- 6. COMPARATIVE MATHEMATICAL TABLE ----------------- */}
-          <Card className="p-0 overflow-hidden border-[#1e3a5f]/60">
-            <div className="p-3.5 bg-gw-bg-secondary/70 border-b border-[#1e3a5f]/40">
+          <Card className="p-0 overflow-hidden border-[#333333] bg-[#181818]">
+            <div className="p-3.5 bg-[#111111] border-b border-[#333333]">
               <h3 className="gw-card-heading text-xs uppercase font-mono tracking-wider">
                 Comprehensive Mathematical Metrics Side-by-Side
               </h3>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs divide-y divide-[#1e3a5f]/40 font-mono">
-                <thead className="bg-gw-bg-secondary/40 text-gw-text-secondary text-[10px] uppercase">
+              <table className="w-full text-left text-xs divide-y divide-[#333333] font-mono">
+                <thead className="bg-[#111111] text-gw-text-secondary text-[10px] uppercase">
                   <tr>
                     <th className="py-2.5 px-3">Metric</th>
                     {comparisonData.scenarios.map((s, idx) => (
@@ -643,7 +629,7 @@ export const ScenarioComparisonView = () => {
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#1e3a5f]/30">
+                <tbody className="divide-y divide-[#333333]">
                   <tr>
                     <td className="py-2 px-3 text-gw-text-secondary">Problem Size (n × n)</td>
                     {comparisonData.scenarios.map((s) => (
@@ -655,7 +641,7 @@ export const ScenarioComparisonView = () => {
                   <tr>
                     <td className="py-2 px-3 text-gw-text-secondary">Restriction Density</td>
                     {comparisonData.scenarios.map((s) => (
-                      <td key={s.id} className="py-2 px-3 text-gw-warning">
+                      <td key={s.id} className="py-2 px-3 text-[#FFFFFF]">
                         {s.is_valid_config ? `${s.restriction_density}% (${s.forbidden_count} forbidden)` : '—'}
                       </td>
                     ))}
@@ -671,7 +657,7 @@ export const ScenarioComparisonView = () => {
                   <tr>
                     <td className="py-2 px-3 text-gw-text-secondary">Exact Valid Assignments (N)</td>
                     {comparisonData.scenarios.map((s) => (
-                      <td key={s.id} className="py-2 px-3 font-bold text-gw-success">
+                      <td key={s.id} className="py-2 px-3 font-bold text-[#FFFFFF]">
                         {s.is_valid_config ? s.exact_valid_assignments.toLocaleString() : '—'}
                       </td>
                     ))}
@@ -687,7 +673,7 @@ export const ScenarioComparisonView = () => {
                   <tr>
                     <td className="py-2 px-3 text-gw-text-secondary">Feasibility Percentage</td>
                     {comparisonData.scenarios.map((s) => (
-                      <td key={s.id} className="py-2 px-3 font-bold text-gw-cyan">
+                      <td key={s.id} className="py-2 px-3 font-bold text-[#FFFFFF]">
                         {s.is_valid_config ? `${s.feasibility_percentage.toFixed(1)}%` : '—'}
                       </td>
                     ))}
@@ -703,7 +689,7 @@ export const ScenarioComparisonView = () => {
                   <tr>
                     <td className="py-2 px-3 text-gw-text-secondary">Rook Polynomial R(B, x)</td>
                     {comparisonData.scenarios.map((s) => (
-                      <td key={s.id} className="py-2 px-3 text-gw-warning text-[11px] max-w-xs truncate" title={s.rook_polynomial}>
+                      <td key={s.id} className="py-2 px-3 text-[#A3A3A3] text-[11px] max-w-xs truncate" title={s.rook_polynomial}>
                         {s.is_valid_config ? s.rook_polynomial : '—'}
                       </td>
                     ))}

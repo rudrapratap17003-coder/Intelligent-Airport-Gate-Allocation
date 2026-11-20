@@ -1,27 +1,29 @@
 @import "tailwindcss";
 
-/* GateWise — Global Aviation Theme Styles */
+/* GateWise BLR — Pure Black & White Monochrome Enterprise Theme */
 
 @theme {
-  --color-gw-bg: #081421;
-  --color-gw-bg-secondary: #102236;
-  --color-gw-bg-tertiary: #0c1b2c;
-  --color-gw-card: #142A40;
-  --color-gw-card-hover: #18344e;
-  --color-gw-border: #1e3a5f;
-  --color-gw-border-subtle: rgba(30, 58, 95, 0.45);
-  --color-gw-cyan: #24C8E8;
-  --color-gw-blue: #4389FF;
-  --color-gw-success: #22C55E;
-  --color-gw-warning: #F59E0B;
-  --color-gw-error: #EF4444;
-  --color-gw-text: #F1F5F9;
-  --color-gw-text-secondary: #94A3B8;
-  --color-gw-text-muted: #64748B;
+  --color-gw-bg: #090909;
+  --color-gw-bg-secondary: #111111;
+  --color-gw-bg-tertiary: #181818;
+  --color-gw-card: #181818;
+  --color-gw-card-hover: #222222;
+  --color-gw-elevated: #222222;
+  --color-gw-border: #333333;
+  --color-gw-border-subtle: #262626;
+  --color-gw-hover: #2A2A2A;
+  --color-gw-selected: #383838;
 
-  --shadow-gw-card: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(30, 58, 95, 0.5);
-  --shadow-gw-elevated: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(36, 200, 232, 0.15);
-  --shadow-gw-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(30, 58, 95, 0.7);
+  /* Pure Monochrome Palette */
+  --color-gw-white: #FFFFFF;
+  --color-gw-white-secondary: #E5E5E5;
+  --color-gw-text: #FFFFFF;
+  --color-gw-text-secondary: #A3A3A3;
+  --color-gw-text-muted: #737373;
+
+  --shadow-gw-card: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 1px #333333;
+  --shadow-gw-elevated: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 1px #333333;
+  --shadow-gw-modal: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px #333333;
 }
 
 /* Reset and base styles */
@@ -39,8 +41,8 @@
 
   body {
     font-family: 'Inter', 'Manrope', system-ui, -apple-system, sans-serif;
-    background-color: #081421;
-    color: #F1F5F9;
+    background-color: #090909;
+    color: #FFFFFF;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -54,7 +56,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid #24C8E8;
+    outline: 2px solid #FFFFFF;
     outline-offset: 2px;
   }
 
@@ -70,39 +72,38 @@
 
 /* Glassmorphism & Cockpit Surface Utilities */
 .gw-glass {
-  background: rgba(16, 34, 54, 0.75);
+  background: rgba(17, 17, 17, 0.9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(30, 58, 95, 0.6);
+  border: 1px solid #333333;
 }
 
 .gw-glass-card {
-  background: rgba(20, 42, 64, 0.75);
+  background: rgba(24, 24, 24, 0.9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(30, 58, 95, 0.7);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #333333;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.4);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .gw-glass-card:hover {
-  border-color: rgba(36, 200, 232, 0.35);
-  box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.45), 0 0 15px -3px rgba(36, 200, 232, 0.15);
+  border-color: #555555;
+  background-color: #222222;
 }
 
-.gw-glow-cyan {
-  box-shadow: 0 0 18px -2px rgba(36, 200, 232, 0.3);
+.gw-glow-subtle {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .gw-glow-border {
-  border-color: rgba(36, 200, 232, 0.5) !important;
-  box-shadow: 0 0 12px rgba(36, 200, 232, 0.25);
+  border-color: #555555 !important;
 }
 
 .gw-cockpit-grid {
   background-image: 
-    linear-gradient(to right, rgba(30, 58, 95, 0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(30, 58, 95, 0.15) 1px, transparent 1px);
+    linear-gradient(to right, rgba(51, 51, 51, 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(51, 51, 51, 0.3) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -112,7 +113,7 @@
   font-weight: 700;
   line-height: 2rem;
   letter-spacing: -0.025em;
-  color: #F1F5F9;
+  color: #FFFFFF;
 }
 @media (min-width: 640px) {
   .gw-page-heading {
@@ -126,7 +127,7 @@
   font-weight: 600;
   line-height: 1.75rem;
   letter-spacing: -0.015em;
-  color: #F1F5F9;
+  color: #FFFFFF;
 }
 
 .gw-card-heading {
@@ -134,25 +135,25 @@
   font-weight: 600;
   line-height: 1.25rem;
   letter-spacing: -0.01em;
-  color: #F1F5F9;
+  color: #FFFFFF;
 }
 
 .gw-caption {
   font-size: 0.75rem; /* 12px */
   font-weight: 500;
   line-height: 1rem;
-  color: #94A3B8;
+  color: #A3A3A3;
   letter-spacing: 0.025em;
 }
 
 /* Mathematical Formula Render Box */
 .gw-formula-box {
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  background-color: #0c1b2c;
-  border: 1px solid rgba(6, 182, 212, 0.25);
+  background-color: #111111;
+  border: 1px solid #333333;
   border-radius: 0.5rem;
   padding: 0.75rem 1rem;
-  color: #24C8E8;
+  color: #FFFFFF;
   font-size: 0.875rem;
   overflow-x: auto;
 }
@@ -168,7 +169,7 @@
 }
 
 .gw-skeleton {
-  background: linear-gradient(90deg, rgba(20, 42, 64, 0.6) 25%, rgba(30, 58, 95, 0.8) 50%, rgba(20, 42, 64, 0.6) 75%);
+  background: linear-gradient(90deg, #181818 25%, #2A2A2A 50%, #181818 75%);
   background-size: 200% 100%;
   animation: gw-shimmer 1.8s infinite;
   border-radius: 0.375rem;
@@ -181,14 +182,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #081421;
+  background: #090909;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e3a5f;
+  background: #333333;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #24C8E8;
+  background: #555555;
 }

@@ -1,12 +1,13 @@
 import React from 'react'
 
 const badgeVariants = {
-  default: 'bg-gw-bg-secondary text-gw-text-secondary border-[#1e3a5f]',
-  cyan: 'bg-gw-cyan/10 text-gw-cyan border-gw-cyan/30',
-  blue: 'bg-gw-blue/10 text-gw-blue border-gw-blue/30',
-  success: 'bg-gw-success/10 text-gw-success border-gw-success/30',
-  warning: 'bg-gw-warning/10 text-gw-warning border-gw-warning/30',
-  error: 'bg-gw-error/10 text-gw-error border-gw-error/30',
+  default: 'bg-[#222222] text-[#A3A3A3] border-[#333333]',
+  gold: 'bg-[#2A2A2A] text-[#FFFFFF] border-[#555555]',
+  cyan: 'bg-[#2A2A2A] text-[#FFFFFF] border-[#555555]',
+  blue: 'bg-[#222222] text-[#E5E5E5] border-[#444444]',
+  success: 'bg-[#222222] text-[#FFFFFF] border-[#555555]',
+  warning: 'bg-[#181818] text-[#A3A3A3] border-[#333333]',
+  error: 'bg-[#181818] text-[#E5E5E5] border-[#555555]',
 }
 
 const badgeSizes = {
@@ -35,17 +36,7 @@ export const Badge = ({
     >
       {dot && (
         <span
-          className={`w-1.5 h-1.5 rounded-full ${
-            variant === 'success'
-              ? 'bg-gw-success animate-pulse'
-              : variant === 'error'
-              ? 'bg-gw-error'
-              : variant === 'warning'
-              ? 'bg-gw-warning'
-              : variant === 'cyan'
-              ? 'bg-gw-cyan'
-              : 'bg-gw-text-secondary'
-          }`}
+          className="w-1.5 h-1.5 rounded-full bg-[#FFFFFF]"
         />
       )}
       {Icon && <Icon className="w-3 h-3 shrink-0" />}
