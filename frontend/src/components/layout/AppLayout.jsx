@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Sidebar from './Sidebar'
@@ -6,6 +6,8 @@ import TopNavbar from './TopNavbar'
 import { pageVariants } from '../../lib/animations'
 import { AirportProvider } from '../../context/AirportContext'
 import { ToastProvider } from '../../context/ToastContext'
+import { PageLoadingFallback } from '../common/PageLoadingFallback'
+import { ErrorBoundary } from '../common/ErrorBoundary'
 
 export const AppLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -32,15 +34,19 @@ export const AppLayout = () => {
           >
             <TopNavbar onOpenMobileMenu={() => setMobileOpen(true)} />
             <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-7xl w-full mx-auto">
-              <motion.div
-                key={location.pathname}
-                initial="initial"
-                animate="animate"
-                variants={pageVariants}
-                className="w-full"
-              >
-                <Outlet />
-              </motion.div>
+              <ErrorBoundary>
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <motion.div
+                    key={location.pathname}
+                    initial="initial"
+                    animate="animate"
+                    variants={pageVariants}
+                    className="w-full"
+                  >
+                    <Outlet />
+                  </motion.div>
+                </Suspense>
+              </ErrorBoundary>
             </main>
           </div>
         </div>

@@ -204,4 +204,5 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen, setMobileOpen
   )
 }
 
-export default Sidebar
+export const MemoizedSidebar = React.memo(Sidebar)
+export default MemoizedSidebar

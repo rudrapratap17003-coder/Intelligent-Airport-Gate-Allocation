@@ -300,7 +300,7 @@ export const RestrictionMatrix = () => {
   const isCompleted = currentSimulation?.status === 'Completed'
 
   // 4. Cell Click Toggle: 0 <-> 1
-  const handleToggleCell = (rowIdx, colIdx) => {
+  const handleToggleCell = useCallback((rowIdx, colIdx) => {
     if (isCompleted) {
       toast.info('Read-Only Scenario', 'Completed scenarios are archived and cannot be modified.')
       return
@@ -313,15 +313,15 @@ export const RestrictionMatrix = () => {
       return next
     })
     setHasUnsavedChanges(true)
-  }
+  }, [isCompleted, toast])
 
   // Keyboard accessibility handler for matrix cells
-  const handleCellKeyDown = (e, rowIdx, colIdx) => {
+  const handleCellKeyDown = useCallback((e, rowIdx, colIdx) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
       handleToggleCell(rowIdx, colIdx)
     }
-  }
+  }, [handleToggleCell])
 
   // 5. Save Matrix
   const handleSaveMatrix = async () => {

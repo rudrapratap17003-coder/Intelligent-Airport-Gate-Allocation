@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const Table = ({
+const TableComponent = ({
   columns = [],
   data = [],
   keyExtractor,
@@ -72,4 +72,5 @@ export const Table = ({
   )
 }
 
+export const Table = React.memo(TableComponent)
 export default Table

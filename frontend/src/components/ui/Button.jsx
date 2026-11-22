@@ -16,7 +16,7 @@ const sizes = {
   lg: 'px-5 py-2.5 text-base rounded-xl min-h-[46px]'
 }
 
-export const Button = ({
+const ButtonComponent = ({
   children,
   variant = 'primary',
   size = 'md',
@@ -69,4 +69,5 @@ export const Button = ({
   )
 }
 
+export const Button = React.memo(ButtonComponent)
 export default Button

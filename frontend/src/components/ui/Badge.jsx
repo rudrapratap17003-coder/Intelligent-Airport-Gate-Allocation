@@ -15,7 +15,7 @@ const badgeSizes = {
   md: 'px-2.5 py-1 text-xs',
 }
 
-export const Badge = ({
+const BadgeComponent = ({
   children,
   variant = 'default',
   size = 'md',
@@ -45,4 +45,5 @@ export const Badge = ({
   )
 }
 
+export const Badge = React.memo(BadgeComponent)
 export default Badge

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Menu, ChevronRight, Activity } from 'lucide-react'
 import { allNavItems } from './Sidebar'
 
-export const TopNavbar = ({ onOpenMobileMenu }) => {
+const TopNavbarComponent = ({ onOpenMobileMenu }) => {
   const location = useLocation()
   const currentNav = allNavItems.find((n) => n.path === location.pathname) || { name: 'Operations' }
 
@@ -56,4 +56,5 @@ export const TopNavbar = ({ onOpenMobileMenu }) => {
   )
 }
 
+export const TopNavbar = React.memo(TopNavbarComponent)
 export default TopNavbar

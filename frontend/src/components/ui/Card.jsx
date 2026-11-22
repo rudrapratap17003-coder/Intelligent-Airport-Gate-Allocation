@@ -2,7 +2,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { cardHoverProps } from '../../lib/animations'
 
-export const Card = ({
+const CardComponent = ({
   children,
   className = '',
   title,
@@ -12,7 +12,7 @@ export const Card = ({
   badge,
   interactive = false,
   glass = true,
-  glow = false,
+  _glow = false,
   ...props
 }) => {
   const Component = interactive ? motion.div : 'div'
@@ -80,4 +80,5 @@ export const CardFooter = ({ children, className = '', ...props }) => (
   </div>
 )
 
+export const Card = React.memo(CardComponent)
 export default Card
