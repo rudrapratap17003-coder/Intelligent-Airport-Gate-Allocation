@@ -181,8 +181,8 @@ export const BacktrackingAllocationExplorer = ({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* ----------------- 1. ENGINE CONTROLS & SCENARIO CARD ----------------- */}
-      <Card className="p-5 border-[#333333] bg-[#181818] space-y-4">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-[#333333]">
+      <Card className="p-5 border-[#222E42] bg-[#121826] space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-[#222E42]">
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs font-mono uppercase tracking-wider text-[#FFFFFF] font-bold flex items-center gap-1.5">
@@ -244,10 +244,10 @@ export const BacktrackingAllocationExplorer = ({
               <button
                 type="button"
                 onClick={() => setMode('first')}
-                className={`flex-1 py-1.5 px-2.5 rounded-lg border transition-all text-center cursor-pointer ${
+                className={`flex-1 py-1.5 px-2.5 rounded-lg border transition-all text-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                   mode === 'first'
-                    ? 'bg-[#FFFFFF] text-[#090909] font-bold border-[#FFFFFF] shadow-sm'
-                    : 'bg-[#222222] border-[#333333] text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#2A2A2A]'
+                    ? 'bg-sky-500 text-slate-950 font-bold border-sky-400 shadow-xs'
+                    : 'bg-[#1E2638] border-[#222E42] text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#22314A]'
                 }`}
               >
                 First Solution
@@ -255,10 +255,10 @@ export const BacktrackingAllocationExplorer = ({
               <button
                 type="button"
                 onClick={() => setMode('all')}
-                className={`flex-1 py-1.5 px-2.5 rounded-lg border transition-all text-center cursor-pointer ${
+                className={`flex-1 py-1.5 px-2.5 rounded-lg border transition-all text-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                   mode === 'all'
-                    ? 'bg-[#FFFFFF] text-[#090909] font-bold border-[#FFFFFF] shadow-sm'
-                    : 'bg-[#222222] border-[#333333] text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#2A2A2A]'
+                    ? 'bg-sky-500 text-slate-950 font-bold border-sky-400 shadow-xs'
+                    : 'bg-[#1E2638] border-[#222E42] text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#22314A]'
                 }`}
               >
                 All Solutions
@@ -266,10 +266,10 @@ export const BacktrackingAllocationExplorer = ({
               <button
                 type="button"
                 onClick={() => setMode('limited')}
-                className={`flex-1 py-1.5 px-2.5 rounded-lg border transition-all text-center cursor-pointer ${
+                className={`flex-1 py-1.5 px-2.5 rounded-lg border transition-all text-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                   mode === 'limited'
-                    ? 'bg-[#FFFFFF] text-[#090909] font-bold border-[#FFFFFF] shadow-sm'
-                    : 'bg-[#222222] border-[#333333] text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#2A2A2A]'
+                    ? 'bg-sky-500 text-slate-950 font-bold border-sky-400 shadow-xs'
+                    : 'bg-[#1E2638] border-[#222E42] text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#22314A]'
                 }`}
               >
                 Limited
@@ -292,10 +292,10 @@ export const BacktrackingAllocationExplorer = ({
                     setMaxResults(lim)
                     setCustomLimit(String(lim))
                   }}
-                  className={`px-2 py-1 rounded-md border text-[11px] transition-colors cursor-pointer ${
+                  className={`px-2 py-1 rounded-md border text-[11px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                     maxResults === lim && mode !== 'first'
-                      ? 'bg-[#FFFFFF] text-[#090909] font-bold border-[#FFFFFF]'
-                      : 'bg-[#222222] text-[#A3A3A3] border-[#333333] hover:text-[#FFFFFF] hover:bg-[#2A2A2A]'
+                      ? 'bg-sky-500 text-slate-950 font-bold border-sky-400 shadow-xs'
+                      : 'bg-[#1E2638] text-[#94A3B8] border-[#222E42] hover:text-[#F8FAFC] hover:bg-[#22314A]'
                   } ${mode === 'first' ? 'opacity-40 cursor-not-allowed' : ''}`}
                 >
                   {lim}
@@ -311,7 +311,7 @@ export const BacktrackingAllocationExplorer = ({
                 type="checkbox"
                 checked={includeTrace}
                 onChange={(e) => setIncludeTrace(e.target.checked)}
-                className="rounded border-[#333333] bg-[#222222] text-[#FFFFFF] focus:ring-[#FFFFFF] cursor-pointer"
+                className="rounded border-[#222E42] bg-[#1E2638] text-[#FFFFFF] focus:ring-[#FFFFFF] cursor-pointer"
               />
               <span>Trace Steps</span>
             </label>
@@ -324,7 +324,7 @@ export const BacktrackingAllocationExplorer = ({
         <div className="space-y-4">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 font-mono">
             {/* Status Card */}
-            <Card className="p-3 text-center bg-[#181818] border-[#333333]">
+            <Card className="p-3 text-center bg-[#121826] border-[#222E42]">
               <span className="text-[10px] uppercase tracking-wider text-[#A3A3A3] block font-sans font-medium">
                 Search Status
               </span>
@@ -350,7 +350,7 @@ export const BacktrackingAllocationExplorer = ({
             </Card>
 
             {/* Total Generated */}
-            <Card className="p-3 text-center bg-[#181818] border-[#333333]">
+            <Card className="p-3 text-center bg-[#121826] border-[#222E42]">
               <span className="text-[10px] uppercase tracking-wider text-[#FFFFFF] block font-sans font-medium">
                 Allocations Found
               </span>
@@ -363,7 +363,7 @@ export const BacktrackingAllocationExplorer = ({
             </Card>
 
             {/* Nodes Visited */}
-            <Card className="p-3 text-center bg-[#181818] border-[#333333]">
+            <Card className="p-3 text-center bg-[#121826] border-[#222E42]">
               <span className="text-[10px] uppercase tracking-wider text-[#A3A3A3] block font-sans font-medium">
                 Nodes Visited
               </span>
@@ -376,7 +376,7 @@ export const BacktrackingAllocationExplorer = ({
             </Card>
 
             {/* Rejected Branches */}
-            <Card className="p-3 text-center bg-[#181818] border-[#333333]">
+            <Card className="p-3 text-center bg-[#121826] border-[#222E42]">
               <span className="text-[10px] uppercase tracking-wider text-[#A3A3A3] block font-sans font-medium">
                 Pruned Branches
               </span>
@@ -389,7 +389,7 @@ export const BacktrackingAllocationExplorer = ({
             </Card>
 
             {/* Backtracks */}
-            <Card className="p-3 text-center bg-[#181818] border-[#333333]">
+            <Card className="p-3 text-center bg-[#121826] border-[#222E42]">
               <span className="text-[10px] uppercase tracking-wider text-[#A3A3A3] block font-sans font-medium">
                 Backtracks
               </span>
@@ -402,7 +402,7 @@ export const BacktrackingAllocationExplorer = ({
             </Card>
 
             {/* Execution Time */}
-            <Card className="p-3 text-center bg-[#181818] border-[#333333]">
+            <Card className="p-3 text-center bg-[#121826] border-[#222E42]">
               <span className="text-[10px] uppercase tracking-wider text-[#A3A3A3] block font-sans font-medium">
                 Compute Time
               </span>
@@ -417,10 +417,10 @@ export const BacktrackingAllocationExplorer = ({
 
           {/* ----------------- 3. PHASE 12 CROSS-VERIFICATION CARD ----------------- */}
           {crossVerification && (
-            <Card className="p-4 border border-[#333333] bg-[#181818] space-y-2">
+            <Card className="p-4 border border-[#222E42] bg-[#121826] space-y-2">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl border border-[#333333] bg-[#222222] text-[#FFFFFF] shrink-0">
+                  <div className="p-2 rounded-xl border border-[#222E42] bg-[#1E2638] text-[#FFFFFF] shrink-0">
                     {crossVerification.status === 'VERIFIED' ? (
                       <ShieldCheck className="w-5 h-5" />
                     ) : (
@@ -452,7 +452,7 @@ export const BacktrackingAllocationExplorer = ({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 font-mono text-xs shrink-0 bg-[#222222] px-3 py-1.5 rounded-lg border border-[#333333]">
+                <div className="flex items-center gap-3 font-mono text-xs shrink-0 bg-[#1E2638] px-3 py-1.5 rounded-lg border border-[#222E42]">
                   <div>
                     <span className="text-[#A3A3A3] block text-[10px]">Phase 12 (PIE):</span>
                     <strong className="text-[#FFFFFF] text-sm">{crossVerification.phase12ExactCount}</strong>
@@ -469,8 +469,8 @@ export const BacktrackingAllocationExplorer = ({
 
           {/* ----------------- 4. VISUAL ASSIGNMENT BOARD & PAIRINGS ----------------- */}
           {result.allocations.length > 0 && currentAllocation && (
-            <Card className="p-5 space-y-4 border-[#333333] bg-[#181818]">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+            <Card className="p-5 space-y-4 border-[#222E42] bg-[#121826]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-sm font-bold text-[#FFFFFF]">
@@ -523,7 +523,7 @@ export const BacktrackingAllocationExplorer = ({
                   return (
                     <div
                       key={idx}
-                      className="p-3.5 rounded-xl border border-[#333333] bg-[#222222] hover:bg-[#2A2A2A] transition-all flex items-center justify-between gap-2 shadow-sm"
+                      className="p-3.5 rounded-xl border border-[#222E42] bg-[#1E2638] hover:bg-[#1E2638] transition-all flex items-center justify-between gap-2 shadow-sm"
                     >
                       {/* Flight side */}
                       <div className="space-y-0.5">
@@ -560,8 +560,8 @@ export const BacktrackingAllocationExplorer = ({
 
           {/* ----------------- 5. STEP-BY-STEP SEARCH VISUALIZATION (REQ 8) ----------------- */}
           {includeTrace && result.trace && result.trace.length > 0 && activeTraceStep && (
-            <Card className="p-5 space-y-4 border border-[#333333] bg-[#181818]">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+            <Card className="p-5 space-y-4 border border-[#222E42] bg-[#121826]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <GitBranch className="w-4 h-4 text-[#FFFFFF]" />
@@ -598,8 +598,8 @@ export const BacktrackingAllocationExplorer = ({
               </div>
 
               {/* Active Step Detail Card */}
-              <div className="p-4 rounded-xl bg-[#111111] border border-[#333333] space-y-3 font-mono">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#333333] pb-2.5">
+              <div className="p-4 rounded-xl bg-[#0D121F] border border-[#222E42] space-y-3 font-mono">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#222E42] pb-2.5">
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-[#A3A3A3]">
                       Event #{activeTraceStep.stepNumber}:
@@ -635,7 +635,7 @@ export const BacktrackingAllocationExplorer = ({
                 </p>
 
                 {/* Explanation of Decision */}
-                <div className="text-[11px] text-[#A3A3A3] pt-2 border-t border-[#333333] flex items-center gap-2">
+                <div className="text-[11px] text-[#A3A3A3] pt-2 border-t border-[#222E42] flex items-center gap-2">
                   <Info className="w-3.5 h-3.5 text-[#FFFFFF] shrink-0" />
                   <span>
                     {activeTraceStep.stepType === 'ACCEPT'
@@ -655,7 +655,7 @@ export const BacktrackingAllocationExplorer = ({
 
           {/* Zero Solutions Warning */}
           {result.status === 'NO_SOLUTIONS' && (
-            <div className="p-4 rounded-xl bg-[#181818] border border-[#555555] text-xs text-[#FFFFFF] flex items-start gap-3">
+            <div className="p-4 rounded-xl bg-[#121826] border border-[#334155] text-xs text-[#FFFFFF] flex items-start gap-3">
               <XCircle className="w-5 h-5 shrink-0 mt-0.5 text-[#FFFFFF]" />
               <div className="space-y-1">
                 <strong className="font-bold text-sm block">No Valid Allocation Possible</strong>

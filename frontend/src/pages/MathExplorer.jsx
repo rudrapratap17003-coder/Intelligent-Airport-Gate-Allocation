@@ -195,7 +195,7 @@ export const MathExplorer = () => {
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* ----------------- 1. HEADER & TOP BAR ----------------- */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#333333]">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#222E42]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">Discrete Mathematics Explorer</h1>
@@ -223,13 +223,13 @@ export const MathExplorer = () => {
       </div>
 
       {/* ----------------- 2. MODULE NAVIGATION TABS ----------------- */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-[#333333] pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-[#222E42] pb-3">
         <button
           onClick={() => setActiveTab('sandbox')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
             activeTab === 'sandbox'
-              ? 'bg-[#FFFFFF] text-[#090909] font-bold shadow-sm'
-              : 'text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222]'
+              ? 'bg-sky-500 text-slate-950 font-bold shadow-xs'
+              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E2638]'
           }`}
         >
           <Grid3X3 className="w-4 h-4" />
@@ -238,10 +238,10 @@ export const MathExplorer = () => {
 
         <button
           onClick={() => setActiveTab('rook_puzzle')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
             activeTab === 'rook_puzzle'
-              ? 'bg-[#FFFFFF] text-[#090909] font-bold shadow-sm'
-              : 'text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222]'
+              ? 'bg-sky-500 text-slate-950 font-bold shadow-xs'
+              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E2638]'
           }`}
         >
           <Zap className="w-4 h-4" />
@@ -249,8 +249,8 @@ export const MathExplorer = () => {
           {placedRooks.length > 0 && (
             <span className={`ml-1 px-1.5 py-0.5 rounded text-[10px] font-mono ${
               activeTab === 'rook_puzzle'
-                ? 'bg-[#090909] text-[#FFFFFF]'
-                : 'bg-[#222222] text-[#FFFFFF] border border-[#333333]'
+                ? 'bg-slate-950 text-sky-400 font-bold'
+                : 'bg-[#1E2638] text-sky-300 border border-[#222E42]'
             }`}>
               {placedRooks.length} placed
             </span>
@@ -259,10 +259,10 @@ export const MathExplorer = () => {
 
         <button
           onClick={() => setActiveTab('permutations')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
             activeTab === 'permutations'
-              ? 'bg-[#FFFFFF] text-[#090909] font-bold shadow-sm'
-              : 'text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222]'
+              ? 'bg-sky-500 text-slate-950 font-bold shadow-xs'
+              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E2638]'
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -271,10 +271,10 @@ export const MathExplorer = () => {
 
         <button
           onClick={() => setActiveTab('pie_theory')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
             activeTab === 'pie_theory'
-              ? 'bg-[#FFFFFF] text-[#090909] font-bold shadow-sm'
-              : 'text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222]'
+              ? 'bg-sky-500 text-slate-950 font-bold shadow-xs'
+              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E2638]'
           }`}
         >
           <BookOpen className="w-4 h-4" />
@@ -288,14 +288,14 @@ export const MathExplorer = () => {
       {activeTab === 'sandbox' && (
         <div className="space-y-8">
           {/* Controls Bar: Dimension & Presets */}
-          <Card className="p-5 border-[#333333] bg-[#181818]">
+          <Card className="p-5 border-[#222E42] bg-[#121826]">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               {/* Matrix Dimension Selector */}
               <div className="flex items-center gap-3">
                 <span className="text-xs uppercase font-mono tracking-wider text-gw-text-secondary">
                   Grid Dimension (n × n):
                 </span>
-                <div className="flex items-center gap-1.5 bg-[#111111] p-1 rounded-lg border border-[#333333]">
+                <div className="flex items-center gap-1.5 bg-[#0D121F] p-1 rounded-lg border border-[#222E42]">
                   {[2, 3, 4, 5, 6].map((size) => (
                     <button
                       key={size}
@@ -321,7 +321,7 @@ export const MathExplorer = () => {
                   <button
                     key={preset.id}
                     onClick={() => applyPreset(preset.id)}
-                    className="px-2.5 py-1 text-xs rounded-md border border-[#333333] bg-[#222222] hover:border-[#555555] text-gw-text hover:text-white transition-all"
+                    className="px-2.5 py-1 text-xs rounded-md border border-[#222E42] bg-[#1E2638] hover:border-[#334155] text-gw-text hover:text-white transition-all"
                     title={preset.desc}
                   >
                     {preset.name}
@@ -335,8 +335,8 @@ export const MathExplorer = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Left Column: Interactive Matrix Sandbox (5 cols) */}
             <div className="lg:col-span-5 space-y-4">
-              <Card className="p-5 border-[#333333]">
-                <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#333333]">
+              <Card className="p-5 border-[#222E42]">
+                <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#222E42]">
                   <div className="space-y-0.5">
                     <h3 className="text-sm font-semibold text-gw-text flex items-center gap-2">
                       <Grid3X3 className="w-4 h-4 text-white" />
@@ -387,8 +387,8 @@ export const MathExplorer = () => {
                               onClick={() => toggleCell(r, c)}
                               className={`w-12 h-12 rounded-lg font-mono text-xs font-bold transition-all flex flex-col items-center justify-center border ${
                                 cellVal === 1
-                                  ? 'bg-[#111111] text-white border-2 border-[#555555] shadow-inner hover:bg-[#222222]'
-                                  : 'bg-[#181818] text-[#737373] border-[#333333] hover:border-[#555555] hover:bg-[#222222] hover:text-[#A3A3A3]'
+                                  ? 'bg-[#0D121F] text-white border-2 border-[#334155] shadow-inner hover:bg-[#1E2638]'
+                                  : 'bg-[#121826] text-[#737373] border-[#222E42] hover:border-[#334155] hover:bg-[#1E2638] hover:text-[#A3A3A3]'
                               }`}
                             >
                               <span>{cellVal}</span>
@@ -404,14 +404,14 @@ export const MathExplorer = () => {
                 </div>
 
                 {/* Matrix Legend */}
-                <div className="mt-4 pt-3 border-t border-[#333333] flex items-center justify-between text-xs text-gw-text-secondary">
+                <div className="mt-4 pt-3 border-t border-[#222E42] flex items-center justify-between text-xs text-gw-text-secondary">
                   <div className="flex items-center gap-3">
                     <span className="flex items-center gap-1.5">
-                      <span className="w-3 h-3 rounded bg-[#181818] border border-[#333333]" />
+                      <span className="w-3 h-3 rounded bg-[#121826] border border-[#222E42]" />
                       0 = Allowed
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <span className="w-3 h-3 rounded bg-[#111111] border-2 border-[#555555]" />
+                      <span className="w-3 h-3 rounded bg-[#0D121F] border-2 border-[#334155]" />
                       1 = Forbidden
                     </span>
                   </div>
@@ -423,7 +423,7 @@ export const MathExplorer = () => {
 
               {/* Bipartite Graph Mini Visualizer */}
               {evalResult && (
-                <Card className="p-4 border-[#333333]">
+                <Card className="p-4 border-[#222E42]">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="text-xs font-semibold text-gw-text uppercase font-mono tracking-wider flex items-center gap-1.5">
                       <Eye className="w-3.5 h-3.5 text-white" />
@@ -441,7 +441,7 @@ export const MathExplorer = () => {
                             className={`w-5 h-5 rounded text-[10px] font-mono transition-all ${
                               selectedAllocationIdx === idx
                                 ? 'bg-[#FFFFFF] text-[#090909] font-bold'
-                                : 'bg-[#222222] text-gw-text-secondary hover:text-gw-text'
+                                : 'bg-[#1E2638] text-gw-text-secondary hover:text-gw-text'
                             }`}
                           >
                             {idx + 1}
@@ -453,7 +453,7 @@ export const MathExplorer = () => {
 
                   {/* Visual Match Table */}
                   {evalResult.valid_assignments === 0 ? (
-                    <div className="p-4 text-center text-xs text-[#A3A3A3] font-mono bg-[#111111] rounded-lg border border-[#333333]">
+                    <div className="p-4 text-center text-xs text-[#A3A3A3] font-mono bg-[#0D121F] rounded-lg border border-[#222E42]">
                       Zero valid bipartite matchings exist under these constraints.
                     </div>
                   ) : evalResult.sample_allocations?.[selectedAllocationIdx] ? (
@@ -461,7 +461,7 @@ export const MathExplorer = () => {
                       {evalResult.sample_allocations[selectedAllocationIdx].map((pair, pIdx) => (
                         <div
                           key={pIdx}
-                          className="p-2 rounded bg-[#222222] border border-[#333333] flex items-center justify-between text-xs font-mono"
+                          className="p-2 rounded bg-[#1E2638] border border-[#222E42] flex items-center justify-between text-xs font-mono"
                         >
                           <span className="text-gw-text font-semibold">{pair.flight_id}</span>
                           <span className="text-[#737373]">→</span>
@@ -477,7 +477,7 @@ export const MathExplorer = () => {
             {/* Right Column: Live Combinatorial Results & PIE Steps (7 cols) */}
             <div className="lg:col-span-7 space-y-6">
               {evalError && (
-                <div className="p-3 rounded-lg bg-[#111111] border border-[#555555] text-white text-xs font-mono">
+                <div className="p-3 rounded-lg bg-[#0D121F] border border-[#334155] text-white text-xs font-mono">
                   Evaluation error: {evalError}
                 </div>
               )}
@@ -489,7 +489,7 @@ export const MathExplorer = () => {
                     <span>Evaluating...</span>
                   </div>
                 )}
-                <Card className="p-3.5 border-[#333333] bg-[#181818]">
+                <Card className="p-3.5 border-[#222E42] bg-[#121826]">
                   <span className="text-[10px] uppercase font-mono tracking-wider text-gw-text-secondary block mb-1">
                     Total Permutations
                   </span>
@@ -501,7 +501,7 @@ export const MathExplorer = () => {
                   </span>
                 </Card>
 
-                <Card className="p-3.5 border-[#333333] bg-[#181818]">
+                <Card className="p-3.5 border-[#222E42] bg-[#121826]">
                   <span className="text-[10px] uppercase font-mono tracking-wider text-gw-text-secondary block mb-1">
                     Valid Assignments (N)
                   </span>
@@ -513,7 +513,7 @@ export const MathExplorer = () => {
                   </span>
                 </Card>
 
-                <Card className="p-3.5 border-[#333333] bg-[#181818]">
+                <Card className="p-3.5 border-[#222E42] bg-[#121826]">
                   <span className="text-[10px] uppercase font-mono tracking-wider text-gw-text-secondary block mb-1">
                     Violations Blocked
                   </span>
@@ -525,7 +525,7 @@ export const MathExplorer = () => {
                   </span>
                 </Card>
 
-                <Card className="p-3.5 border-[#333333] bg-[#181818]">
+                <Card className="p-3.5 border-[#222E42] bg-[#121826]">
                   <span className="text-[10px] uppercase font-mono tracking-wider text-gw-text-secondary block mb-1">
                     Max Rook Placements
                   </span>
@@ -539,8 +539,8 @@ export const MathExplorer = () => {
               </div>
 
               {/* Exact Rook Polynomial Formulation */}
-              <Card className="p-5 border-[#333333] bg-[#181818]">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#333333]">
+              <Card className="p-5 border-[#222E42] bg-[#121826]">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#222E42]">
                   <span className="text-xs uppercase font-mono tracking-wider text-white font-bold flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5" />
                     Exact Rook Polynomial R(B, x)
@@ -549,7 +549,7 @@ export const MathExplorer = () => {
                     Row Bitmask DP
                   </Badge>
                 </div>
-                <div className="p-3.5 rounded-lg bg-[#111111] border border-[#333333] font-mono text-sm sm:text-base text-white font-bold tracking-wide overflow-x-auto">
+                <div className="p-3.5 rounded-lg bg-[#0D121F] border border-[#222E42] font-mono text-sm sm:text-base text-white font-bold tracking-wide overflow-x-auto">
                   {evalResult?.polynomial || 'Calculating...'}
                 </div>
                 <p className="text-xs text-gw-text-secondary mt-2 leading-relaxed">
@@ -558,8 +558,8 @@ export const MathExplorer = () => {
               </Card>
 
               {/* Inclusion-Exclusion Alternating Step Table */}
-              <Card className="p-5 border-[#333333]">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#333333]">
+              <Card className="p-5 border-[#222E42]">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#222E42]">
                   <h3 className="text-sm font-semibold text-gw-text flex items-center gap-2">
                     <Calculator className="w-4 h-4 text-white" />
                     Principle of Inclusion-Exclusion (PIE) Step Table
@@ -572,7 +572,7 @@ export const MathExplorer = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs font-mono">
                     <thead>
-                      <tr className="border-b border-[#333333] text-gw-text-secondary uppercase text-[10px]">
+                      <tr className="border-b border-[#222E42] text-gw-text-secondary uppercase text-[10px]">
                         <th className="py-2 px-3">k</th>
                         <th className="py-2 px-2 text-center">Sign</th>
                         <th className="py-2 px-3 text-right">Rook rₖ</th>
@@ -585,14 +585,14 @@ export const MathExplorer = () => {
                       {evalResult?.inclusion_exclusion_terms?.map((term) => {
                         const isPositive = term.sign === '+'
                         return (
-                          <tr key={term.k} className="hover:bg-[#222222] transition-colors">
+                          <tr key={term.k} className="hover:bg-[#1E2638] transition-colors">
                             <td className="py-2.5 px-3 font-bold text-gw-text">k = {term.k}</td>
                             <td className="py-2.5 px-2 text-center">
                               <span
                                 className={`px-1.5 py-0.5 rounded font-bold border ${
                                   isPositive
-                                    ? 'bg-[#222222] text-white border-[#444444]'
-                                    : 'bg-[#111111] text-[#A3A3A3] border-[#333333]'
+                                    ? 'bg-[#1E2638] text-white border-[#444444]'
+                                    : 'bg-[#0D121F] text-[#A3A3A3] border-[#222E42]'
                                 }`}
                               >
                                 {term.sign}1
@@ -612,7 +612,7 @@ export const MathExplorer = () => {
                               {term.sign}
                               {Math.abs(term.contribution).toLocaleString()}
                             </td>
-                            <td className="py-2.5 px-4 text-right font-bold text-white bg-[#222222]/30">
+                            <td className="py-2.5 px-4 text-right font-bold text-white bg-[#1E2638]/30">
                               {/* Running sum calculation if needed */}
                               {term.contribution?.toLocaleString()}
                             </td>
@@ -623,7 +623,7 @@ export const MathExplorer = () => {
                   </table>
                 </div>
 
-                <div className="mt-4 p-3 rounded-lg bg-[#111111] border border-[#333333] flex items-center justify-between text-xs font-mono">
+                <div className="mt-4 p-3 rounded-lg bg-[#0D121F] border border-[#222E42] flex items-center justify-between text-xs font-mono">
                   <span className="text-gw-text-secondary font-medium">
                     Final Exact Valid Assignments:
                   </span>
@@ -634,7 +634,7 @@ export const MathExplorer = () => {
               </Card>
 
               {/* Rook Coefficient Histogram */}
-              <Card className="p-5 border-[#333333]">
+              <Card className="p-5 border-[#222E42]">
                 <h3 className="text-sm font-semibold text-gw-text mb-1">
                   Rook Placement Spectrum Histogram
                 </h3>
@@ -671,7 +671,7 @@ export const MathExplorer = () => {
       {/* ========================================================================= */}
       {activeTab === 'rook_puzzle' && (
         <div className="space-y-6">
-          <Card className="p-6 border-[#333333]">
+          <Card className="p-6 border-[#222E42]">
             <div className="max-w-3xl space-y-2 mb-6">
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
                 <Zap className="w-5 h-5 text-white" />
@@ -686,7 +686,7 @@ export const MathExplorer = () => {
 
             {/* Conflict Alert Banner */}
             {rookConflicts.size > 0 ? (
-              <div className="p-4 rounded-xl bg-[#111111] border border-[#555555] text-white flex items-center gap-3 mb-6">
+              <div className="p-4 rounded-xl bg-[#0D121F] border border-[#334155] text-white flex items-center gap-3 mb-6">
                 <AlertTriangle className="w-5 h-5 shrink-0 text-[#A3A3A3]" />
                 <div className="text-xs">
                   <span className="font-bold uppercase tracking-wider block">Attack Conflict Detected:</span>
@@ -694,7 +694,7 @@ export const MathExplorer = () => {
                 </div>
               </div>
             ) : placedRooks.length > 0 ? (
-              <div className="p-4 rounded-xl bg-[#222222] border border-[#333333] text-white flex items-center gap-3 mb-6">
+              <div className="p-4 rounded-xl bg-[#1E2638] border border-[#222E42] text-white flex items-center gap-3 mb-6">
                 <CheckCircle2 className="w-5 h-5 shrink-0 text-white" />
                 <div className="text-xs">
                   <span className="font-bold uppercase tracking-wider block">
@@ -706,14 +706,14 @@ export const MathExplorer = () => {
                 </div>
               </div>
             ) : (
-              <div className="p-4 rounded-xl bg-[#181818] border border-[#333333] text-gw-text-secondary text-xs mb-6">
+              <div className="p-4 rounded-xl bg-[#121826] border border-[#222E42] text-gw-text-secondary text-xs mb-6">
                 Click any forbidden cell below to position a chess rook onto the restriction board.
               </div>
             )}
 
             {/* Interactive Chess Board */}
             <div className="flex flex-col md:flex-row gap-8 items-start">
-              <div className="overflow-x-auto p-4 bg-[#111111] rounded-2xl border border-[#333333]">
+              <div className="overflow-x-auto p-4 bg-[#0D121F] rounded-2xl border border-[#222E42]">
                 <div className="inline-block">
                   {/* Column Labels */}
                   <div className="flex items-center gap-2 mb-2 pl-12">
@@ -748,9 +748,9 @@ export const MathExplorer = () => {
                                   ? 'bg-[#090909] border-[#222222] text-[#333333] cursor-not-allowed opacity-40'
                                   : isRookPlaced
                                   ? hasConflict
-                                    ? 'bg-[#181818] border-2 border-white text-white shadow-lg ring-2 ring-[#737373] scale-105'
+                                    ? 'bg-[#121826] border-2 border-white text-white shadow-lg ring-2 ring-[#737373] scale-105'
                                     : 'bg-white border-2 border-white text-[#090909] shadow-lg scale-105 font-bold'
-                                  : 'bg-[#181818] border-2 border-[#555555] text-white hover:bg-[#222222] hover:border-white'
+                                  : 'bg-[#121826] border-2 border-[#334155] text-white hover:bg-[#1E2638] hover:border-white'
                               }`}
                             >
                               {isRookPlaced ? (
@@ -773,22 +773,22 @@ export const MathExplorer = () => {
 
               {/* Status & Placement Scoreboard */}
               <div className="flex-1 space-y-4">
-                <Card className="p-4 border-[#333333] bg-[#181818]">
+                <Card className="p-4 border-[#222E42] bg-[#121826]">
                   <h4 className="text-xs font-semibold uppercase font-mono tracking-wider text-gw-text mb-3">
                     Puzzle Placement Stats
                   </h4>
                   <div className="space-y-2.5 text-xs font-mono">
-                    <div className="flex justify-between py-1 border-b border-[#333333]">
+                    <div className="flex justify-between py-1 border-b border-[#222E42]">
                       <span className="text-gw-text-secondary">Rooks Placed:</span>
                       <span className="text-white font-bold">{placedRooks.length}</span>
                     </div>
-                    <div className="flex justify-between py-1 border-b border-[#333333]">
+                    <div className="flex justify-between py-1 border-b border-[#222E42]">
                       <span className="text-gw-text-secondary">Conflict Status:</span>
                       <span className="text-white font-bold">
                         {rookConflicts.size > 0 ? `${rookConflicts.size / 2} Collisions` : 'Conflict-Free'}
                       </span>
                     </div>
-                    <div className="flex justify-between py-1 border-b border-[#333333]">
+                    <div className="flex justify-between py-1 border-b border-[#222E42]">
                       <span className="text-gw-text-secondary">Target Coefficient:</span>
                       <span className="text-white font-bold">r{placedRooks.length}</span>
                     </div>
@@ -800,7 +800,7 @@ export const MathExplorer = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-[#333333] flex gap-2">
+                  <div className="mt-4 pt-3 border-t border-[#222E42] flex gap-2">
                     <Button
                       size="sm"
                       variant="outline"
@@ -823,7 +823,7 @@ export const MathExplorer = () => {
       {/* ========================================================================= */}
       {activeTab === 'permutations' && (
         <div className="space-y-6">
-          <Card className="p-6 border-[#333333]">
+          <Card className="p-6 border-[#222E42]">
             <div className="max-w-3xl space-y-2 mb-6">
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
                 <Layers className="w-5 h-5 text-white" />
@@ -837,7 +837,7 @@ export const MathExplorer = () => {
 
             {/* Slider & Formula Card */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center mb-8">
-              <div className="md:col-span-5 p-5 rounded-2xl bg-[#111111] border border-[#333333]">
+              <div className="md:col-span-5 p-5 rounded-2xl bg-[#0D121F] border border-[#222E42]">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs uppercase font-mono tracking-wider text-white font-bold">
                     Choose Dimension n
@@ -852,7 +852,7 @@ export const MathExplorer = () => {
                   max="8"
                   value={permN}
                   onChange={(e) => setPermN(Number(e.target.value))}
-                  className="w-full h-2 bg-[#222222] rounded-lg appearance-none cursor-pointer accent-white"
+                  className="w-full h-2 bg-[#1E2638] rounded-lg appearance-none cursor-pointer accent-white"
                 />
                 <div className="flex justify-between text-[10px] font-mono text-gw-text-secondary mt-2">
                   <span>n=1</span>
@@ -862,7 +862,7 @@ export const MathExplorer = () => {
                 </div>
               </div>
 
-              <div className="md:col-span-7 p-5 rounded-2xl bg-[#181818] border border-[#333333] space-y-2">
+              <div className="md:col-span-7 p-5 rounded-2xl bg-[#121826] border border-[#222E42] space-y-2">
                 <span className="text-xs uppercase font-mono tracking-wider text-gw-text-secondary flex items-center justify-between">
                   <span>Combinatorial Factorial Formula:</span>
                   {isLoadingPerms && (
@@ -895,7 +895,7 @@ export const MathExplorer = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs font-mono text-left">
                     <thead>
-                      <tr className="border-b border-[#333333] text-gw-text-secondary text-[10px] uppercase">
+                      <tr className="border-b border-[#222E42] text-gw-text-secondary text-[10px] uppercase">
                         <th className="py-2 px-3">Dimension n</th>
                         <th className="py-2 px-3 text-right">n! Permutations</th>
                         <th className="py-2 px-3 text-right">Multiplier</th>
@@ -905,8 +905,8 @@ export const MathExplorer = () => {
                       {permData?.growth_table?.map((row) => (
                         <tr
                           key={row.n}
-                          className={`hover:bg-[#222222] transition-colors ${
-                            row.n === permN ? 'bg-[#222222] font-bold text-white' : 'text-gw-text'
+                          className={`hover:bg-[#1E2638] transition-colors ${
+                            row.n === permN ? 'bg-[#1E2638] font-bold text-white' : 'text-gw-text'
                           }`}
                         >
                           <td className="py-2 px-3">n = {row.n}</td>
@@ -928,11 +928,11 @@ export const MathExplorer = () => {
                 <h3 className="text-xs font-semibold uppercase font-mono tracking-wider text-gw-text mb-3">
                   Sample Permutations of [0 .. {permN - 1}] ({permData?.sample_permutations?.length || 0} shown)
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-72 overflow-y-auto p-2 bg-[#111111] rounded-xl border border-[#333333]">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-72 overflow-y-auto p-2 bg-[#0D121F] rounded-xl border border-[#222E42]">
                   {permData?.sample_permutations?.map((perm, idx) => (
                     <div
                       key={idx}
-                      className="p-2 rounded bg-[#181818] border border-[#333333] text-[11px] font-mono text-center text-white hover:border-[#555555] transition-all"
+                      className="p-2 rounded bg-[#121826] border border-[#222E42] text-[11px] font-mono text-center text-white hover:border-[#334155] transition-all"
                     >
                       [{perm.join(', ')}]
                     </div>
@@ -949,7 +949,7 @@ export const MathExplorer = () => {
       {/* ========================================================================= */}
       {activeTab === 'pie_theory' && (
         <div className="space-y-6">
-          <Card className="p-6 border-[#333333] space-y-6">
+          <Card className="p-6 border-[#222E42] space-y-6">
             <div className="space-y-2">
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-white" />
@@ -962,7 +962,7 @@ export const MathExplorer = () => {
 
             {/* Theory Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="p-4 border-[#333333] bg-[#181818] space-y-2">
+              <Card className="p-4 border-[#222E42] bg-[#121826] space-y-2">
                 <span className="text-xs uppercase font-mono text-white font-bold block">
                   1. Unconstrained Baseline
                 </span>
@@ -971,7 +971,7 @@ export const MathExplorer = () => {
                 </p>
               </Card>
 
-              <Card className="p-4 border-[#333333] bg-[#181818] space-y-2">
+              <Card className="p-4 border-[#222E42] bg-[#121826] space-y-2">
                 <span className="text-xs uppercase font-mono text-white font-bold block">
                   2. Subtract Single Violations
                 </span>
@@ -980,7 +980,7 @@ export const MathExplorer = () => {
                 </p>
               </Card>
 
-              <Card className="p-4 border-[#333333] bg-[#181818] space-y-2">
+              <Card className="p-4 border-[#222E42] bg-[#121826] space-y-2">
                 <span className="text-xs uppercase font-mono text-white font-bold block">
                   3. Add Double Violations Back
                 </span>
@@ -991,7 +991,7 @@ export const MathExplorer = () => {
             </div>
 
             {/* Master Formula Box */}
-            <div className="p-6 rounded-2xl bg-[#111111] border border-[#333333] space-y-3">
+            <div className="p-6 rounded-2xl bg-[#0D121F] border border-[#222E42] space-y-3">
               <span className="text-xs uppercase font-mono text-white font-bold tracking-wider">
                 The Master GateWise Inclusion-Exclusion Equation
               </span>

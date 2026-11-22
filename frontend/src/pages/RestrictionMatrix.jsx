@@ -426,7 +426,7 @@ export const RestrictionMatrix = () => {
   return (
     <div className="space-y-6 animate-fadeIn max-w-7xl mx-auto pb-12">
       {/* -------------------- 1. HEADER -------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#333333]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#222E42]">
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">Restriction Matrix</h1>
@@ -451,7 +451,7 @@ export const RestrictionMatrix = () => {
             icon={PlayCircle}
             onClick={handleScrollToBacktrackingEngine}
             disabled={numFlights === 0 || numGates === 0}
-            className="border-[#333333] text-[#FFFFFF] font-mono shadow-sm"
+            className="border-[#222E42] text-[#FFFFFF] font-mono shadow-sm"
             title="Generate flight-to-gate allocations using Phase 13 Backtracking Engine"
           >
             Generate Allocations
@@ -463,7 +463,7 @@ export const RestrictionMatrix = () => {
             icon={Calculator}
             onClick={handleScrollToRookEngine}
             disabled={numFlights === 0 || numGates === 0}
-            className="border-[#333333] text-[#FFFFFF] font-mono shadow-sm"
+            className="border-[#222E42] text-[#FFFFFF] font-mono shadow-sm"
             title="Calculate and visualize Rook Polynomial for active matrix"
           >
             Calculate Rook Polynomial
@@ -556,7 +556,7 @@ export const RestrictionMatrix = () => {
 
         {/* Completed Scenario Read-Only Notice */}
         {isCompleted && (
-          <div className="p-3 rounded-lg bg-[#222222] border border-[#333333] text-xs text-[#FFFFFF] flex items-center gap-2.5">
+          <div className="p-3 rounded-lg bg-[#1E2638] border border-[#222E42] text-xs text-[#FFFFFF] flex items-center gap-2.5">
             <Lock className="w-4 h-4 shrink-0 text-[#FFFFFF]" />
             <div>
               <strong>Completed Historical Scenario:</strong> This scenario is archived as Completed and locked.
@@ -567,7 +567,7 @@ export const RestrictionMatrix = () => {
 
         {/* Missing reference warnings */}
         {(resolvedScenario.missingFlightIds.length > 0 || resolvedScenario.missingGateIds.length > 0) && (
-          <div className="p-3 rounded-lg bg-[#111111] border border-[#333333] text-xs text-white flex items-start gap-2.5">
+          <div className="p-3 rounded-lg bg-[#0D121F] border border-[#222E42] text-xs text-white flex items-start gap-2.5">
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#A3A3A3]" />
             <div>
               <strong>Reference Notice:</strong> Scenario references{' '}
@@ -586,13 +586,13 @@ export const RestrictionMatrix = () => {
       {/* -------------------- 3. VALIDATION REPORT RESULTS PANEL (PHASE 10) -------------------- */}
       {validationReport && (
         <Card
-          className="border-2 border-[#333333] bg-[#181818] transition-all space-y-4"
+          className="border-2 border-[#222E42] bg-[#121826] transition-all space-y-4"
         >
           {/* Header Summary */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-start sm:items-center gap-3.5">
               <div
-                className="p-2.5 rounded-xl border border-[#333333] bg-[#111111] text-white shrink-0"
+                className="p-2.5 rounded-xl border border-[#222E42] bg-[#0D121F] text-white shrink-0"
               >
                 {validationReport.status === 'PASSED' ? (
                   <ShieldCheck className="w-6 h-6" />
@@ -645,7 +645,7 @@ export const RestrictionMatrix = () => {
               <button
                 type="button"
                 onClick={() => setIsValidationPanelOpen(!isValidationPanelOpen)}
-                className="p-1.5 rounded-lg text-gw-text-secondary hover:text-gw-text hover:bg-white/5 border border-[#333333] transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-gw-text-secondary hover:text-gw-text hover:bg-white/5 border border-[#222E42] transition-colors cursor-pointer"
                 title={isValidationPanelOpen ? 'Collapse Diagnostics' : 'Expand Diagnostics'}
               >
                 {isValidationPanelOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -655,13 +655,13 @@ export const RestrictionMatrix = () => {
 
           {/* Expandable Categories & Detailed Diagnostics */}
           {isValidationPanelOpen && (
-            <div className="space-y-4 pt-3 border-t border-[#333333]">
+            <div className="space-y-4 pt-3 border-t border-[#222E42]">
               {/* Category Pills (Categories A through F) */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs font-mono">
                 {Object.entries(validationReport.categories).map(([key, cat]) => (
                   <div
                     key={key}
-                    className="p-2 rounded-lg border border-[#333333] bg-[#222222] text-[#FFFFFF] flex flex-col justify-between"
+                    className="p-2 rounded-lg border border-[#222E42] bg-[#1E2638] text-[#FFFFFF] flex flex-col justify-between"
                   >
                     <span className="text-[10px] text-gw-text-secondary font-sans truncate">{cat.name}</span>
                     <div className="flex items-center justify-between mt-1">
@@ -673,13 +673,13 @@ export const RestrictionMatrix = () => {
               </div>
 
               {/* Filter Tabs */}
-              <div className="flex items-center gap-2 border-b border-[#333333] pb-2 text-xs font-mono">
+              <div className="flex items-center gap-2 border-b border-[#222E42] pb-2 text-xs font-mono">
                 <button
                   type="button"
-                  className={`px-3 py-1 rounded-md transition-colors ${
+                  className={`px-3 py-1 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                     validationTab === 'all'
-                      ? 'bg-[#FFFFFF] text-[#090909] font-bold border border-[#FFFFFF]'
-                      : 'text-gw-text-secondary hover:text-gw-text'
+                      ? 'bg-sky-500 text-slate-950 font-bold border border-sky-400 shadow-xs'
+                      : 'text-gw-text-secondary hover:text-gw-text hover:bg-[#1E2638]'
                   }`}
                   onClick={() => setValidationTab('all')}
                 >
@@ -688,10 +688,10 @@ export const RestrictionMatrix = () => {
                 {validationReport.errorCount > 0 && (
                   <button
                     type="button"
-                    className={`px-3 py-1 rounded-md transition-colors ${
+                    className={`px-3 py-1 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                       validationTab === 'errors'
-                        ? 'bg-[#FFFFFF] text-[#090909] font-bold border border-[#FFFFFF]'
-                        : 'text-gw-text-secondary hover:text-gw-text'
+                        ? 'bg-rose-500 text-slate-950 font-bold border border-rose-400 shadow-xs'
+                        : 'text-gw-text-secondary hover:text-gw-text hover:bg-[#1E2638]'
                     }`}
                     onClick={() => setValidationTab('errors')}
                   >
@@ -701,10 +701,10 @@ export const RestrictionMatrix = () => {
                 {validationReport.warningCount > 0 && (
                   <button
                     type="button"
-                    className={`px-3 py-1 rounded-md transition-colors ${
+                    className={`px-3 py-1 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                       validationTab === 'warnings'
-                        ? 'bg-[#FFFFFF] text-[#090909] font-bold border border-[#FFFFFF]'
-                        : 'text-gw-text-secondary hover:text-gw-text'
+                        ? 'bg-amber-500 text-slate-950 font-bold border border-amber-400 shadow-xs'
+                        : 'text-gw-text-secondary hover:text-gw-text hover:bg-[#1E2638]'
                     }`}
                     onClick={() => setValidationTab('warnings')}
                   >
@@ -714,10 +714,10 @@ export const RestrictionMatrix = () => {
                 {validationReport.incompatibilityCount > 0 && (
                   <button
                     type="button"
-                    className={`px-3 py-1 rounded-md transition-colors ${
+                    className={`px-3 py-1 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                       validationTab === 'operational'
-                        ? 'bg-[#FFFFFF] text-[#090909] font-bold border border-[#FFFFFF]'
-                        : 'text-gw-text-secondary hover:text-gw-text'
+                        ? 'bg-sky-500 text-slate-950 font-bold border border-sky-400 shadow-xs'
+                        : 'text-gw-text-secondary hover:text-gw-text hover:bg-[#1E2638]'
                     }`}
                     onClick={() => setValidationTab('operational')}
                   >
@@ -733,7 +733,7 @@ export const RestrictionMatrix = () => {
                   validationReport.errors.map((err, idx) => (
                     <div
                       key={`err-${idx}`}
-                      className="p-3 rounded-lg bg-[#222222] border border-[#333333] text-xs flex items-start gap-2.5"
+                      className="p-3 rounded-lg bg-[#1E2638] border border-[#222E42] text-xs flex items-start gap-2.5"
                     >
                       <XCircle className="w-4 h-4 text-[#FFFFFF] shrink-0 mt-0.5" />
                       <div className="flex-1">
@@ -754,7 +754,7 @@ export const RestrictionMatrix = () => {
                   validationReport.warnings.map((warn, idx) => (
                     <div
                       key={`warn-${idx}`}
-                      className="p-3 rounded-lg bg-[#222222] border border-[#333333] text-xs flex items-start gap-2.5"
+                      className="p-3 rounded-lg bg-[#1E2638] border border-[#222E42] text-xs flex items-start gap-2.5"
                     >
                       <AlertTriangle className="w-4 h-4 text-[#FFFFFF] shrink-0 mt-0.5" />
                       <div className="flex-1">
@@ -775,7 +775,7 @@ export const RestrictionMatrix = () => {
                   validationReport.incompatibilities.map((incomp, idx) => (
                     <div
                       key={`incomp-${idx}`}
-                      className="p-3 rounded-lg bg-[#222222] border border-[#333333] text-xs flex items-start gap-2.5"
+                      className="p-3 rounded-lg bg-[#1E2638] border border-[#222E42] text-xs flex items-start gap-2.5"
                     >
                       <Info className="w-4 h-4 text-[#FFFFFF] shrink-0 mt-0.5" />
                       <div className="flex-1">
@@ -794,14 +794,14 @@ export const RestrictionMatrix = () => {
 
                 {/* Clean State Notice */}
                 {validationReport.errors.length === 0 && validationReport.warnings.length === 0 && (
-                  <div className="p-3 rounded-lg bg-[#222222] border border-[#333333] text-xs text-[#FFFFFF] flex items-center gap-2">
+                  <div className="p-3 rounded-lg bg-[#1E2638] border border-[#222E42] text-xs text-[#FFFFFF] flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 shrink-0 text-[#FFFFFF]" />
                     <span>Zero validation defects detected across all 6 validation categories.</span>
                   </div>
                 )}
               </div>
 
-              <div className="text-[11px] text-gw-text-secondary italic pt-1 border-t border-[#333333]">
+              <div className="text-[11px] text-gw-text-secondary italic pt-1 border-t border-[#222E42]">
                 Notice: The Matrix Validation Engine inspects structural integrity and operational constraints. Validation does NOT automatically modify binary matrix values.
               </div>
             </div>
@@ -811,7 +811,7 @@ export const RestrictionMatrix = () => {
 
       {/* -------------------- 4. INFORMATION PANEL & METRICS -------------------- */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 font-mono">
-        <Card className="p-3.5 text-center bg-[#181818] border-[#333333]">
+        <Card className="p-3.5 text-center bg-[#121826] border-[#222E42]">
           <span className="text-[10px] uppercase tracking-wider text-gw-text-secondary block font-sans font-medium">
             Dimensions
           </span>
@@ -823,7 +823,7 @@ export const RestrictionMatrix = () => {
           </span>
         </Card>
 
-        <Card className="p-3.5 text-center bg-[#181818] border-[#333333]">
+        <Card className="p-3.5 text-center bg-[#121826] border-[#222E42]">
           <span className="text-[10px] uppercase tracking-wider text-gw-text-secondary block font-sans font-medium">
             Total Cells
           </span>
@@ -835,7 +835,7 @@ export const RestrictionMatrix = () => {
           </span>
         </Card>
 
-        <Card className="p-3.5 text-center bg-[#181818] border-[#333333]">
+        <Card className="p-3.5 text-center bg-[#121826] border-[#222E42]">
           <span className="text-[10px] uppercase tracking-wider text-gw-text-secondary block font-sans font-medium">
             Permitted (0)
           </span>
@@ -847,7 +847,7 @@ export const RestrictionMatrix = () => {
           </span>
         </Card>
 
-        <Card className="p-3.5 text-center bg-[#181818] border-[#333333]">
+        <Card className="p-3.5 text-center bg-[#121826] border-[#222E42]">
           <span className="text-[10px] uppercase tracking-wider text-gw-text-secondary block font-sans font-medium">
             Forbidden (1)
           </span>
@@ -859,7 +859,7 @@ export const RestrictionMatrix = () => {
           </span>
         </Card>
 
-        <Card className="p-3.5 text-center bg-[#181818] border-[#333333]">
+        <Card className="p-3.5 text-center bg-[#121826] border-[#222E42]">
           <span className="text-[10px] uppercase tracking-wider text-gw-text-secondary block font-sans font-medium">
             Density
           </span>
@@ -871,7 +871,7 @@ export const RestrictionMatrix = () => {
           </span>
         </Card>
 
-        <Card className="p-3.5 text-center bg-[#181818] border-[#333333]">
+        <Card className="p-3.5 text-center bg-[#121826] border-[#222E42]">
           <span className="text-[10px] uppercase tracking-wider text-gw-text-secondary block font-sans font-medium">
             Status
           </span>
@@ -889,22 +889,22 @@ export const RestrictionMatrix = () => {
       </div>
 
       {/* -------------------- 5. MATRIX BOARD WITH CONTROLS & LEGEND -------------------- */}
-      <Card className="space-y-4 bg-[#181818] border-[#333333]">
+      <Card className="space-y-4 bg-[#121826] border-[#222E42]">
         {/* Controls Toolbar & Permanent Legend */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#333333]">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#222E42]">
           {/* Permanent Visual Legend */}
           <div className="flex items-center gap-4 text-xs font-mono">
             <span className="text-gw-text-secondary uppercase text-[11px] font-sans font-semibold">
               Legend:
             </span>
             <div className="flex items-center gap-1.5" title="0 = Assignment permitted. Flight can be scheduled to this gate.">
-              <span className="w-5 h-5 rounded flex items-center justify-center bg-[#181818] border border-[#333333] text-[#737373] font-bold text-[11px]">
+              <span className="w-5 h-5 rounded flex items-center justify-center bg-[#121826] border border-[#222E42] text-slate-400 font-bold text-[11px]">
                 0
               </span>
               <span className="text-gw-text-secondary font-medium">0 = Permitted</span>
             </div>
             <div className="flex items-center gap-1.5" title="1 = Assignment forbidden. Flight prohibited from this gate.">
-              <span className="w-5 h-5 rounded flex items-center justify-center bg-[#111111] border-2 border-[#555555] text-[#FFFFFF] font-bold text-[11px]">
+              <span className="w-5 h-5 rounded flex items-center justify-center bg-rose-950/40 border-2 border-rose-500/70 text-rose-200 font-bold text-[11px]">
                 1
               </span>
               <span className="text-[#FFFFFF] font-semibold">1 = Forbidden</span>
@@ -952,7 +952,7 @@ export const RestrictionMatrix = () => {
           />
         ) : numFlights === 0 || numGates === 0 ? (
           <div className="py-12 text-center space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-[#111111] border border-[#333333] flex items-center justify-center text-white mx-auto">
+            <div className="w-12 h-12 rounded-2xl bg-[#0D121F] border border-[#222E42] flex items-center justify-center text-white mx-auto">
               <AlertTriangle className="w-6 h-6 text-[#A3A3A3]" />
             </div>
             <h4 className="text-base font-semibold text-gw-text">Incomplete Simulation Scenario</h4>
@@ -967,14 +967,14 @@ export const RestrictionMatrix = () => {
             </Link>
           </div>
         ) : (
-          <div className="overflow-x-auto pb-2 rounded-xl border border-[#333333] bg-[#111111] shadow-inner">
+          <div className="overflow-x-auto pb-2 rounded-xl border border-[#222E42] bg-[#0D121F] shadow-inner">
             <div className="inline-block min-w-full align-middle">
               <table className="border-collapse select-none w-full">
                 {/* Column Headers (Gates) */}
-                <thead className="sticky top-0 z-10 bg-[#111111] backdrop-blur-md">
+                <thead className="sticky top-0 z-10 bg-[#0D121F] backdrop-blur-md">
                   <tr>
                     {/* Top-left corner */}
-                    <th className="p-3 text-left font-mono text-[11px] text-gw-text-secondary uppercase tracking-wider border-b border-r border-[#333333] min-w-[160px] sticky left-0 z-20 bg-[#111111]">
+                    <th className="p-3 text-left font-mono text-[11px] text-gw-text-secondary uppercase tracking-wider border-b border-r border-[#222E42] min-w-[160px] sticky left-0 z-20 bg-[#0D121F]">
                       <div className="flex items-center gap-1.5">
                         <DoorOpen className="w-3.5 h-3.5 text-[#FFFFFF]" />
                         <span>Flight \ Gate</span>
@@ -984,7 +984,7 @@ export const RestrictionMatrix = () => {
                     {resolvedScenario.gates.map((gate) => (
                       <th
                         key={gate.id}
-                        className="p-3 text-center font-mono border-b border-[#333333] min-w-[90px]"
+                        className="p-3 text-center font-mono border-b border-[#222E42] min-w-[90px]"
                       >
                         <div className="flex flex-col items-center">
                           <span className="font-bold text-sm text-[#FFFFFF] tracking-wide">
@@ -1012,7 +1012,7 @@ export const RestrictionMatrix = () => {
                       className="hover:bg-white/[0.02] transition-colors group"
                     >
                       {/* Flight Row Header */}
-                      <th className="p-3 text-left font-mono text-xs border-r border-[#333333] bg-[#181818] sticky left-0 z-10 min-w-[160px] group-hover:bg-[#222222] transition-colors">
+                      <th className="p-3 text-left font-mono text-xs border-r border-[#222E42] bg-[#121826] sticky left-0 z-10 min-w-[160px] group-hover:bg-[#1E2638] transition-colors">
                         <div className="flex items-center gap-2">
                           <Plane className="w-3.5 h-3.5 text-[#FFFFFF] shrink-0" />
                           <div className="min-w-0">
@@ -1039,7 +1039,7 @@ export const RestrictionMatrix = () => {
                         return (
                           <td
                             key={`${flight.id}-${gate.id}`}
-                            className="p-1.5 text-center border-r border-[#333333] last:border-r-0"
+                            className="p-1.5 text-center border-r border-[#222E42] last:border-r-0"
                           >
                             <button
                               type="button"
@@ -1052,12 +1052,12 @@ export const RestrictionMatrix = () => {
                               tabIndex={isCompleted ? -1 : 0}
                               className={`
                                 w-14 h-12 rounded-lg font-mono text-sm font-bold transition-all duration-150 cursor-pointer flex flex-col items-center justify-center border mx-auto select-none
-                                focus:outline-none focus:ring-2 focus:ring-[#FFFFFF]
+                                focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none
                                 ${isCompleted ? 'cursor-not-allowed opacity-80' : ''}
                                 ${
                                   isForbidden
-                                    ? 'bg-[#111111] border-2 border-[#555555] text-[#FFFFFF] hover:border-[#FFFFFF]'
-                                    : 'bg-[#181818] border border-[#333333] text-[#737373] hover:border-[#FFFFFF] hover:text-[#FFFFFF]'
+                                    ? 'bg-rose-950/40 border-2 border-rose-500/70 text-rose-200 shadow-xs shadow-rose-950/50 hover:border-rose-400 hover:bg-rose-900/50'
+                                    : 'bg-[#121826] border border-[#222E42] text-slate-400 hover:border-sky-400 hover:text-sky-200 hover:bg-[#1E2638]'
                                 }
                               `}
                               title={`Flight ${flight.flightNumber || flight.id} at Gate ${gate.gateNumber || gate.id}: Currently ${
@@ -1120,7 +1120,7 @@ export const RestrictionMatrix = () => {
       </div>
 
       {/* -------------------- 8. OPERATIONAL CONTEXT PANEL -------------------- */}
-      <Card className="space-y-3 bg-[#181818] border-[#333333]">
+      <Card className="space-y-3 bg-[#121826] border-[#222E42]">
         <div className="flex items-center gap-2">
           <Info className="w-5 h-5 text-[#FFFFFF] shrink-0" />
           <h3 className="gw-card-heading">Operational Context & Mathematical Convention</h3>
@@ -1160,7 +1160,7 @@ export const RestrictionMatrix = () => {
             You have unsaved modifications to the restriction matrix for scenario{' '}
             <strong className="text-gw-text">{currentSimulation?.name}</strong>.
           </p>
-          <div className="p-3 rounded-lg bg-[#222222] border border-[#333333] text-xs text-[#FFFFFF] leading-relaxed">
+          <div className="p-3 rounded-lg bg-[#1E2638] border border-[#222E42] text-xs text-[#FFFFFF] leading-relaxed">
             Switching scenarios will permanently discard your uncommitted cell toggles.
           </div>
         </div>
@@ -1190,7 +1190,7 @@ export const RestrictionMatrix = () => {
             <strong className="text-gw-text">{currentSimulation?.name}</strong> to{' '}
             <strong className="text-[#FFFFFF]">0 (Permitted)</strong>?
           </p>
-          <div className="p-3 rounded-lg bg-[#222222] border border-[#333333] text-xs text-gw-text leading-relaxed">
+          <div className="p-3 rounded-lg bg-[#1E2638] border border-[#222E42] text-xs text-gw-text leading-relaxed">
             This clears all forbidden assignments, authorizing every flight to dock at every gate.
           </div>
         </div>
@@ -1220,7 +1220,7 @@ export const RestrictionMatrix = () => {
             <strong className="text-gw-text">{currentSimulation?.name}</strong> to{' '}
             <strong className="text-white">1 (Forbidden)</strong>?
           </p>
-          <div className="p-3 rounded-lg bg-[#111111] border border-[#333333] text-xs text-white leading-relaxed">
+          <div className="p-3 rounded-lg bg-[#0D121F] border border-[#222E42] text-xs text-white leading-relaxed">
             This marks every flight-to-gate pairing as forbidden.
           </div>
         </div>

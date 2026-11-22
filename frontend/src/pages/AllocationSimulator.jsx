@@ -382,7 +382,7 @@ export const AllocationSimulator = () => {
             <span className="text-gw-text-secondary">↔</span>
             <span className="text-[#A3A3A3] font-bold">{gCount} Gates</span>
             <span className={`text-[10px] px-1.5 py-0.2 rounded font-sans ml-1 ${
-              isBalanced ? 'bg-[#222222] text-[#FFFFFF]' : 'bg-[#181818] text-[#737373]'
+              isBalanced ? 'bg-[#1E2638] text-[#FFFFFF]' : 'bg-[#121826] text-[#737373]'
             }`}>
               {isBalanced ? `${fCount}×${fCount}` : 'Unbalanced'}
             </span>
@@ -428,7 +428,7 @@ export const AllocationSimulator = () => {
               setSelectedSimulationId(row.id)
               setActiveTab('simulator')
             }}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#1E2638] transition-colors cursor-pointer"
             title="Run Allocation Simulator"
           >
             <PlayCircle className="w-4 h-4" />
@@ -436,7 +436,7 @@ export const AllocationSimulator = () => {
           <button
             type="button"
             onClick={() => handleOpenDetailModal(row)}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#1E2638] transition-colors cursor-pointer"
             title="Inspect Details"
           >
             <Eye className="w-4 h-4" />
@@ -444,7 +444,7 @@ export const AllocationSimulator = () => {
           <button
             type="button"
             onClick={() => handleDuplicateSimulation(row)}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#1E2638] transition-colors cursor-pointer"
             title="Duplicate Scenario"
           >
             <Copy className="w-4 h-4" />
@@ -452,7 +452,7 @@ export const AllocationSimulator = () => {
           <button
             type="button"
             onClick={() => handleOpenEditModal(row)}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#1E2638] transition-colors cursor-pointer"
             title="Edit Scenario"
           >
             <Edit2 className="w-4 h-4" />
@@ -460,7 +460,7 @@ export const AllocationSimulator = () => {
           <button
             type="button"
             onClick={() => handleOpenDeleteModal(row)}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#1E2638] transition-colors cursor-pointer"
             title="Delete Scenario"
           >
             <Trash2 className="w-4 h-4" />
@@ -473,7 +473,7 @@ export const AllocationSimulator = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* -------------------- 1. HEADER & TAB NAVIGATION -------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#333333]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#222E42]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">Allocation Simulator</h1>
@@ -513,15 +513,15 @@ export const AllocationSimulator = () => {
       </div>
 
       {/* Mode Navigation Tabs & Simulation Clock */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#333333] pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#222E42] pb-3">
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => setActiveTab('simulator')}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
               activeTab === 'simulator'
-                ? 'bg-[#FFFFFF] text-[#090909] font-bold shadow-none'
-                : 'text-gw-text-secondary hover:text-gw-text hover:bg-white/5'
+                ? 'bg-sky-500 text-slate-950 font-bold shadow-xs'
+                : 'text-gw-text-secondary hover:text-gw-text hover:bg-[#1E2638]'
             }`}
           >
             <PlayCircle className="w-4 h-4" />
@@ -531,10 +531,10 @@ export const AllocationSimulator = () => {
           <button
             type="button"
             onClick={() => setActiveTab('scenarios')}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
               activeTab === 'scenarios'
-                ? 'bg-[#FFFFFF] text-[#090909] font-bold shadow-none'
-                : 'text-gw-text-secondary hover:text-gw-text hover:bg-white/5'
+                ? 'bg-sky-500 text-slate-950 font-bold shadow-xs'
+                : 'text-gw-text-secondary hover:text-gw-text hover:bg-[#1E2638]'
             }`}
           >
             <Layers className="w-4 h-4" />
@@ -626,7 +626,7 @@ export const AllocationSimulator = () => {
           />
 
           {/* Architecture Notice */}
-          <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] flex items-center justify-between text-xs text-gw-text-secondary">
+          <div className="p-3.5 rounded-xl bg-[#121826] border border-[#222E42] flex items-center justify-between text-xs text-gw-text-secondary">
             <div className="flex items-center gap-2">
               <Info className="w-4 h-4 text-[#FFFFFF] shrink-0" />
               <span>
@@ -713,7 +713,7 @@ export const AllocationSimulator = () => {
               <p className="text-xs text-white">{formErrors.flights}</p>
             )}
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-44 overflow-y-auto p-2 bg-[#111111] rounded-xl border border-[#333333]">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-44 overflow-y-auto p-2 bg-[#0D121F] rounded-xl border border-[#222E42]">
               {availableFlights.map(flight => {
                 const isSelected = formData.selectedFlightIds.includes(flight.id)
                 return (
@@ -723,7 +723,7 @@ export const AllocationSimulator = () => {
                     className={`p-2.5 rounded-lg border text-xs cursor-pointer transition-all flex items-center justify-between ${
                       isSelected
                         ? 'bg-[#FFFFFF] border-[#FFFFFF] text-[#090909] font-semibold'
-                        : 'bg-[#181818] border-[#333333] text-gw-text-secondary hover:border-[#555555]'
+                        : 'bg-[#121826] border-[#222E42] text-gw-text-secondary hover:border-[#334155]'
                     }`}
                   >
                     <div className="truncate">
@@ -766,7 +766,7 @@ export const AllocationSimulator = () => {
               <p className="text-xs text-white">{formErrors.gates}</p>
             )}
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-44 overflow-y-auto p-2 bg-[#111111] rounded-xl border border-[#333333]">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-44 overflow-y-auto p-2 bg-[#0D121F] rounded-xl border border-[#222E42]">
               {availableGates.map(gate => {
                 const isSelected = formData.selectedGateIds.includes(gate.id)
                 return (
@@ -776,7 +776,7 @@ export const AllocationSimulator = () => {
                     className={`p-2.5 rounded-lg border text-xs cursor-pointer transition-all flex items-center justify-between ${
                       isSelected
                         ? 'bg-[#FFFFFF] border-[#FFFFFF] text-[#090909] font-semibold'
-                        : 'bg-[#181818] border-[#333333] text-gw-text-secondary hover:border-[#555555]'
+                        : 'bg-[#121826] border-[#222E42] text-gw-text-secondary hover:border-[#334155]'
                     }`}
                   >
                     <div className="truncate">
@@ -813,7 +813,7 @@ export const AllocationSimulator = () => {
         {viewingSimulation && (
           <div className="space-y-5">
             {/* Metadata Card */}
-            <div className="bg-[#181818] p-4 rounded-xl border border-[#333333] space-y-2 text-xs">
+            <div className="bg-[#121826] p-4 rounded-xl border border-[#222E42] space-y-2 text-xs">
               <div className="flex items-center justify-between">
                 <span className="text-gw-text-secondary">Scenario Status:</span>
                 <Badge variant={viewingSimulation.status === 'Ready' ? 'success' : 'warning'} size="sm" dot>
@@ -829,7 +829,7 @@ export const AllocationSimulator = () => {
                 <span className="font-mono text-gw-text">{new Date(viewingSimulation.updatedAt).toLocaleString()}</span>
               </div>
               {viewingSimulation.description && (
-                <div className="pt-2 border-t border-[#333333] text-gw-text leading-relaxed">
+                <div className="pt-2 border-t border-[#222E42] text-gw-text leading-relaxed">
                   {viewingSimulation.description}
                 </div>
               )}
@@ -843,7 +843,7 @@ export const AllocationSimulator = () => {
                   <span>Configured Flights ({viewingSimulation.selectedFlightIds.length})</span>
                 </span>
               </h4>
-              <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto p-2 bg-[#111111] rounded-lg border border-[#333333]">
+              <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto p-2 bg-[#0D121F] rounded-lg border border-[#222E42]">
                 {viewingSimulation.selectedFlightIds.map(fId => {
                   const flight = availableFlights.find(f => f.id === fId)
                   return (
@@ -851,8 +851,8 @@ export const AllocationSimulator = () => {
                       key={fId}
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono border ${
                         flight
-                          ? 'bg-[#222222] border-[#333333] text-[#FFFFFF]'
-                          : 'bg-[#181818] border-[#555555] text-[#A3A3A3]'
+                          ? 'bg-[#1E2638] border-[#222E42] text-[#FFFFFF]'
+                          : 'bg-[#121826] border-[#334155] text-[#A3A3A3]'
                       }`}
                     >
                       <span>{flight ? `${flight.flightNumber} (${flight.airline})` : `${fId} (Deleted)`}</span>
@@ -870,7 +870,7 @@ export const AllocationSimulator = () => {
                   <span>Configured Gates ({viewingSimulation.selectedGateIds.length})</span>
                 </span>
               </h4>
-              <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto p-2 bg-[#111111] rounded-lg border border-[#333333]">
+              <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto p-2 bg-[#0D121F] rounded-lg border border-[#222E42]">
                 {viewingSimulation.selectedGateIds.map(gId => {
                   const gate = availableGates.find(g => g.id === gId)
                   return (
@@ -878,8 +878,8 @@ export const AllocationSimulator = () => {
                       key={gId}
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono border ${
                         gate
-                          ? 'bg-[#222222] border-[#333333] text-[#FFFFFF]'
-                          : 'bg-[#181818] border-[#555555] text-[#A3A3A3]'
+                          ? 'bg-[#1E2638] border-[#222E42] text-[#FFFFFF]'
+                          : 'bg-[#121826] border-[#334155] text-[#A3A3A3]'
                       }`}
                     >
                       <span>{gate ? `${gate.gateNumber} (${gate.terminal})` : `${gId} (Deleted)`}</span>
@@ -890,7 +890,7 @@ export const AllocationSimulator = () => {
             </div>
 
             {/* Placeholder for Next Phases (Restriction Configuration) */}
-            <div className="p-3.5 rounded-xl bg-[#181818] border border-dashed border-[#333333] text-xs text-gw-text-secondary flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-[#121826] border border-dashed border-[#222E42] text-xs text-gw-text-secondary flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Grid3X3 className="w-4 h-4 text-[#FFFFFF] shrink-0" />
                 <span>Restriction Board will configure {viewingSimulation.selectedFlightIds.length}×{viewingSimulation.selectedGateIds.length} forbidden cells in Phase 9.</span>
@@ -921,7 +921,7 @@ export const AllocationSimulator = () => {
       >
         {simulationToDelete && (
           <div className="space-y-3">
-            <div className="p-3 rounded-xl bg-[#111111] border border-[#333333] text-xs text-white flex items-start gap-2.5">
+            <div className="p-3 rounded-xl bg-[#0D121F] border border-[#222E42] text-xs text-white flex items-start gap-2.5">
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#A3A3A3]" />
               <div>
                 Are you sure you want to delete scenario{' '}

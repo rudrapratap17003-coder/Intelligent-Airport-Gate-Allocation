@@ -1,29 +1,39 @@
 @import "tailwindcss";
 
-/* GateWise BLR — Pure Black & White Monochrome Enterprise Theme */
+/* GateWise BLR — Aviation-Inspired Dark Enterprise Operations Theme */
 
 @theme {
-  --color-gw-bg: #090909;
-  --color-gw-bg-secondary: #111111;
-  --color-gw-bg-tertiary: #181818;
-  --color-gw-card: #181818;
-  --color-gw-card-hover: #222222;
-  --color-gw-elevated: #222222;
-  --color-gw-border: #333333;
-  --color-gw-border-subtle: #262626;
-  --color-gw-hover: #2A2A2A;
-  --color-gw-selected: #383838;
+  --color-gw-bg: #080B11;
+  --color-gw-bg-secondary: #0D121F;
+  --color-gw-bg-tertiary: #131B2E;
+  --color-gw-card: #121826;
+  --color-gw-card-hover: #1A2337;
+  --color-gw-elevated: #1E283D;
+  --color-gw-border: #222E42;
+  --color-gw-border-subtle: #192233;
+  --color-gw-hover: #1E293B;
+  --color-gw-selected: #25334D;
 
-  /* Pure Monochrome Palette */
-  --color-gw-white: #FFFFFF;
-  --color-gw-white-secondary: #E5E5E5;
-  --color-gw-text: #FFFFFF;
-  --color-gw-text-secondary: #A3A3A3;
-  --color-gw-text-muted: #737373;
+  /* Aviation Restrained Accents */
+  --color-gw-cyan: #38BDF8;
+  --color-gw-cyan-muted: rgba(56, 189, 248, 0.15);
+  --color-gw-blue: #0284C7;
+  --color-gw-blue-deep: #0369A1;
 
-  --shadow-gw-card: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 1px #333333;
-  --shadow-gw-elevated: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 1px #333333;
-  --shadow-gw-modal: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px #333333;
+  /* Typography Scale */
+  --color-gw-text: #F8FAFC;
+  --color-gw-text-secondary: #94A3B8;
+  --color-gw-text-muted: #64748B;
+
+  /* Operational Status Indicators */
+  --color-gw-success: #10B981;
+  --color-gw-warning: #F59E0B;
+  --color-gw-danger: #EF4444;
+  --color-gw-info: #38BDF8;
+
+  --shadow-gw-card: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px #222E42;
+  --shadow-gw-elevated: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 1px #222E42;
+  --shadow-gw-modal: 0 20px 48px rgba(0, 0, 0, 0.8), 0 0 0 1px #222E42;
 }
 
 /* Reset and base styles */
@@ -41,8 +51,8 @@
 
   body {
     font-family: 'Inter', 'Manrope', system-ui, -apple-system, sans-serif;
-    background-color: #090909;
-    color: #FFFFFF;
+    background-color: #080B11;
+    color: #F8FAFC;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -56,7 +66,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid #FFFFFF;
+    outline: 2px solid #38BDF8;
     outline-offset: 2px;
   }
 
@@ -72,38 +82,38 @@
 
 /* Glassmorphism & Cockpit Surface Utilities */
 .gw-glass {
-  background: rgba(17, 17, 17, 0.9);
+  background: rgba(13, 18, 31, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid #333333;
+  border: 1px solid #222E42;
 }
 
 .gw-glass-card {
-  background: rgba(24, 24, 24, 0.9);
+  background: rgba(18, 24, 38, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid #333333;
+  border: 1px solid #222E42;
   box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.4);
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .gw-glass-card:hover {
-  border-color: #555555;
-  background-color: #222222;
+  border-color: #38BDF8;
+  background-color: #1A2337;
 }
 
 .gw-glow-subtle {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 10px rgba(56, 189, 248, 0.15);
 }
 
 .gw-glow-border {
-  border-color: #555555 !important;
+  border-color: #38BDF8 !important;
 }
 
 .gw-cockpit-grid {
   background-image: 
-    linear-gradient(to right, rgba(51, 51, 51, 0.3) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(51, 51, 51, 0.3) 1px, transparent 1px);
+    linear-gradient(to right, rgba(34, 46, 66, 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(34, 46, 66, 0.3) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -113,7 +123,7 @@
   font-weight: 700;
   line-height: 2rem;
   letter-spacing: -0.025em;
-  color: #FFFFFF;
+  color: #F8FAFC;
 }
 @media (min-width: 640px) {
   .gw-page-heading {
@@ -127,7 +137,7 @@
   font-weight: 600;
   line-height: 1.75rem;
   letter-spacing: -0.015em;
-  color: #FFFFFF;
+  color: #F8FAFC;
 }
 
 .gw-card-heading {
@@ -135,25 +145,25 @@
   font-weight: 600;
   line-height: 1.25rem;
   letter-spacing: -0.01em;
-  color: #FFFFFF;
+  color: #F8FAFC;
 }
 
 .gw-caption {
   font-size: 0.75rem; /* 12px */
   font-weight: 500;
   line-height: 1rem;
-  color: #A3A3A3;
+  color: #94A3B8;
   letter-spacing: 0.025em;
 }
 
 /* Mathematical Formula Render Box */
 .gw-formula-box {
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  background-color: #111111;
-  border: 1px solid #333333;
+  background-color: #0D121F;
+  border: 1px solid #222E42;
   border-radius: 0.5rem;
   padding: 0.75rem 1rem;
-  color: #FFFFFF;
+  color: #F8FAFC;
   font-size: 0.875rem;
   overflow-x: auto;
 }
@@ -169,7 +179,7 @@
 }
 
 .gw-skeleton {
-  background: linear-gradient(90deg, #181818 25%, #2A2A2A 50%, #181818 75%);
+  background: linear-gradient(90deg, #121826 25%, #1E283D 50%, #121826 75%);
   background-size: 200% 100%;
   animation: gw-shimmer 1.8s infinite;
   border-radius: 0.375rem;
@@ -182,14 +192,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #090909;
+  background: #080B11;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333333;
+  background: #222E42;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555555;
+  background: #38BDF8;
 }

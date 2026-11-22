@@ -15,7 +15,7 @@ export const TerminalSwitcher = ({ compact = false }) => {
     <div
       role="radiogroup"
       aria-label="Select Airport Terminal View"
-      className="inline-flex items-center bg-[#181818] p-1 rounded-xl border border-[#333333]"
+      className="inline-flex items-center bg-[#121826] p-1 rounded-xl border border-[#222E42]"
     >
       {options.map((opt) => {
         const Icon = opt.icon
@@ -28,19 +28,19 @@ export const TerminalSwitcher = ({ compact = false }) => {
             aria-checked={isSelected}
             onClick={() => setSelectedTerminal(opt.id)}
             className={`
-              flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer
+              flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400
               ${
                 isSelected
-                  ? 'bg-[#FFFFFF] text-[#090909] font-semibold shadow-xs'
-                  : 'text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#2A2A2A]'
+                  ? 'bg-sky-500 text-slate-950 font-semibold shadow-xs'
+                  : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E2638]'
               }
             `}
             title={`${opt.label} — ${opt.desc}`}
           >
-            <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-[#090909]' : 'text-[#A3A3A3]'}`} />
+            <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-slate-950' : 'text-sky-400'}`} />
             <span>{opt.label}</span>
             {opt.id === 'T2' && !compact && (
-              <span className={`text-[9px] px-1 py-0.2 rounded font-mono ${isSelected ? 'bg-black/20 text-[#090909]' : 'bg-[#222222] text-[#E5E5E5] border border-[#333333]'}`}>
+              <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono ${isSelected ? 'bg-sky-600/30 text-slate-950' : 'bg-[#1E2638] text-sky-300 border border-[#222E42]'}`}>
                 Code F
               </span>
             )}

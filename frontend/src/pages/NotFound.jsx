@@ -8,7 +8,7 @@ export const NotFound = () => {
   return (
     <div className="min-h-screen bg-gw-bg text-gw-text flex items-center justify-center p-6">
       <Card className="max-w-md w-full text-center p-8 space-y-4">
-        <div className="w-16 h-16 mx-auto rounded-2xl bg-[#111111] border border-[#333333] flex items-center justify-center text-white">
+        <div className="w-16 h-16 mx-auto rounded-2xl bg-[#0D121F] border border-[#222E42] flex items-center justify-center text-white">
           <AlertCircle className="w-8 h-8 text-[#A3A3A3]" />
         </div>
         <h2 className="text-2xl font-bold text-gw-text">Route Not Found</h2>

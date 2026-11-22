@@ -1,43 +1,44 @@
 /**
  * GateWise BLR Design System Tokens
- * Master token definitions and styling helpers for pure monochrome aviation ops UI
+ * Master token definitions and styling helpers for dark aviation operations UI
  */
 
 export const colors = {
   bg: {
-    primary: '#090909',
-    secondary: '#111111',
-    tertiary: '#181818',
-    glass: 'rgba(17, 17, 17, 0.9)',
+    primary: '#080B11',
+    secondary: '#0D121F',
+    tertiary: '#121826',
+    elevated: '#1E2638',
+    glass: 'rgba(13, 18, 31, 0.85)',
   },
   card: {
-    bg: '#181818',
-    hover: '#222222',
-    active: '#2A2A2A',
+    bg: '#121826',
+    hover: '#1E2638',
+    active: '#22314A',
   },
   border: {
-    subtle: '#262626',
-    default: '#333333',
-    strong: '#555555',
-    highlight: '#FFFFFF',
+    subtle: '#162032',
+    default: '#222E42',
+    strong: '#334155',
+    highlight: '#38BDF8',
   },
   accent: {
-    primary: '#FFFFFF',
-    secondary: '#E5E5E5',
-    muted: '#A3A3A3',
-    dark: '#222222',
+    primary: '#38BDF8',
+    secondary: '#0284C7',
+    muted: '#94A3B8',
+    dark: '#1E2638',
   },
   status: {
-    nominal: '#FFFFFF',
-    notice: '#E5E5E5',
-    warning: '#A3A3A3',
-    critical: '#E5E5E5',
+    nominal: '#10B981',
+    notice: '#38BDF8',
+    warning: '#F59E0B',
+    critical: '#EF4444',
   },
   text: {
-    primary: '#FFFFFF',
-    secondary: '#A3A3A3',
-    muted: '#737373',
-    inverse: '#090909',
+    primary: '#F8FAFC',
+    secondary: '#94A3B8',
+    muted: '#64748B',
+    inverse: '#080B11',
   },
 }
 

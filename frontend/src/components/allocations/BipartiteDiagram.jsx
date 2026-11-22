@@ -334,7 +334,7 @@ export const BipartiteDiagram = ({
       </div>
 
       {/* Discrete Math Disclaimer Banner */}
-      <div className="mt-2 pt-2 border-t border-[#333333] flex items-center justify-between text-[11px] text-[#A3A3A3]">
+      <div className="mt-2 pt-2 border-t border-[#222E42] flex items-center justify-between text-[11px] text-[#A3A3A3]">
         <div className="flex items-center gap-1.5">
           <Info className="w-3.5 h-3.5 text-[#FFFFFF] shrink-0" />
           <span>

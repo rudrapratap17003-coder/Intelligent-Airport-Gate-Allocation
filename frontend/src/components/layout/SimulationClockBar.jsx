@@ -27,23 +27,23 @@ export const SimulationClockBar = () => {
   }
 
   return (
-    <div className="flex items-center gap-1.5 sm:gap-2 bg-[#181818] px-2.5 py-1 rounded-xl border border-[#333333] text-xs">
-      <div className="flex items-center gap-1.5 text-[#FFFFFF] font-mono font-bold tracking-wider">
-        <Clock className="w-3.5 h-3.5 text-[#FFFFFF]" />
+    <div className="flex items-center gap-1.5 sm:gap-2 bg-[#121826] px-3 py-1.5 rounded-xl border border-[#222E42] text-xs shadow-sm">
+      <div className="flex items-center gap-1.5 text-[#F8FAFC] font-mono font-bold tracking-wider">
+        <Clock className="w-3.5 h-3.5 text-sky-400" />
         <span>{timeStr}</span>
-        <span className="text-[10px] text-[#A3A3A3] font-normal font-sans">IST</span>
+        <span className="text-[10px] text-[#94A3B8] font-normal font-sans">IST</span>
       </div>
 
-      <div className="h-3.5 w-px bg-[#333333]" />
+      <div className="h-3.5 w-px bg-[#222E42]" />
 
       {/* Play/Pause */}
       <button
         type="button"
         onClick={handleToggle}
-        className={`p-1 rounded-md transition-colors cursor-pointer ${
+        className={`p-1.5 rounded-md transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
           isRunning
-            ? 'bg-[#333333] text-[#FFFFFF] hover:bg-[#444444]'
-            : 'bg-[#222222] text-[#FFFFFF] hover:bg-[#2A2A2A]'
+            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30'
+            : 'bg-[#1E2638] text-[#F8FAFC] border border-[#222E42] hover:bg-[#2A344A]'
         }`}
         title={isRunning ? 'Pause Simulation' : 'Start Simulation'}
         aria-label={isRunning ? 'Pause' : 'Start'}
@@ -55,7 +55,7 @@ export const SimulationClockBar = () => {
       <button
         type="button"
         onClick={handleStep}
-        className="px-1.5 py-0.5 rounded text-[11px] font-mono text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
+        className="px-2 py-1 rounded text-[11px] font-mono text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E2638] transition-colors cursor-pointer border border-transparent hover:border-[#222E42] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
         title="Advance simulation by 5 minutes"
       >
         +5m
@@ -65,10 +65,10 @@ export const SimulationClockBar = () => {
       <button
         type="button"
         onClick={cycleSpeed}
-        className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[11px] font-mono text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
+        className="flex items-center gap-0.5 px-2 py-1 rounded text-[11px] font-mono text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E2638] transition-colors cursor-pointer border border-transparent hover:border-[#222E42] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
         title="Cycle playback speed"
       >
-        <FastForward className="w-3 h-3" />
+        <FastForward className="w-3 h-3 text-sky-400" />
         <span>{speed}x</span>
       </button>
 
@@ -76,11 +76,11 @@ export const SimulationClockBar = () => {
       <button
         type="button"
         onClick={handleReset}
-        className="p-1 rounded text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
+        className="p-1.5 rounded text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E2638] transition-colors cursor-pointer border border-transparent hover:border-[#222E42] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
         title="Reset clock to 08:30"
         aria-label="Reset simulation clock"
       >
-        <RotateCcw className="w-3 h-3" />
+        <RotateCcw className="w-3.5 h-3.5" />
       </button>
     </div>
   )

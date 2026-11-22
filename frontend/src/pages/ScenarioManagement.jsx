@@ -421,7 +421,7 @@ export const ScenarioManagement = () => {
   return (
     <div className="space-y-6 animate-fadeIn max-w-7xl mx-auto pb-12">
       {/* -------------------- HEADER -------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#333333]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#222E42]">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
             <h1 className="gw-page-heading">Simulation Management</h1>
@@ -542,11 +542,11 @@ export const ScenarioManagement = () => {
             return (
               <Card
                 key={sim.id}
-                className="p-5 flex flex-col justify-between transition-all duration-200 space-y-4 group border border-[#333333] hover:border-[#555555] bg-[#181818]"
+                className="p-5 flex flex-col justify-between transition-all duration-200 space-y-4 group border border-[#222E42] hover:border-[#334155] bg-[#121826]"
               >
                 <div>
                   {/* Card Header */}
-                  <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-[#333333]">
+                  <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-[#222E42]">
                     <div>
                       <span className="font-mono text-xs font-bold text-[#A3A3A3] block tracking-wider">
                         {sim.id}
@@ -579,14 +579,14 @@ export const ScenarioManagement = () => {
                   </p>
 
                   {/* Operational Details Grid */}
-                  <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#333333] text-xs font-mono">
-                    <div className="p-2 rounded-lg bg-[#181818] border border-[#333333]">
+                  <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#222E42] text-xs font-mono">
+                    <div className="p-2 rounded-lg bg-[#121826] border border-[#222E42]">
                       <span className="text-[10px] text-gw-text-secondary uppercase block">Roster</span>
                       <span className="font-bold text-gw-text">
                         {flightCount} Flights × {gateCount} Gates
                       </span>
                     </div>
-                    <div className="p-2 rounded-lg bg-[#181818] border border-[#333333]">
+                    <div className="p-2 rounded-lg bg-[#121826] border border-[#222E42]">
                       <span className="text-[10px] text-gw-text-secondary uppercase block">Dimension</span>
                       <span className={`font-bold ${isBalanced ? 'text-[#FFFFFF]' : 'text-[#A3A3A3]'}`}>
                         {isBalanced ? 'Balanced n×n' : 'Unbalanced'}
@@ -608,7 +608,7 @@ export const ScenarioManagement = () => {
                 </div>
 
                 {/* Card Actions */}
-                <div className="pt-3 border-t border-[#333333] flex items-center justify-between gap-1.5 flex-wrap">
+                <div className="pt-3 border-t border-[#222E42] flex items-center justify-between gap-1.5 flex-wrap">
                   <div className="flex items-center gap-1.5">
                     <Button
                       size="sm"
@@ -627,7 +627,7 @@ export const ScenarioManagement = () => {
                         size="sm"
                         variant="secondary"
                         icon={RotateCcw}
-                        className="h-8 text-xs px-2 text-[#FFFFFF] border-[#333333] hover:bg-[#222222]"
+                        className="h-8 text-xs px-2 text-[#FFFFFF] border-[#222E42] hover:bg-[#1E2638]"
                         onClick={() => setSimToReopen(sim)}
                         title="Reopen completed scenario to Draft"
                       >
@@ -652,7 +652,7 @@ export const ScenarioManagement = () => {
                         size="sm"
                         variant="ghost"
                         icon={CheckCircle2}
-                        className="h-8 text-xs px-2 text-[#FFFFFF] hover:bg-[#222222]"
+                        className="h-8 text-xs px-2 text-[#FFFFFF] hover:bg-[#1E2638]"
                         onClick={() => setSimToComplete(sim)}
                         title="Mark scenario as Completed (Lock)"
                       >
@@ -687,7 +687,7 @@ export const ScenarioManagement = () => {
                       size="sm"
                       variant="ghost"
                       icon={Trash2}
-                      className="h-8 text-xs px-2 text-[#A3A3A3] hover:text-white hover:bg-[#222222]"
+                      className="h-8 text-xs px-2 text-[#A3A3A3] hover:text-white hover:bg-[#1E2638]"
                       onClick={() => {
                         setSimulationToDelete(sim)
                         setIsDeleteModalOpen(true)
@@ -761,7 +761,7 @@ export const ScenarioManagement = () => {
             </label>
             <textarea
               rows={2}
-              className="w-full bg-[#181818] text-gw-text text-sm rounded-lg border border-[#333333] p-3 focus:border-[#FFFFFF] outline-none transition-all placeholder:text-gw-text-secondary/50"
+              className="w-full bg-[#121826] text-gw-text text-sm rounded-lg border border-[#222E42] p-3 focus:border-[#FFFFFF] outline-none transition-all placeholder:text-gw-text-secondary/50"
               placeholder="Operational objectives, expected constraints, weather assumptions..."
               value={formData.description}
               onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
@@ -795,10 +795,10 @@ export const ScenarioManagement = () => {
                   <button
                     key={slot}
                     type="button"
-                    className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-colors ${
+                    className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                       formData.timeWindow === slot
-                        ? 'bg-[#FFFFFF] text-[#090909] font-bold border-[#FFFFFF]'
-                        : 'bg-[#181818] border-[#333333] text-gw-text-secondary hover:text-gw-text'
+                        ? 'bg-sky-500 text-slate-950 font-bold border-sky-400'
+                        : 'bg-[#121826] border-[#222E42] text-gw-text-secondary hover:text-gw-text hover:bg-[#1E2638]'
                     }`}
                     onClick={() => setFormData((prev) => ({ ...prev, timeWindow: slot }))}
                   >
@@ -812,13 +812,13 @@ export const ScenarioManagement = () => {
               <label className="block text-xs font-semibold text-gw-text-secondary uppercase tracking-wider mb-1.5">
                 Target Status
               </label>
-              <div className="flex rounded-lg overflow-hidden border border-[#333333] bg-[#181818] p-0.5">
+              <div className="flex rounded-lg overflow-hidden border border-[#222E42] bg-[#121826] p-0.5">
                 <button
                   type="button"
-                  className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all ${
+                  className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                     formData.status === 'Ready'
-                      ? 'bg-[#FFFFFF] text-[#090909] shadow'
-                      : 'text-gw-text-secondary hover:text-gw-text'
+                      ? 'bg-emerald-500 text-slate-950 font-bold shadow-xs'
+                      : 'text-gw-text-secondary hover:text-gw-text hover:bg-[#1E2638]'
                   }`}
                   onClick={() => setFormData((prev) => ({ ...prev, status: 'Ready' }))}
                 >
@@ -826,10 +826,10 @@ export const ScenarioManagement = () => {
                 </button>
                 <button
                   type="button"
-                  className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all ${
+                  className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                     formData.status === 'Draft'
-                      ? 'bg-[#383838] text-[#FFFFFF] shadow'
-                      : 'text-gw-text-secondary hover:text-gw-text'
+                      ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
+                      : 'text-gw-text-secondary hover:text-gw-text hover:bg-[#1E2638]'
                   }`}
                   onClick={() => setFormData((prev) => ({ ...prev, status: 'Draft' }))}
                 >
@@ -840,7 +840,7 @@ export const ScenarioManagement = () => {
           </div>
 
           {/* Flight Selection Section */}
-          <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] space-y-3">
+          <div className="p-3.5 rounded-xl bg-[#121826] border border-[#222E42] space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div className="flex items-center gap-2">
                 <Plane className="w-4 h-4 text-[#FFFFFF]" />
@@ -854,7 +854,7 @@ export const ScenarioManagement = () => {
                   placeholder="Filter flights..."
                   value={flightSearchInModal}
                   onChange={(e) => setFlightSearchInModal(e.target.value)}
-                  className="text-xs bg-[#111111] border border-[#333333] rounded px-2 py-1 text-gw-text placeholder:text-gw-text-secondary/50 outline-none focus:border-[#FFFFFF]"
+                  className="text-xs bg-[#0D121F] border border-[#222E42] rounded px-2 py-1 text-gw-text placeholder:text-gw-text-secondary/50 outline-none focus:border-[#FFFFFF]"
                 />
                 <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2" onClick={handleSelectAllFlights}>
                   Select All
@@ -869,7 +869,7 @@ export const ScenarioManagement = () => {
               <p className="text-xs text-white font-medium">{formErrors.flights}</p>
             )}
 
-            <div className="max-h-48 overflow-y-auto divide-y divide-[#333333] border border-[#333333] rounded-lg bg-[#111111]">
+            <div className="max-h-48 overflow-y-auto divide-y divide-[#333333] border border-[#222E42] rounded-lg bg-[#0D121F]">
               {filteredModalFlights.map((flight) => {
                 const isSelected = formData.selectedFlightIds.includes(flight.id)
                 return (
@@ -877,7 +877,7 @@ export const ScenarioManagement = () => {
                     key={flight.id}
                     onClick={() => toggleFlightSelection(flight.id)}
                     className={`flex items-center justify-between p-2.5 text-xs cursor-pointer transition-colors ${
-                      isSelected ? 'bg-[#222222]' : 'hover:bg-white/5'
+                      isSelected ? 'bg-[#1E2638]' : 'hover:bg-white/5'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
@@ -909,7 +909,7 @@ export const ScenarioManagement = () => {
           </div>
 
           {/* Gate Selection Section */}
-          <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] space-y-3">
+          <div className="p-3.5 rounded-xl bg-[#121826] border border-[#222E42] space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div className="flex items-center gap-2">
                 <DoorOpen className="w-4 h-4 text-[#FFFFFF]" />
@@ -923,7 +923,7 @@ export const ScenarioManagement = () => {
                   placeholder="Filter gates..."
                   value={gateSearchInModal}
                   onChange={(e) => setGateSearchInModal(e.target.value)}
-                  className="text-xs bg-[#111111] border border-[#333333] rounded px-2 py-1 text-gw-text placeholder:text-gw-text-secondary/50 outline-none focus:border-[#FFFFFF]"
+                  className="text-xs bg-[#0D121F] border border-[#222E42] rounded px-2 py-1 text-gw-text placeholder:text-gw-text-secondary/50 outline-none focus:border-[#FFFFFF]"
                 />
                 <Button size="sm" variant="ghost" className="h-7 text-[11px] px-2" onClick={handleSelectAllGates}>
                   Select All
@@ -938,7 +938,7 @@ export const ScenarioManagement = () => {
               <p className="text-xs text-white font-medium">{formErrors.gates}</p>
             )}
 
-            <div className="max-h-48 overflow-y-auto divide-y divide-[#333333] border border-[#333333] rounded-lg bg-[#111111]">
+            <div className="max-h-48 overflow-y-auto divide-y divide-[#333333] border border-[#222E42] rounded-lg bg-[#0D121F]">
               {filteredModalGates.map((gate) => {
                 const isSelected = formData.selectedGateIds.includes(gate.id)
                 return (
@@ -946,7 +946,7 @@ export const ScenarioManagement = () => {
                     key={gate.id}
                     onClick={() => toggleGateSelection(gate.id)}
                     className={`flex items-center justify-between p-2.5 text-xs cursor-pointer transition-colors ${
-                      isSelected ? 'bg-[#222222]' : 'hover:bg-white/5'
+                      isSelected ? 'bg-[#1E2638]' : 'hover:bg-white/5'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
@@ -977,7 +977,7 @@ export const ScenarioManagement = () => {
           </div>
 
           {/* Dimension preview note */}
-          <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] flex items-center justify-between text-xs">
+          <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] flex items-center justify-between text-xs">
             <span className="text-gw-text-secondary">
               Dimension Status:{' '}
               <strong className="text-gw-text">
@@ -1050,7 +1050,7 @@ export const ScenarioManagement = () => {
           <div className="space-y-5">
             {/* Metadata Bar */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-xs">
-              <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
+              <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42]">
                 <span className="text-[10px] text-gw-text-secondary uppercase block">Status</span>
                 <Badge
                   variant="outline"
@@ -1061,20 +1061,20 @@ export const ScenarioManagement = () => {
                   {inspectingSim.status}
                 </Badge>
               </div>
-              <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
+              <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42]">
                 <span className="text-[10px] text-gw-text-secondary uppercase block">Dimensions</span>
                 <span className="font-bold text-gw-text mt-0.5 block">
                   {(inspectingSim.selectedFlightIds || inspectingSim.selected_flight_ids || []).length}F ↔{' '}
                   {(inspectingSim.selectedGateIds || inspectingSim.selected_gate_ids || []).length}G
                 </span>
               </div>
-              <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
+              <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42]">
                 <span className="text-[10px] text-gw-text-secondary uppercase block">Schedule Slot</span>
                 <span className="font-bold text-[#FFFFFF] mt-0.5 block">
                   {inspectingSim.timeWindow || '08:00 - 12:00'}
                 </span>
               </div>
-              <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
+              <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42]">
                 <span className="text-[10px] text-gw-text-secondary uppercase block">Created</span>
                 <span className="font-bold text-gw-text-secondary mt-0.5 block truncate">
                   {inspectingSim.createdAt ? new Date(inspectingSim.createdAt).toLocaleDateString() : 'N/A'}
@@ -1084,7 +1084,7 @@ export const ScenarioManagement = () => {
 
             {/* Description */}
             {inspectingSim.description && (
-              <div className="p-3.5 rounded-lg bg-[#181818] border border-[#333333] text-xs text-gw-text-secondary leading-relaxed">
+              <div className="p-3.5 rounded-lg bg-[#121826] border border-[#222E42] text-xs text-gw-text-secondary leading-relaxed">
                 <strong className="text-gw-text block mb-1">Operational Description:</strong>
                 {inspectingSim.description}
               </div>
@@ -1097,7 +1097,7 @@ export const ScenarioManagement = () => {
                 Selected Flight Roster (
                 {(inspectingSim.selectedFlightIds || inspectingSim.selected_flight_ids || []).length})
               </h4>
-              <div className="max-h-44 overflow-y-auto rounded-lg border border-[#333333] divide-y divide-[#333333]">
+              <div className="max-h-44 overflow-y-auto rounded-lg border border-[#222E42] divide-y divide-[#333333]">
                 {(inspectingSim.selectedFlightIds || inspectingSim.selected_flight_ids || []).map((fid) => {
                   const flight = availableFlights.find((f) => f.id === fid)
                   return (
@@ -1131,7 +1131,7 @@ export const ScenarioManagement = () => {
                 Selected Gate Roster (
                 {(inspectingSim.selectedGateIds || inspectingSim.selected_gate_ids || []).length})
               </h4>
-              <div className="max-h-44 overflow-y-auto rounded-lg border border-[#333333] divide-y divide-[#333333]">
+              <div className="max-h-44 overflow-y-auto rounded-lg border border-[#222E42] divide-y divide-[#333333]">
                 {(inspectingSim.selectedGateIds || inspectingSim.selected_gate_ids || []).map((gid) => {
                   const gate = availableGates.find((g) => g.id === gid)
                   return (
@@ -1174,10 +1174,10 @@ export const ScenarioManagement = () => {
             Are you sure you want to reopen completed scenario{' '}
             <strong className="text-gw-text">{simToReopen?.name}</strong>?
           </p>
-          <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] text-xs text-gw-text leading-relaxed">
+          <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] text-xs text-gw-text leading-relaxed">
             Reopening transitions the scenario to <strong>Draft</strong> status, unlocking parameters, flight rosters, and gate allocations for modification.
           </div>
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#333333]">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#222E42]">
             <Button variant="ghost" size="md" onClick={() => setSimToReopen(null)}>
               Cancel
             </Button>
@@ -1201,10 +1201,10 @@ export const ScenarioManagement = () => {
           <p className="text-sm text-gw-text-secondary leading-relaxed">
             Mark scenario <strong className="text-gw-text">{simToComplete?.name}</strong> ({simToComplete?.id}) as Completed?
           </p>
-          <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] text-xs text-gw-text leading-relaxed">
+          <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] text-xs text-gw-text leading-relaxed">
             Completed scenarios represent finished allocations and are protected against accidental modifications. You can reopen the scenario at any time.
           </div>
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#333333]">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#222E42]">
             <Button variant="ghost" size="md" onClick={() => setSimToComplete(null)}>
               Cancel
             </Button>
@@ -1228,10 +1228,10 @@ export const ScenarioManagement = () => {
             Are you sure you want to permanently delete simulation scenario{' '}
             <strong className="text-gw-text">{simulationToDelete?.name}</strong> ({simulationToDelete?.id})?
           </p>
-          <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] text-xs text-[#A3A3A3] leading-relaxed">
+          <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] text-xs text-[#A3A3A3] leading-relaxed">
             Associated restriction matrices and saved allocations configured for this scenario will be purged.
           </div>
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#333333]">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#222E42]">
             <Button variant="ghost" size="md" onClick={() => setIsDeleteModalOpen(false)}>
               Cancel
             </Button>

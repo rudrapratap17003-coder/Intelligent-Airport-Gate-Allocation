@@ -12,10 +12,10 @@ export const PageLoadingFallback = ({ title = 'Loading Module...', fullScreen = 
     >
       <div className="w-full max-w-4xl space-y-6">
         {/* Top Header Placeholder */}
-        <div className="flex items-center justify-between border-b border-[#333333] pb-4">
+        <div className="flex items-center justify-between border-b border-[#222E42] pb-4">
           <div className="space-y-2">
-            <div className="h-6 w-48 bg-[#222222] rounded animate-pulse" />
-            <div className="h-3.5 w-72 bg-[#181818] rounded animate-pulse" />
+            <div className="h-6 w-48 bg-[#1E2638] rounded animate-pulse" />
+            <div className="h-3.5 w-72 bg-[#121826] rounded animate-pulse" />
           </div>
           <div className="flex items-center gap-2 text-xs font-mono text-[#A3A3A3]">
             <div className="w-2 h-2 rounded-full bg-white animate-ping" />
@@ -28,26 +28,26 @@ export const PageLoadingFallback = ({ title = 'Loading Module...', fullScreen = 
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="p-4 rounded-xl bg-[#181818] border border-[#333333] space-y-3"
+              className="p-4 rounded-xl bg-[#121826] border border-[#222E42] space-y-3"
             >
-              <div className="h-3 w-20 bg-[#222222] rounded animate-pulse" />
+              <div className="h-3 w-20 bg-[#1E2638] rounded animate-pulse" />
               <div className="h-7 w-24 bg-[#2A2A2A] rounded animate-pulse" />
-              <div className="h-2.5 w-32 bg-[#222222] rounded animate-pulse" />
+              <div className="h-2.5 w-32 bg-[#1E2638] rounded animate-pulse" />
             </div>
           ))}
         </div>
 
         {/* Main Content Area Placeholder */}
-        <div className="rounded-xl bg-[#181818] border border-[#333333] p-6 space-y-4">
+        <div className="rounded-xl bg-[#121826] border border-[#222E42] p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <div className="h-4 w-36 bg-[#222222] rounded animate-pulse" />
-            <div className="h-8 w-24 bg-[#222222] rounded animate-pulse" />
+            <div className="h-4 w-36 bg-[#1E2638] rounded animate-pulse" />
+            <div className="h-8 w-24 bg-[#1E2638] rounded animate-pulse" />
           </div>
           <div className="space-y-2 pt-2">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="h-10 w-full bg-[#222222]/60 rounded border border-[#333333]/40 animate-pulse"
+                className="h-10 w-full bg-[#1E2638]/60 rounded border border-[#222E42]/40 animate-pulse"
               />
             ))}
           </div>

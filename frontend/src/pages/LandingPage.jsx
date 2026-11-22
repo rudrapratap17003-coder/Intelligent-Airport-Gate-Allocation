@@ -115,9 +115,9 @@ export const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gw-bg text-gw-text flex flex-col selection:bg-[#383838] selection:text-white">
       {/* -------------------- 1. NAVIGATION BAR -------------------- */}
-      <header className="h-16 border-b border-[#333333] bg-[#111111]/90 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-8 lg:px-12 flex items-center justify-between">
+      <header className="h-16 border-b border-[#222E42] bg-[#0D121F]/90 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-8 lg:px-12 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#181818] border border-[#333333] flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-[#121826] border border-[#222E42] flex items-center justify-center shrink-0">
             <Plane className="w-5 h-5 text-white rotate-[-45deg]" />
           </div>
           <div className="flex flex-col">
@@ -154,13 +154,13 @@ export const LandingPage = () => {
       </header>
 
       {/* -------------------- 2. HERO SECTION -------------------- */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:py-24 border-b border-[#333333] bg-[#090909]">
+      <section className="relative overflow-hidden pt-12 pb-20 md:py-24 border-b border-[#222E42] bg-[#090909]">
         {/* Subtle background radar/grid ornament */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#22222215_1px,transparent_1px),linear-gradient(to_bottom,#22222215_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#181818] border border-[#333333] text-xs font-mono text-white shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121826] border border-[#222E42] text-xs font-mono text-white shadow-sm">
               <ShieldCheck className="w-4 h-4 text-white" />
               <span>Discrete Mathematics & Graph Theory • Module 1</span>
             </div>
@@ -198,13 +198,13 @@ export const LandingPage = () => {
 
           {/* Aviation Operations Interactive Visual Preview */}
           <div className="mt-14 max-w-4xl mx-auto">
-            <div className="bg-[#181818] border border-[#333333] rounded-2xl p-5 sm:p-7 shadow-2xl relative overflow-hidden backdrop-blur-md">
+            <div className="bg-[#121826] border border-[#222E42] rounded-2xl p-5 sm:p-7 shadow-2xl relative overflow-hidden backdrop-blur-md">
               {/* Header bar of the simulation visual */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-5 border-b border-[#333333]">
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-5 border-b border-[#222E42]">
                 <div className="flex items-center gap-2.5">
                   <div className="w-3 h-3 rounded-full bg-white animate-pulse" />
                   <span className="font-mono text-xs text-white font-medium">OPS SIMULATION TERMINAL</span>
-                  <span className="text-[11px] font-mono text-white bg-[#222222] px-2 py-0.5 rounded border border-[#333333]">
+                  <span className="text-[11px] font-mono text-white bg-[#1E2638] px-2 py-0.5 rounded border border-[#222E42]">
                     LIVE DETERMINISTIC ENGINE
                   </span>
                 </div>
@@ -222,7 +222,7 @@ export const LandingPage = () => {
                     <span className="font-mono text-white">{calculationResults.r1} Forbidden Cells (r₁)</span>
                   </div>
 
-                  <div className="bg-[#111111] p-3.5 rounded-xl border border-[#333333]">
+                  <div className="bg-[#0D121F] p-3.5 rounded-xl border border-[#222E42]">
                     <div className="grid grid-cols-4 gap-2 text-center text-xs font-mono">
                       {/* Header row */}
                       <div className="text-gw-text-secondary/60"></div>
@@ -237,10 +237,10 @@ export const LandingPage = () => {
                           key={`0-${col}`}
                           type="button"
                           onClick={() => toggleCell(0, col)}
-                          className={`h-10 rounded-lg flex items-center justify-center font-bold transition-all cursor-pointer border ${
+                          className={`h-10 rounded-lg flex items-center justify-center font-bold transition-all cursor-pointer border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                             demoMatrix[0][col] === 1
-                              ? 'bg-[#111111] border-2 border-[#555555] text-white shadow-inner'
-                              : 'bg-[#181818] border-[#333333] text-gw-text-secondary hover:border-[#555555] hover:text-white'
+                              ? 'bg-rose-950/40 border-2 border-rose-500/70 text-rose-200 shadow-xs shadow-rose-950/50 hover:border-rose-400 hover:bg-rose-900/50'
+                              : 'bg-[#121826] border border-[#222E42] text-slate-400 hover:border-sky-400 hover:text-sky-200 hover:bg-[#1E2638]'
                           }`}
                           title={`Click to toggle Restriction (F1, G${col + 1})`}
                         >
@@ -255,10 +255,10 @@ export const LandingPage = () => {
                           key={`1-${col}`}
                           type="button"
                           onClick={() => toggleCell(1, col)}
-                          className={`h-10 rounded-lg flex items-center justify-center font-bold transition-all cursor-pointer border ${
+                          className={`h-10 rounded-lg flex items-center justify-center font-bold transition-all cursor-pointer border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                             demoMatrix[1][col] === 1
-                              ? 'bg-[#111111] border-2 border-[#555555] text-white shadow-inner'
-                              : 'bg-[#181818] border-[#333333] text-gw-text-secondary hover:border-[#555555] hover:text-white'
+                              ? 'bg-rose-950/40 border-2 border-rose-500/70 text-rose-200 shadow-xs shadow-rose-950/50 hover:border-rose-400 hover:bg-rose-900/50'
+                              : 'bg-[#121826] border border-[#222E42] text-slate-400 hover:border-sky-400 hover:text-sky-200 hover:bg-[#1E2638]'
                           }`}
                           title={`Click to toggle Restriction (F2, G${col + 1})`}
                         >
@@ -273,10 +273,10 @@ export const LandingPage = () => {
                           key={`2-${col}`}
                           type="button"
                           onClick={() => toggleCell(2, col)}
-                          className={`h-10 rounded-lg flex items-center justify-center font-bold transition-all cursor-pointer border ${
+                          className={`h-10 rounded-lg flex items-center justify-center font-bold transition-all cursor-pointer border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                             demoMatrix[2][col] === 1
-                              ? 'bg-[#111111] border-2 border-[#555555] text-white shadow-inner'
-                              : 'bg-[#181818] border-[#333333] text-gw-text-secondary hover:border-[#555555] hover:text-white'
+                              ? 'bg-rose-950/40 border-2 border-rose-500/70 text-rose-200 shadow-xs shadow-rose-950/50 hover:border-rose-400 hover:bg-rose-900/50'
+                              : 'bg-[#121826] border border-[#222E42] text-slate-400 hover:border-sky-400 hover:text-sky-200 hover:bg-[#1E2638]'
                           }`}
                           title={`Click to toggle Restriction (F3, G${col + 1})`}
                         >
@@ -292,8 +292,8 @@ export const LandingPage = () => {
                 </div>
 
                 {/* Mathematical Engine Telemetry Output */}
-                <div className="space-y-3 bg-[#111111] p-4 rounded-xl border border-[#333333] font-mono">
-                  <div className="text-xs text-gw-text-secondary flex items-center justify-between pb-2 border-b border-[#333333]">
+                <div className="space-y-3 bg-[#0D121F] p-4 rounded-xl border border-[#222E42] font-mono">
+                  <div className="text-xs text-gw-text-secondary flex items-center justify-between pb-2 border-b border-[#222E42]">
                     <span className="text-white flex items-center gap-1.5">
                       <Terminal className="w-3.5 h-3.5" />
                       <span>Live Mathematical Engine</span>
@@ -309,14 +309,14 @@ export const LandingPage = () => {
 
                     <div>
                       <span className="text-gw-text-secondary">Rook Polynomial:</span>
-                      <div className="text-white font-semibold mt-0.5 bg-[#181818] p-2 rounded border border-[#333333] break-all">
+                      <div className="text-white font-semibold mt-0.5 bg-[#121826] p-2 rounded border border-[#222E42] break-all">
                         R(B, x) = {calculationResults.r0} + {calculationResults.r1}x + {calculationResults.r2}x² + {calculationResults.r3}x³
                       </div>
                     </div>
 
                     <div>
                       <span className="text-gw-text-secondary">Inclusion-Exclusion Count (N):</span>
-                      <div className="text-[#A3A3A3] text-xs mt-0.5 bg-[#181818] p-2 rounded border border-[#333333]">
+                      <div className="text-[#A3A3A3] text-xs mt-0.5 bg-[#121826] p-2 rounded border border-[#222E42]">
                         N = {calculationResults.term0} - {calculationResults.term1} + {calculationResults.term2} - {calculationResults.term3} ={' '}
                         <strong className="text-sm font-bold text-white underline decoration-white">
                           {calculationResults.validCount} valid assignments
@@ -325,7 +325,7 @@ export const LandingPage = () => {
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t border-[#333333] flex items-center justify-between text-xs">
+                  <div className="pt-2 border-t border-[#222E42] flex items-center justify-between text-xs">
                     <span className="text-gw-text-secondary">Engine State:</span>
                     <Badge variant="default" size="sm" dot>
                       Active & Recalculating
@@ -339,7 +339,7 @@ export const LandingPage = () => {
       </section>
 
       {/* -------------------- 3. THE PROBLEM STATEMENT -------------------- */}
-      <section id="problem" className="py-16 md:py-24 border-b border-[#333333] bg-[#090909]">
+      <section id="problem" className="py-16 md:py-24 border-b border-[#222E42] bg-[#090909]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-5">
@@ -355,7 +355,7 @@ export const LandingPage = () => {
               </p>
 
               <div className="space-y-3 pt-2">
-                <div className="flex items-start gap-3 p-3.5 rounded-xl bg-[#181818] border border-[#333333]">
+                <div className="flex items-start gap-3 p-3.5 rounded-xl bg-[#121826] border border-[#222E42]">
                   <XCircle className="w-5 h-5 text-[#A3A3A3] shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-sm font-semibold text-white">Physical Aircraft Class Limits</h4>
@@ -365,7 +365,7 @@ export const LandingPage = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 p-3.5 rounded-xl bg-[#181818] border border-[#333333]">
+                <div className="flex items-start gap-3 p-3.5 rounded-xl bg-[#121826] border border-[#222E42]">
                   <XCircle className="w-5 h-5 text-[#A3A3A3] shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-sm font-semibold text-white">Border Control & Terminal Routing</h4>
@@ -375,7 +375,7 @@ export const LandingPage = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 p-3.5 rounded-xl bg-[#181818] border border-[#333333]">
+                <div className="flex items-start gap-3 p-3.5 rounded-xl bg-[#121826] border border-[#222E42]">
                   <XCircle className="w-5 h-5 text-[#A3A3A3] shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-sm font-semibold text-white">Airline Terminal Exclusivity</h4>
@@ -387,7 +387,7 @@ export const LandingPage = () => {
               </div>
             </div>
 
-            <div className="bg-[#181818] border border-[#333333] rounded-2xl p-6 space-y-5">
+            <div className="bg-[#121826] border border-[#222E42] rounded-2xl p-6 space-y-5">
               <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-white" />
                 <span>The Mathematical Challenge</span>
@@ -399,25 +399,25 @@ export const LandingPage = () => {
               </p>
 
               <div className="grid grid-cols-2 gap-3 text-center font-mono">
-                <div className="bg-[#111111] p-3 rounded-lg border border-[#333333]">
+                <div className="bg-[#0D121F] p-3 rounded-lg border border-[#222E42]">
                   <div className="text-xs text-gw-text-secondary">4 Flights (4!)</div>
                   <div className="text-lg font-bold text-white mt-1">24 ways</div>
                 </div>
-                <div className="bg-[#111111] p-3 rounded-lg border border-[#333333]">
+                <div className="bg-[#0D121F] p-3 rounded-lg border border-[#222E42]">
                   <div className="text-xs text-gw-text-secondary">6 Flights (6!)</div>
                   <div className="text-lg font-bold text-white mt-1">720 ways</div>
                 </div>
-                <div className="bg-[#111111] p-3 rounded-lg border border-[#333333]">
+                <div className="bg-[#0D121F] p-3 rounded-lg border border-[#222E42]">
                   <div className="text-xs text-gw-text-secondary">8 Flights (8!)</div>
                   <div className="text-lg font-bold text-white mt-1">40,320 ways</div>
                 </div>
-                <div className="bg-[#111111] p-3 rounded-lg border border-[#333333]">
+                <div className="bg-[#0D121F] p-3 rounded-lg border border-[#222E42]">
                   <div className="text-xs text-gw-text-secondary">10 Flights (10!)</div>
                   <div className="text-lg font-bold text-white mt-1">3,628,800 ways</div>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#111111] border border-[#333333] text-xs text-gw-text-secondary leading-relaxed">
+              <div className="p-3.5 rounded-xl bg-[#0D121F] border border-[#222E42] text-xs text-gw-text-secondary leading-relaxed">
                 <span className="text-white font-semibold block mb-1">Discrete Mathematics Solution:</span>
                 Instead of inspecting millions of permutations, Discrete Mathematics models forbidden gates as restricted
                 cells on a chessboard, deriving exact valid allocations analytically through the Principle of Inclusion-Exclusion.
@@ -428,7 +428,7 @@ export const LandingPage = () => {
       </section>
 
       {/* -------------------- 4. THE GATEWISE SOLUTION -------------------- */}
-      <section id="solution" className="py-16 md:py-24 border-b border-[#333333]">
+      <section id="solution" className="py-16 md:py-24 border-b border-[#222E42]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <Badge variant="default" size="md">
@@ -482,7 +482,7 @@ export const LandingPage = () => {
       </section>
 
       {/* -------------------- 5. CORE FEATURES SECTION -------------------- */}
-      <section id="features" className="py-16 md:py-24 border-b border-[#333333] bg-[#090909]">
+      <section id="features" className="py-16 md:py-24 border-b border-[#222E42] bg-[#090909]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <Badge variant="default" size="md">
@@ -570,7 +570,7 @@ export const LandingPage = () => {
       </section>
 
       {/* -------------------- 6. MATHEMATICS EXPLAINED SECTION -------------------- */}
-      <section id="mathematics" className="py-16 md:py-24 border-b border-[#333333]">
+      <section id="mathematics" className="py-16 md:py-24 border-b border-[#222E42]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <Badge variant="default" size="md">
@@ -654,7 +654,7 @@ export const LandingPage = () => {
       </section>
 
       {/* -------------------- 7. HOW IT WORKS WORKFLOW -------------------- */}
-      <section id="workflow" className="py-16 md:py-24 border-b border-[#333333] bg-[#090909]">
+      <section id="workflow" className="py-16 md:py-24 border-b border-[#222E42] bg-[#090909]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <Badge variant="default" size="md">
@@ -670,8 +670,8 @@ export const LandingPage = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 relative">
             {/* Step 1 */}
-            <div className="bg-[#181818] p-5 rounded-xl border border-[#333333] relative space-y-3">
-              <div className="w-8 h-8 rounded-lg bg-[#111111] text-white font-bold font-mono text-sm flex items-center justify-center border border-[#333333]">
+            <div className="bg-[#121826] p-5 rounded-xl border border-[#222E42] relative space-y-3">
+              <div className="w-8 h-8 rounded-lg bg-[#0D121F] text-white font-bold font-mono text-sm flex items-center justify-center border border-[#222E42]">
                 01
               </div>
               <h3 className="font-semibold text-sm text-white">Flights & Gates</h3>
@@ -681,8 +681,8 @@ export const LandingPage = () => {
             </div>
 
             {/* Step 2 */}
-            <div className="bg-[#181818] p-5 rounded-xl border border-[#333333] relative space-y-3">
-              <div className="w-8 h-8 rounded-lg bg-[#111111] text-white font-bold font-mono text-sm flex items-center justify-center border border-[#333333]">
+            <div className="bg-[#121826] p-5 rounded-xl border border-[#222E42] relative space-y-3">
+              <div className="w-8 h-8 rounded-lg bg-[#0D121F] text-white font-bold font-mono text-sm flex items-center justify-center border border-[#222E42]">
                 02
               </div>
               <h3 className="font-semibold text-sm text-white">Define Restrictions</h3>
@@ -692,8 +692,8 @@ export const LandingPage = () => {
             </div>
 
             {/* Step 3 */}
-            <div className="bg-[#181818] p-5 rounded-xl border border-[#333333] relative space-y-3">
-              <div className="w-8 h-8 rounded-lg bg-[#111111] text-white font-bold font-mono text-sm flex items-center justify-center border border-[#333333]">
+            <div className="bg-[#121826] p-5 rounded-xl border border-[#222E42] relative space-y-3">
+              <div className="w-8 h-8 rounded-lg bg-[#0D121F] text-white font-bold font-mono text-sm flex items-center justify-center border border-[#222E42]">
                 03
               </div>
               <h3 className="font-semibold text-sm text-white">Build Matrix</h3>
@@ -703,8 +703,8 @@ export const LandingPage = () => {
             </div>
 
             {/* Step 4 */}
-            <div className="bg-[#181818] p-5 rounded-xl border border-[#333333] relative space-y-3">
-              <div className="w-8 h-8 rounded-lg bg-[#111111] text-white font-bold font-mono text-sm flex items-center justify-center border border-[#333333]">
+            <div className="bg-[#121826] p-5 rounded-xl border border-[#222E42] relative space-y-3">
+              <div className="w-8 h-8 rounded-lg bg-[#0D121F] text-white font-bold font-mono text-sm flex items-center justify-center border border-[#222E42]">
                 04
               </div>
               <h3 className="font-semibold text-sm text-white">Calculate N</h3>
@@ -714,8 +714,8 @@ export const LandingPage = () => {
             </div>
 
             {/* Step 5 */}
-            <div className="bg-[#181818] p-5 rounded-xl border border-[#333333] relative space-y-3">
-              <div className="w-8 h-8 rounded-lg bg-[#111111] text-white font-bold font-mono text-sm flex items-center justify-center border border-[#333333]">
+            <div className="bg-[#121826] p-5 rounded-xl border border-[#222E42] relative space-y-3">
+              <div className="w-8 h-8 rounded-lg bg-[#0D121F] text-white font-bold font-mono text-sm flex items-center justify-center border border-[#222E42]">
                 05
               </div>
               <h3 className="font-semibold text-sm text-white">Generate & Visualize</h3>
@@ -728,7 +728,7 @@ export const LandingPage = () => {
       </section>
 
       {/* -------------------- 8. PROJECT INFORMATION & ACADEMIC CONTEXT -------------------- */}
-      <section className="py-16 border-b border-[#333333]">
+      <section className="py-16 border-b border-[#222E42]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <Badge variant="default" size="md">
             Academic Context & Scope
@@ -742,7 +742,7 @@ export const LandingPage = () => {
             The model demonstrates how abstract concepts such as permutations, binary relations, non-attacking rooks,
             and the Principle of Inclusion-Exclusion directly resolve combinatorial constraint satisfaction problems.
           </p>
-          <div className="p-4 rounded-xl bg-[#181818] border border-[#333333] text-xs text-gw-text-secondary text-left max-w-2xl mx-auto space-y-1">
+          <div className="p-4 rounded-xl bg-[#121826] border border-[#222E42] text-xs text-gw-text-secondary text-left max-w-2xl mx-auto space-y-1">
             <span className="text-white font-semibold flex items-center gap-1.5">
               <AlertTriangle className="w-4 h-4 text-[#A3A3A3]" />
               <span>Academic Notice</span>
@@ -756,12 +756,12 @@ export const LandingPage = () => {
       </section>
 
       {/* -------------------- 9. FOOTER -------------------- */}
-      <footer className="bg-[#111111] border-t border-[#333333] py-12 px-4 sm:px-8 lg:px-12 text-xs text-gw-text-secondary">
+      <footer className="bg-[#0D121F] border-t border-[#222E42] py-12 px-4 sm:px-8 lg:px-12 text-xs text-gw-text-secondary">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
           {/* Brand Col */}
           <div className="space-y-3 md:col-span-1">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-[#181818] border border-[#333333] flex items-center justify-center">
+              <div className="w-7 h-7 rounded-lg bg-[#121826] border border-[#222E42] flex items-center justify-center">
                 <Plane className="w-4 h-4 text-white rotate-[-45deg]" />
               </div>
               <span className="font-bold text-base text-white">
@@ -813,7 +813,7 @@ export const LandingPage = () => {
           </div>
         </div>
 
-        <div className="max-w-6xl mx-auto pt-6 border-t border-[#333333] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]">
+        <div className="max-w-6xl mx-auto pt-6 border-t border-[#222E42] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]">
           <div>
             © {new Date().getFullYear()} GateWise • Educational Discrete Mathematics & Graph Theory Project.
           </div>

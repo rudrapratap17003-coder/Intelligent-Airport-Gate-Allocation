@@ -255,8 +255,8 @@ export const Analytics = () => {
   const boardCellsPieData = useMemo(() => {
     if (!detailedSim) return []
     return [
-      { name: 'Allowed Pairings (0)', value: detailedSim.allowed_count, color: '#FFFFFF' },
-      { name: 'Forbidden Restrictions (1)', value: detailedSim.forbidden_count, color: '#737373' }
+      { name: 'Allowed Pairings (0)', value: detailedSim.allowed_count, color: '#38BDF8' },
+      { name: 'Forbidden Restrictions (1)', value: detailedSim.forbidden_count, color: '#1E2638' }
     ]
   }, [detailedSim])
 
@@ -266,19 +266,19 @@ export const Analytics = () => {
   if (isLoading && !overview) {
     return (
       <div className="space-y-8 animate-fadeIn">
-        <div className="flex items-center justify-between pb-4 border-b border-[#333333]">
+        <div className="flex items-center justify-between pb-4 border-b border-[#222E42]">
           <div className="space-y-2">
-            <div className="h-8 w-64 bg-[#181818] rounded-lg animate-pulse" />
-            <div className="h-4 w-96 bg-[#181818]/60 rounded animate-pulse" />
+            <div className="h-8 w-64 bg-[#121826] rounded-lg animate-pulse" />
+            <div className="h-4 w-96 bg-[#121826]/60 rounded animate-pulse" />
           </div>
-          <div className="h-10 w-36 bg-[#181818] rounded-lg animate-pulse" />
+          <div className="h-10 w-36 bg-[#121826] rounded-lg animate-pulse" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {[1, 2, 3, 4, 5].map((i) => (
-            <Card key={i} className="h-28 bg-[#181818]/40 animate-pulse border-[#333333]" />
+            <Card key={i} className="h-28 bg-[#121826]/40 animate-pulse border-[#222E42]" />
           ))}
         </div>
-        <div className="h-96 bg-[#181818]/40 rounded-xl animate-pulse" />
+        <div className="h-96 bg-[#121826]/40 rounded-xl animate-pulse" />
       </div>
     )
   }
@@ -288,8 +288,8 @@ export const Analytics = () => {
   // =========================================================================
   if (error && !overview) {
     return (
-      <div className="p-8 max-w-2xl mx-auto my-12 text-center space-y-6 bg-[#181818] border border-[#333333] rounded-2xl shadow-2xl">
-        <div className="w-16 h-16 rounded-2xl bg-[#222222] text-[#FFFFFF] border border-[#333333] flex items-center justify-center mx-auto">
+      <div className="p-8 max-w-2xl mx-auto my-12 text-center space-y-6 bg-[#121826] border border-[#222E42] rounded-2xl shadow-2xl">
+        <div className="w-16 h-16 rounded-2xl bg-[#1E2638] text-[#FFFFFF] border border-[#222E42] flex items-center justify-center mx-auto">
           <AlertCircle className="w-8 h-8" />
         </div>
         <div className="space-y-2">
@@ -297,7 +297,7 @@ export const Analytics = () => {
           <p className="text-sm text-gw-text-secondary leading-relaxed">
             Failed to retrieve mathematical telemetry from the backend analytics service.
           </p>
-          <p className="text-xs text-[#A3A3A3] font-mono bg-[#222222] p-2 rounded-lg border border-[#333333]">
+          <p className="text-xs text-[#A3A3A3] font-mono bg-[#1E2638] p-2 rounded-lg border border-[#222E42]">
             {error}
           </p>
         </div>
@@ -311,7 +311,7 @@ export const Analytics = () => {
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* ----------------- 1. HEADER & CONTROLS ----------------- */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#333333]">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#222E42]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">
@@ -353,13 +353,13 @@ export const Analytics = () => {
       </div>
 
       {/* ----------------- TAB SWITCHER ----------------- */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-[#333333] pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-[#222E42] pb-3">
         <button
           onClick={() => handleTabChange('analytics')}
-          className={`flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+          className={`flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
             activeTab === 'analytics'
-              ? 'bg-[#FFFFFF] text-[#090909] font-bold shadow-sm'
-              : 'text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222]'
+              ? 'bg-sky-500 text-slate-950 font-bold shadow-xs'
+              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E2638]'
           }`}
         >
           <BarChart3 className="w-4 h-4" />
@@ -367,15 +367,15 @@ export const Analytics = () => {
         </button>
         <button
           onClick={() => handleTabChange('compare')}
-          className={`flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+          className={`flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
             activeTab === 'compare'
-              ? 'bg-[#FFFFFF] text-[#090909] font-bold shadow-sm'
-              : 'text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222]'
+              ? 'bg-sky-500 text-slate-950 font-bold shadow-xs'
+              : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E2638]'
           }`}
         >
           <Scale className="w-4 h-4" />
           <span>Scenario Comparison</span>
-          <Badge variant="outline" size="xs">Phase 23</Badge>
+          <Badge variant="cyan" size="xs">Phase 23</Badge>
         </button>
       </div>
 
@@ -386,12 +386,12 @@ export const Analytics = () => {
       {/* ----------------- 2. ANALYTICS OVERVIEW STATISTIC CARDS (5 METRICS) ----------------- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Metric 1: Simulations Analysed */}
-        <Card className="hover:border-[#555555] transition-colors">
+        <Card className="hover:border-[#334155] transition-colors">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] uppercase font-mono tracking-wider text-gw-text-secondary">
               Scenarios Analysed
             </span>
-            <div className="p-1.5 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+            <div className="p-1.5 rounded-lg bg-[#1E2638] text-[#FFFFFF] border border-[#222E42]">
               <Layers className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -414,12 +414,12 @@ export const Analytics = () => {
         </Card>
 
         {/* Metric 2: Total Registry Entities */}
-        <Card className="hover:border-[#555555] transition-colors">
+        <Card className="hover:border-[#334155] transition-colors">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] uppercase font-mono tracking-wider text-gw-text-secondary">
               Fleet & Facility
             </span>
-            <div className="p-1.5 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+            <div className="p-1.5 rounded-lg bg-[#1E2638] text-[#FFFFFF] border border-[#222E42]">
               <Database className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -440,12 +440,12 @@ export const Analytics = () => {
         </Card>
 
         {/* Metric 3: Average Restriction Density */}
-        <Card className="hover:border-[#555555] transition-colors">
+        <Card className="hover:border-[#334155] transition-colors">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] uppercase font-mono tracking-wider text-gw-text-secondary">
               Avg Restriction Density
             </span>
-            <div className="p-1.5 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+            <div className="p-1.5 rounded-lg bg-[#1E2638] text-[#FFFFFF] border border-[#222E42]">
               <Grid3X3 className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -459,12 +459,12 @@ export const Analytics = () => {
         </Card>
 
         {/* Metric 4: Feasible vs Infeasible Scenarios */}
-        <Card className="hover:border-[#555555] transition-colors">
+        <Card className="hover:border-[#334155] transition-colors">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] uppercase font-mono tracking-wider text-gw-text-secondary">
               Feasibility State
             </span>
-            <div className="p-1.5 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+            <div className="p-1.5 rounded-lg bg-[#1E2638] text-[#FFFFFF] border border-[#222E42]">
               <TrendingUp className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -485,12 +485,12 @@ export const Analytics = () => {
         </Card>
 
         {/* Metric 5: Feasibility Range */}
-        <Card className="hover:border-[#555555] transition-colors">
+        <Card className="hover:border-[#334155] transition-colors">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] uppercase font-mono tracking-wider text-gw-text-secondary">
               Feasibility Range
             </span>
-            <div className="p-1.5 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+            <div className="p-1.5 rounded-lg bg-[#1E2638] text-[#FFFFFF] border border-[#222E42]">
               <Percent className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -512,7 +512,7 @@ export const Analytics = () => {
 
       {/* ----------------- 3. COMPARATIVE RESTRICTION DENSITY & FEASIBILITY CHART ----------------- */}
       <Card className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
           <div>
             <h2 className="gw-card-heading flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-[#FFFFFF]" />
@@ -538,7 +538,7 @@ export const Analytics = () => {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload
                       return (
-                        <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] shadow-xl text-xs space-y-1 font-mono">
+                        <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] shadow-xl text-xs space-y-1 font-mono">
                           <div className="font-bold text-[#FFFFFF] text-sm">{data.name} ({data.id})</div>
                           <div className="text-[#A3A3A3]">Restriction Density: {data.density}% ({data.forbidden} forbidden)</div>
                           <div className="text-[#FFFFFF]">Feasibility Ratio: {data.feasibility}%</div>
@@ -581,10 +581,10 @@ export const Analytics = () => {
             <select
               value={selectedSimId}
               onChange={(e) => setSelectedSimId(e.target.value)}
-              className="bg-[#181818] border border-[#333333] rounded-lg px-3 py-1.5 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer w-full sm:w-auto max-w-full sm:max-w-xs truncate"
+              className="bg-[#121826] border border-[#222E42] rounded-lg px-3 py-1.5 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer w-full sm:w-auto max-w-full sm:max-w-xs truncate"
             >
               {overview?.simulations?.map((s) => (
-                <option key={s.id} value={s.id} className="bg-[#181818] text-gw-text">
+                <option key={s.id} value={s.id} className="bg-[#121826] text-gw-text">
                   {s.name} ({s.id}) {s.is_valid_config ? `[${s.matrix_size}×${s.matrix_size}]` : '[Unbalanced]'}
                 </option>
               ))}
@@ -598,7 +598,7 @@ export const Analytics = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Left Column: Mathematical Identity & Board Stats (8 cols) */}
               <Card className="lg:col-span-8 space-y-4">
-                <div className="flex items-start justify-between gap-4 pb-3 border-b border-[#333333]">
+                <div className="flex items-start justify-between gap-4 pb-3 border-b border-[#222E42]">
                   <div>
                     <h3 className="text-base font-bold text-gw-text flex items-center gap-2">
                       <span>{detailedSim.simulation_name}</span>
@@ -616,7 +616,7 @@ export const Analytics = () => {
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-                  <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-1">
+                  <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] space-y-1">
                     <span className="text-[10px] text-gw-text-secondary uppercase">Total Possible n!</span>
                     <div className="text-lg font-bold text-gw-text">
                       {detailedSim.total_possible_assignments.toLocaleString()}
@@ -624,7 +624,7 @@ export const Analytics = () => {
                     <span className="text-[10px] text-gw-text-secondary">({detailedSim.matrix_size}!)</span>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-1">
+                  <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] space-y-1">
                     <span className="text-[10px] text-gw-text-secondary uppercase">Exact Valid (N)</span>
                     <div className="text-lg font-bold text-[#FFFFFF]">
                       {detailedSim.exact_valid_assignments.toLocaleString()}
@@ -634,7 +634,7 @@ export const Analytics = () => {
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-1">
+                  <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] space-y-1">
                     <span className="text-[10px] text-gw-text-secondary uppercase">Forbidden Cells</span>
                     <div className="text-lg font-bold text-[#FFFFFF]">
                       {detailedSim.forbidden_count}
@@ -644,7 +644,7 @@ export const Analytics = () => {
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-1">
+                  <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] space-y-1">
                     <span className="text-[10px] text-gw-text-secondary uppercase">Rook Degree</span>
                     <div className="text-lg font-bold text-[#FFFFFF]">
                       deg {detailedSim.polynomial_degree}
@@ -655,7 +655,7 @@ export const Analytics = () => {
 
                 {/* Formatted Formulas Display */}
                 <div className="space-y-3 pt-2">
-                  <div className="p-3 rounded-xl bg-[#181818] border border-[#333333] space-y-1.5">
+                  <div className="p-3 rounded-xl bg-[#121826] border border-[#222E42] space-y-1.5">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-mono text-gw-text-secondary uppercase text-[10px]">
                         Rook Polynomial Form
@@ -669,7 +669,7 @@ export const Analytics = () => {
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#181818] border border-[#333333] space-y-1.5">
+                  <div className="p-3 rounded-xl bg-[#121826] border border-[#222E42] space-y-1.5">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-mono text-gw-text-secondary uppercase text-[10px]">
                         Principle of Inclusion-Exclusion (PIE) Exact Value
@@ -687,7 +687,7 @@ export const Analytics = () => {
 
               {/* Right Column: Board Cell Composition Pie (4 cols) */}
               <Card className="lg:col-span-4 flex flex-col justify-between">
-                <div className="pb-2 border-b border-[#333333]">
+                <div className="pb-2 border-b border-[#222E42]">
                   <h4 className="text-xs font-bold text-gw-text uppercase font-mono tracking-wider">
                     Binary Restriction Density
                   </h4>
@@ -717,7 +717,7 @@ export const Analytics = () => {
                           if (active && payload && payload.length) {
                             const data = payload[0].payload
                             return (
-                              <div className="p-2 rounded bg-[#181818] border border-[#333333] shadow-lg text-xs font-mono">
+                              <div className="p-2 rounded bg-[#121826] border border-[#222E42] shadow-lg text-xs font-mono">
                                 <div className="font-bold text-[#FFFFFF]">{data.name}</div>
                                 <div className="text-[#A3A3A3]">{data.value} cells</div>
                               </div>
@@ -736,7 +736,7 @@ export const Analytics = () => {
                   </div>
                 </div>
 
-                <div className="space-y-1.5 text-xs font-mono pt-2 border-t border-[#333333]">
+                <div className="space-y-1.5 text-xs font-mono pt-2 border-t border-[#222E42]">
                   <div className="flex items-center justify-between text-gw-text-secondary">
                     <span className="flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-[#FFFFFF]" />
@@ -759,7 +759,7 @@ export const Analytics = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Validation Overview */}
               <Card className="lg:col-span-5 space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#333333]">
+                <div className="flex items-center justify-between pb-3 border-b border-[#222E42]">
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="w-5 h-5 text-[#FFFFFF]" />
                     <h3 className="gw-card-heading">Matrix Validation Overview</h3>
@@ -774,13 +774,13 @@ export const Analytics = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-                  <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
+                  <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42]">
                     <span className="text-[10px] text-gw-text-secondary uppercase block">Structural Errors</span>
                     <span className="text-base font-bold text-[#FFFFFF]">
                       {detailedValidation?.errors?.length || 0}
                     </span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
+                  <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42]">
                     <span className="text-[10px] text-gw-text-secondary uppercase block">Advisory Warnings</span>
                     <span className="text-base font-bold text-[#A3A3A3]">
                       {detailedValidation?.warnings?.length || 0}
@@ -810,7 +810,7 @@ export const Analytics = () => {
 
               {/* Restriction Matrix Heatmap (Visualization 1) */}
               <Card className="lg:col-span-7 space-y-3">
-                <div className="flex items-center justify-between pb-2 border-b border-[#333333]">
+                <div className="flex items-center justify-between pb-2 border-b border-[#222E42]">
                   <div className="flex items-center gap-2">
                     <Grid3X3 className="w-4 h-4 text-[#FFFFFF]" />
                     <h4 className="text-xs font-bold text-gw-text uppercase font-mono tracking-wider">
@@ -822,7 +822,7 @@ export const Analytics = () => {
                   </span>
                 </div>
 
-                <div className="overflow-x-auto p-2 bg-[#181818] rounded-lg">
+                <div className="overflow-x-auto p-2 bg-[#121826] rounded-lg">
                   <div className="inline-block min-w-full">
                     {/* Column Gates */}
                     <div className="flex items-center gap-1 mb-1 pl-12">
@@ -845,8 +845,8 @@ export const Analytics = () => {
                               title={`${detailedSim.flight_ids?.[r] || `F${r + 1}`} → ${detailedSim.gate_ids?.[c] || `G${c + 1}`}: ${val === 1 ? 'Forbidden' : 'Permitted'}`}
                               className={`w-9 h-8 rounded flex items-center justify-center font-mono text-[10px] font-bold transition-colors ${
                                 val === 1
-                                  ? 'bg-[#111111] border-2 border-[#555555] text-[#FFFFFF]'
-                                  : 'bg-[#181818] border border-[#333333] text-[#737373] hover:border-[#555555]'
+                                  ? 'bg-[#0D121F] border-2 border-[#334155] text-[#FFFFFF]'
+                                  : 'bg-[#121826] border border-[#222E42] text-[#737373] hover:border-[#334155]'
                               }`}
                             >
                               {val}
@@ -864,7 +864,7 @@ export const Analytics = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Section 3: Rook Polynomial Analytics & Coefficient Spectrum (6 cols) */}
               <Card className="lg:col-span-6 space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#333333]">
+                <div className="flex items-center justify-between pb-3 border-b border-[#222E42]">
                   <div>
                     <h3 className="gw-card-heading flex items-center gap-2">
                       <Grid3X3 className="w-4 h-4 text-[#FFFFFF]" />
@@ -890,7 +890,7 @@ export const Analytics = () => {
                           if (active && payload && payload.length) {
                             const data = payload[0].payload
                             return (
-                              <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333] shadow-lg text-xs space-y-1 font-mono">
+                              <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42] shadow-lg text-xs space-y-1 font-mono">
                                 <div className="font-bold text-[#FFFFFF]">{data.k}: {data.count.toLocaleString()} placements</div>
                                 <div className="text-gw-text-secondary text-[11px] max-w-xs">{data.meaning}</div>
                               </div>
@@ -905,15 +905,15 @@ export const Analytics = () => {
                 </div>
 
                 {/* Individual Coefficient Meanings */}
-                <div className="space-y-2 pt-2 border-t border-[#333333] max-h-56 overflow-y-auto pr-1">
+                <div className="space-y-2 pt-2 border-t border-[#222E42] max-h-56 overflow-y-auto pr-1">
                   {detailedSim.coefficients_detail.map((c) => (
                     <div
                       key={c.k}
-                      className="p-2.5 rounded-lg bg-[#181818] border border-[#333333] text-xs space-y-1"
+                      className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42] text-xs space-y-1"
                     >
                       <div className="flex items-center justify-between font-mono">
                         <span className="text-[#FFFFFF] font-bold">Degree k = {c.k}</span>
-                        <span className="px-2 py-0.5 rounded bg-[#222222] border border-[#333333] text-[#FFFFFF] font-bold">
+                        <span className="px-2 py-0.5 rounded bg-[#1E2638] border border-[#222E42] text-[#FFFFFF] font-bold">
                           r{c.k} = {c.coefficient.toLocaleString()}
                         </span>
                       </div>
@@ -927,7 +927,7 @@ export const Analytics = () => {
 
               {/* Section 4: Inclusion-Exclusion Analytics (6 cols) */}
               <Card className="lg:col-span-6 space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#333333]">
+                <div className="flex items-center justify-between pb-3 border-b border-[#222E42]">
                   <div>
                     <h3 className="gw-card-heading flex items-center gap-2">
                       <Calculator className="w-4 h-4 text-[#FFFFFF]" />
@@ -944,13 +944,13 @@ export const Analytics = () => {
 
                 {/* Summary of positive vs negative sums */}
                 <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-                  <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333] space-y-0.5">
+                  <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42] space-y-0.5">
                     <span className="text-[10px] text-gw-text-secondary uppercase block">+ Positive Sum (k even)</span>
                     <span className="text-base font-bold text-[#FFFFFF]">
                       +{detailedSim.positive_contributions_sum.toLocaleString()}
                     </span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333] space-y-0.5">
+                  <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42] space-y-0.5">
                     <span className="text-[10px] text-gw-text-secondary uppercase block">- Negative Sum (k odd)</span>
                     <span className="text-base font-bold text-[#A3A3A3]">
                       -{detailedSim.negative_contributions_sum.toLocaleString()}
@@ -959,9 +959,9 @@ export const Analytics = () => {
                 </div>
 
                 {/* Itemized Terms Table */}
-                <div className="overflow-x-auto border border-[#333333] rounded-lg max-h-72 overflow-y-auto">
+                <div className="overflow-x-auto border border-[#222E42] rounded-lg max-h-72 overflow-y-auto">
                   <table className="w-full text-left text-xs divide-y divide-[#333333] font-mono">
-                    <thead className="bg-[#181818] text-gw-text-secondary text-[10px] uppercase">
+                    <thead className="bg-[#121826] text-gw-text-secondary text-[10px] uppercase">
                       <tr>
                         <th className="py-2 px-3">k</th>
                         <th className="py-2 px-3">rₖ</th>
@@ -995,8 +995,8 @@ export const Analytics = () => {
             </div>
 
             {/* Section 6: Allocation Analytics (On-Demand Sample Verification) */}
-            <Card className="space-y-4 border-[#333333]">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+            <Card className="space-y-4 border-[#222E42]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
                 <div>
                   <h3 className="gw-card-heading flex items-center gap-2">
                     <ShieldCheck className="w-5 h-5 text-[#FFFFFF]" />
@@ -1019,7 +1019,7 @@ export const Analytics = () => {
               </div>
 
               {/* Callout emphasizing distinction between exact total vs sample */}
-              <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] text-xs text-gw-text-secondary flex items-start gap-3">
+              <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] text-xs text-gw-text-secondary flex items-start gap-3">
                 <Info className="w-4 h-4 text-[#FFFFFF] shrink-0 mt-0.5" />
                 <div className="space-y-0.5">
                   <span className="font-bold text-gw-text">Mathematical Principle: Theoretical Space vs. Materialized Sample</span>
@@ -1034,7 +1034,7 @@ export const Analytics = () => {
               {detailedSim.allocation_analytics ? (
                 <>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono pt-1">
-                    <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-1">
+                    <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] space-y-1">
                       <span className="text-[10px] text-gw-text-secondary uppercase">Generated Sample</span>
                       <div className="text-lg font-bold text-gw-text">
                         {detailedSim.allocation_analytics.generated_count}{' '}
@@ -1043,7 +1043,7 @@ export const Analytics = () => {
                       <span className="text-[10px] text-[#A3A3A3]">Materialized plans</span>
                     </div>
 
-                    <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-1">
+                    <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] space-y-1">
                       <span className="text-[10px] text-gw-text-secondary uppercase">Conflict Audited</span>
                       <div className="text-lg font-bold text-[#FFFFFF] flex items-center gap-1.5">
                         <CheckCircle2 className="w-4 h-4" />
@@ -1052,7 +1052,7 @@ export const Analytics = () => {
                       <span className="text-[10px] text-[#FFFFFF]">100% Conflict-Free</span>
                     </div>
 
-                    <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-1">
+                    <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] space-y-1">
                       <span className="text-[10px] text-gw-text-secondary uppercase">Valid vs Invalid</span>
                       <div className="text-lg font-bold text-gw-text">
                         <span className="text-[#FFFFFF]">{detailedSim.allocation_analytics.valid_count}</span>
@@ -1062,7 +1062,7 @@ export const Analytics = () => {
                       <span className="text-[10px] text-gw-text-secondary">Zero constraint violations</span>
                     </div>
 
-                    <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-1">
+                    <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] space-y-1">
                       <span className="text-[10px] text-gw-text-secondary uppercase">Completion State</span>
                       <div className="text-sm font-bold text-gw-text truncate">
                         {detailedSim.allocation_analytics.generation_complete ? 'Complete' : 'Sample Window'}
@@ -1075,8 +1075,8 @@ export const Analytics = () => {
 
                   {/* Backtracking Search Statistics (Visualization 6) & Flight-to-Gate Mapping (Visualization 5) */}
                   <div className="space-y-4 pt-2">
-                    <div className="p-4 rounded-xl bg-[#181818] border border-[#333333] space-y-3">
-                      <div className="flex items-center justify-between pb-2 border-b border-[#333333]">
+                    <div className="p-4 rounded-xl bg-[#121826] border border-[#222E42] space-y-3">
+                      <div className="flex items-center justify-between pb-2 border-b border-[#222E42]">
                         <div className="flex items-center gap-2">
                           <Cpu className="w-4 h-4 text-[#FFFFFF]" />
                           <h4 className="text-xs font-bold text-gw-text uppercase font-mono tracking-wider">
@@ -1089,25 +1089,25 @@ export const Analytics = () => {
                       </div>
 
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-                        <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333]">
+                        <div className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42]">
                           <span className="text-[10px] text-gw-text-secondary uppercase block">Search Nodes Visited</span>
                           <span className="text-base font-bold text-gw-text">
                             {backtrackingStats?.searchStatistics?.nodesVisited?.toLocaleString() || detailedSim.allocation_analytics?.generated_count || 0}
                           </span>
                         </div>
-                        <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333]">
+                        <div className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42]">
                           <span className="text-[10px] text-gw-text-secondary uppercase block">Pruned Branches</span>
                           <span className="text-base font-bold text-[#A3A3A3]">
                             {backtrackingStats?.searchStatistics?.prunedBranches?.toLocaleString() || (detailedSim.forbidden_count * 2) || 0}
                           </span>
                         </div>
-                        <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333]">
+                        <div className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42]">
                           <span className="text-[10px] text-gw-text-secondary uppercase block">Backtracks</span>
                           <span className="text-base font-bold text-[#A3A3A3]">
                             {backtrackingStats?.searchStatistics?.backtracks?.toLocaleString() || 0}
                           </span>
                         </div>
-                        <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333]">
+                        <div className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42]">
                           <span className="text-[10px] text-gw-text-secondary uppercase block">Search Elapsed</span>
                           <span className="text-base font-bold text-[#FFFFFF]">
                             {backtrackingStats?.searchStatistics?.elapsedMs != null ? `${backtrackingStats.searchStatistics.elapsedMs.toFixed(2)} ms` : '< 1 ms'}
@@ -1118,8 +1118,8 @@ export const Analytics = () => {
 
                     {/* Flight-to-Gate Concrete Allocation Mapping (Visualization 5) */}
                     {(backtrackingStats?.allocations?.length > 0 || detailedSim.sample_allocations?.length > 0) && (
-                      <div className="p-4 rounded-xl bg-[#181818] border border-[#333333] space-y-3">
-                        <div className="flex items-center justify-between pb-2 border-b border-[#333333]">
+                      <div className="p-4 rounded-xl bg-[#121826] border border-[#222E42] space-y-3">
+                        <div className="flex items-center justify-between pb-2 border-b border-[#222E42]">
                           <div className="flex items-center gap-2">
                             <CheckCircle2 className="w-4 h-4 text-[#FFFFFF]" />
                             <h4 className="text-xs font-bold text-gw-text uppercase font-mono tracking-wider">
@@ -1140,11 +1140,11 @@ export const Analytics = () => {
                               {firstPlan.map((pair, pIdx) => (
                                 <div
                                   key={pIdx}
-                                  className="p-2.5 rounded-lg bg-[#222222] border border-[#333333] flex items-center justify-between font-mono text-xs"
+                                  className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42] flex items-center justify-between font-mono text-xs"
                                 >
                                   <span className="text-gw-text font-bold">{pair.flightId || pair.flight_id}</span>
                                   <span className="text-[#FFFFFF]">→</span>
-                                  <Badge variant="outline" size="sm" className="font-mono text-[#FFFFFF] border-[#333333]">
+                                  <Badge variant="outline" size="sm" className="font-mono text-[#FFFFFF] border-[#222E42]">
                                     {pair.gateId || pair.gate_id}
                                   </Badge>
                                 </div>
@@ -1157,7 +1157,7 @@ export const Analytics = () => {
                   </div>
                 </>
               ) : (
-                <div className="p-4 rounded-lg bg-[#181818] border border-[#333333] text-center space-y-2">
+                <div className="p-4 rounded-lg bg-[#121826] border border-[#222E42] text-center space-y-2">
                   <p className="text-xs text-gw-text-secondary">
                     Click <strong className="text-[#FFFFFF]">Run 50-Plan Sample Audit</strong> to generate materialized assignments and run independent Phase 17 conflict detection.
                   </p>
@@ -1195,7 +1195,7 @@ export const Analytics = () => {
         </div>
 
         {/* Filters Toolbar */}
-        <Card className="p-3.5 space-y-3 bg-[#181818] border-[#333333]">
+        <Card className="p-3.5 space-y-3 bg-[#121826] border-[#222E42]">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
             {/* Search */}
             <div className="relative">
@@ -1205,7 +1205,7 @@ export const Analytics = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search scenarios..."
-                className="w-full pl-9 pr-3 py-2 bg-[#222222] border border-[#333333] rounded-lg text-xs text-gw-text focus:border-[#FFFFFF] focus:outline-none"
+                className="w-full pl-9 pr-3 py-2 bg-[#1E2638] border border-[#222E42] rounded-lg text-xs text-gw-text focus:border-[#FFFFFF] focus:outline-none"
               />
             </div>
 
@@ -1215,7 +1215,7 @@ export const Analytics = () => {
               <select
                 value={dimensionFilter}
                 onChange={(e) => setDimensionFilter(e.target.value)}
-                className="w-full bg-[#222222] border border-[#333333] rounded-lg px-2.5 py-2 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer"
+                className="w-full bg-[#1E2638] border border-[#222E42] rounded-lg px-2.5 py-2 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer"
               >
                 <option value="ALL">All Dimensions</option>
                 {availableDimensions.map((d) => (
@@ -1232,7 +1232,7 @@ export const Analytics = () => {
               <select
                 value={densityFilter}
                 onChange={(e) => setDensityFilter(e.target.value)}
-                className="w-full bg-[#222222] border border-[#333333] rounded-lg px-2.5 py-2 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer"
+                className="w-full bg-[#1E2638] border border-[#222E42] rounded-lg px-2.5 py-2 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer"
               >
                 <option value="ALL">All Densities</option>
                 <option value="LOW">Low (&lt; 20%)</option>
@@ -1247,7 +1247,7 @@ export const Analytics = () => {
               <select
                 value={feasibilityFilter}
                 onChange={(e) => setFeasibilityFilter(e.target.value)}
-                className="w-full bg-[#222222] border border-[#333333] rounded-lg px-2.5 py-2 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer"
+                className="w-full bg-[#1E2638] border border-[#222E42] rounded-lg px-2.5 py-2 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer"
               >
                 <option value="ALL">All States</option>
                 <option value="FEASIBLE">Feasible (N &gt; 0)</option>
@@ -1259,10 +1259,10 @@ export const Analytics = () => {
         </Card>
 
         {/* Directory Table */}
-        <Card className="p-0 overflow-hidden border-[#333333]">
+        <Card className="p-0 overflow-hidden border-[#222E42]">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs divide-y divide-[#333333]">
-              <thead className="bg-[#181818] text-gw-text-secondary uppercase font-mono text-[10px] tracking-wider">
+              <thead className="bg-[#121826] text-gw-text-secondary uppercase font-mono text-[10px] tracking-wider">
                 <tr>
                   <th className="py-3 px-4">Scenario</th>
                   <th className="py-3 px-4">Matrix Board</th>
@@ -1280,7 +1280,7 @@ export const Analytics = () => {
                     <tr
                       key={sim.id}
                       className={`transition-colors ${
-                        isSelected ? 'bg-[#222222]' : 'hover:bg-white/[0.02]'
+                        isSelected ? 'bg-[#1E2638]' : 'hover:bg-white/[0.02]'
                       }`}
                     >
                       <td className="py-3 px-4">
@@ -1329,11 +1329,11 @@ export const Analytics = () => {
 
                       <td className="py-3 px-4 font-mono">
                         {sim.is_valid_config ? (
-                          <Badge variant="outline" size="sm" className="font-mono text-[10px] text-[#FFFFFF] border-[#333333]">
+                          <Badge variant="outline" size="sm" className="font-mono text-[10px] text-[#FFFFFF] border-[#222E42]">
                             {sim.feasibility_percentage.toFixed(1)}%
                           </Badge>
                         ) : (
-                          <Badge variant="outline" size="sm" className="font-mono text-[10px] text-[#A3A3A3] border-[#333333]">
+                          <Badge variant="outline" size="sm" className="font-mono text-[10px] text-[#A3A3A3] border-[#222E42]">
                             Incomplete
                           </Badge>
                         )}

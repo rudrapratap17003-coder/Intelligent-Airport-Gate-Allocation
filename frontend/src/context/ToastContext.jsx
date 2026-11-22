@@ -6,17 +6,17 @@ import { toastVariants } from '../lib/animations'
 const ToastContext = createContext(null)
 
 const icons = {
-  success: CheckCircle2,
-  warning: AlertTriangle,
-  error: AlertCircle,
-  info: Info
+  success: { icon: CheckCircle2, color: 'text-emerald-400' },
+  warning: { icon: AlertTriangle, color: 'text-amber-400' },
+  error: { icon: AlertCircle, color: 'text-rose-400' },
+  info: { icon: Info, color: 'text-sky-400' }
 }
 
 const styles = {
-  success: 'bg-[#181818] border-[#555555] text-[#FFFFFF] shadow-xl',
-  warning: 'bg-[#181818] border-[#333333] text-[#E5E5E5] shadow-xl',
-  error: 'bg-[#181818] border-[#555555] text-[#FFFFFF] shadow-xl',
-  info: 'bg-[#181818] border-[#333333] text-[#FFFFFF] shadow-xl'
+  success: 'bg-[#0D121F]/95 border-emerald-500/40 text-[#F8FAFC] shadow-2xl',
+  warning: 'bg-[#0D121F]/95 border-amber-500/40 text-[#F8FAFC] shadow-2xl',
+  error: 'bg-[#0D121F]/95 border-rose-500/40 text-[#F8FAFC] shadow-2xl',
+  info: 'bg-[#0D121F]/95 border-sky-500/40 text-[#F8FAFC] shadow-2xl'
 }
 
 export const ToastProvider = ({ children }) => {
@@ -67,7 +67,8 @@ export const ToastProvider = ({ children }) => {
       >
         <AnimatePresence>
           {toasts.map((toast) => {
-            const Icon = icons[toast.type] || icons.info
+            const config = icons[toast.type] || icons.info
+            const IconComponent = config.icon
             const style = styles[toast.type] || styles.info
 
             return (
@@ -80,7 +81,7 @@ export const ToastProvider = ({ children }) => {
                 layout
                 className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl border backdrop-blur-md ${style}`}
               >
-                <Icon className="w-5 h-5 shrink-0 mt-0.5" />
+                <IconComponent className={`w-5 h-5 shrink-0 mt-0.5 ${config.color}`} />
                 <div className="flex-1 min-w-0">
                   {toast.title && (
                     <h5 className="font-semibold text-sm leading-snug">{toast.title}</h5>

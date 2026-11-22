@@ -72,7 +72,7 @@ export const SystemSettings = () => {
   return (
     <div className="space-y-6 animate-fadeIn max-w-6xl mx-auto">
       {/* -------------------- HEADER -------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#333333]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#222E42]">
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">System Settings & Health</h1>
@@ -120,12 +120,12 @@ export const SystemSettings = () => {
 
       {/* -------------------- RUNTIME INFRASTRUCTURE STATUS -------------------- */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="p-4 space-y-3 border-[#333333] bg-[#181818]">
+        <Card className="p-4 space-y-3 border-[#222E42] bg-[#121826]">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary">
               Backend Server
             </span>
-            <div className="p-1.5 rounded-lg bg-[#111111] text-white border border-[#333333]">
+            <div className="p-1.5 rounded-lg bg-[#0D121F] text-white border border-[#222E42]">
               <Server className="w-4 h-4" />
             </div>
           </div>
@@ -136,17 +136,17 @@ export const SystemSettings = () => {
               REST API Online • 127.0.0.1:8000
             </div>
           </div>
-          <p className="text-[11px] text-gw-text-secondary pt-1 border-t border-[#333333] font-mono">
+          <p className="text-[11px] text-gw-text-secondary pt-1 border-t border-[#222E42] font-mono">
             Python 3.14 Core Engine
           </p>
         </Card>
 
-        <Card className="p-4 space-y-3 border-[#333333] bg-[#181818]">
+        <Card className="p-4 space-y-3 border-[#222E42] bg-[#121826]">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary">
               Authoritative Storage Layer
             </span>
-            <div className="p-1.5 rounded-lg bg-[#111111] text-white border border-[#333333]">
+            <div className="p-1.5 rounded-lg bg-[#0D121F] text-white border border-[#222E42]">
               <Database className="w-4 h-4" />
             </div>
           </div>
@@ -157,17 +157,17 @@ export const SystemSettings = () => {
               Synchronized & Persistent
             </div>
           </div>
-          <p className="text-[11px] text-gw-text-secondary pt-1 border-t border-[#333333] font-mono">
+          <p className="text-[11px] text-gw-text-secondary pt-1 border-t border-[#222E42] font-mono">
             Tables: flights, gates, simulations, restrictions
           </p>
         </Card>
 
-        <Card className="p-4 space-y-3 border-[#333333] bg-[#181818]">
+        <Card className="p-4 space-y-3 border-[#222E42] bg-[#121826]">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary">
               Discrete Math Engine
             </span>
-            <div className="p-1.5 rounded-lg bg-[#111111] text-white border border-[#333333]">
+            <div className="p-1.5 rounded-lg bg-[#0D121F] text-white border border-[#222E42]">
               <Cpu className="w-4 h-4" />
             </div>
           </div>
@@ -177,14 +177,14 @@ export const SystemSettings = () => {
               Arbitrary-Precision Integer Arithmetic
             </div>
           </div>
-          <p className="text-[11px] text-gw-text-secondary pt-1 border-t border-[#333333] font-mono">
+          <p className="text-[11px] text-gw-text-secondary pt-1 border-t border-[#222E42] font-mono">
             Zero Mocking • Pure Combinatorics
           </p>
         </Card>
       </div>
 
       {/* -------------------- PRODUCT POSITIONING STATEMENT -------------------- */}
-      <Card className="p-5 border-[#333333] bg-[#181818] space-y-3">
+      <Card className="p-5 border-[#222E42] bg-[#121826] space-y-3">
         <div className="flex items-center gap-2">
           <Info className="w-5 h-5 text-white" />
           <h3 className="font-bold text-sm text-gw-text">System Purpose & Architectural Boundaries</h3>

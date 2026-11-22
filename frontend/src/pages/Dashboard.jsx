@@ -210,47 +210,47 @@ export const Dashboard = () => {
     const valid = math.exact_valid_assignments
     const invalid = Math.max(0, math.total_possible_assignments - valid)
     return [
-      { name: 'Valid Assignments', value: valid, color: '#FFFFFF' },
-      { name: 'Infeasible / Forbidden', value: invalid, color: '#333333' }
+      { name: 'Valid Assignments', value: valid, color: '#38BDF8' },
+      { name: 'Infeasible / Forbidden', value: invalid, color: '#1E2638' }
     ]
   }, [summary])
 
   if (isLoading && !summary) {
     return (
       <div className="space-y-8 animate-fadeIn">
-        <div className="flex items-center justify-between pb-4 border-b border-[#333333]">
+        <div className="flex items-center justify-between pb-4 border-b border-[#222E42]">
           <div className="space-y-2">
-            <div className="h-7 w-64 bg-[#181818] rounded-lg animate-pulse" />
-            <div className="h-4 w-96 bg-[#181818]/60 rounded animate-pulse" />
+            <div className="h-7 w-64 bg-[#121826] rounded-lg animate-pulse" />
+            <div className="h-4 w-96 bg-[#121826]/60 rounded animate-pulse" />
           </div>
-          <div className="h-9 w-40 bg-[#181818] rounded-lg animate-pulse" />
+          <div className="h-9 w-40 bg-[#121826] rounded-lg animate-pulse" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <Card key={i} className="h-28 bg-[#181818] animate-pulse border-[#333333]" />
+            <Card key={i} className="h-28 bg-[#121826] animate-pulse border-[#222E42]" />
           ))}
         </div>
-        <div className="h-64 bg-[#181818]/40 rounded-xl animate-pulse" />
+        <div className="h-64 bg-[#121826]/40 rounded-xl animate-pulse" />
       </div>
     )
   }
 
   if (error && !summary) {
     return (
-      <div className="p-8 max-w-2xl mx-auto my-12 text-center space-y-6 bg-[#181818] border border-[#555555] rounded-2xl shadow-xl">
-        <div className="w-16 h-16 rounded-2xl bg-[#222222] text-[#FFFFFF] border border-[#333333] flex items-center justify-center mx-auto">
+      <div className="p-8 max-w-2xl mx-auto my-12 text-center space-y-6 bg-[#121826] border border-[#222E42] rounded-2xl shadow-xl">
+        <div className="w-16 h-16 rounded-2xl bg-rose-950/30 text-rose-400 border border-rose-800/40 flex items-center justify-center mx-auto">
           <AlertCircle className="w-8 h-8" />
         </div>
         <div className="space-y-2">
-          <h2 className="text-xl font-bold text-[#FFFFFF]">Backend Connection Offline</h2>
-          <p className="text-sm text-[#A3A3A3] leading-relaxed">
+          <h2 className="text-xl font-bold text-[#F8FAFC]">Backend Connection Offline</h2>
+          <p className="text-sm text-[#94A3B8] leading-relaxed">
             Unable to communicate with the FastAPI persistence and discrete math engine.
             Please ensure the backend server is active at{' '}
-            <code className="text-[#FFFFFF] font-mono text-xs bg-black/40 px-2 py-0.5 rounded">
+            <code className="text-sky-400 font-mono text-xs bg-[#080B11] px-2 py-0.5 rounded border border-[#222E42]">
               http://127.0.0.1:8000
             </code>.
           </p>
-          <p className="text-xs text-[#E5E5E5] font-mono bg-[#222222] p-2 rounded-lg border border-[#333333]">
+          <p className="text-xs text-rose-300 font-mono bg-[#0D121F] p-2.5 rounded-lg border border-[#222E42]">
             {error}
           </p>
         </div>
@@ -280,23 +280,24 @@ export const Dashboard = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* ----------------- 1. INSTITUTIONAL HEADER & SINGLE DOMINANT CTA ----------------- */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#333333]">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#222E42]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5 flex-wrap">
-            <h1 className="text-xl sm:text-2xl font-bold text-[#FFFFFF] tracking-tight font-sans">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#F8FAFC] tracking-tight font-sans">
               Airport Operations Dashboard
             </h1>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-[#222222] border border-[#333333] text-[#E5E5E5] font-mono font-medium">
-              DEMONSTRATION ENVIRONMENT
+            <span className="text-[10px] px-2.5 py-0.5 rounded bg-[#121826] border border-[#222E42] text-sky-400 font-mono font-medium flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+              BLR / VOBL DEMO
             </span>
             {lastRefreshedAt && (
-              <span className="text-[11px] text-[#A3A3A3] font-mono hidden md:inline">
+              <span className="text-[11px] text-[#94A3B8] font-mono hidden md:inline">
                 Refreshed {formatTime(lastRefreshedAt)}
               </span>
             )}
           </div>
-          <p className="text-xs text-[#A3A3A3] leading-relaxed">
-            Gate allocation, flight management and operational decision support for Bengaluru airport.
+          <p className="text-xs text-[#94A3B8] leading-relaxed">
+            Gate allocation, flight management and operational decision support for Kempegowda International Airport (BLR / VOBL).
           </p>
         </div>
 
@@ -325,20 +326,20 @@ export const Dashboard = () => {
       {/* ----------------- 2. TOP METRICS (4 KEY KPI CARDS) ----------------- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Registered Flights */}
-        <Card className="hover:border-[#555555] transition-colors p-4 bg-[#181818] border-[#333333]">
+        <Card className="hover:border-sky-500/40 transition-colors p-4 bg-[#121826] border-[#222E42]">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs uppercase font-medium tracking-wider text-[#A3A3A3]">
+            <span className="text-xs uppercase font-medium tracking-wider text-[#94A3B8]">
               Registered Flights
             </span>
-            <div className="p-2 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+            <div className="p-2 rounded-lg bg-[#1E2638] text-sky-400 border border-[#222E42]">
               <Plane className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <Counter value={flights.total} className="text-3xl font-extrabold text-[#FFFFFF]" />
-            <span className="text-xs text-[#A3A3A3]">flights registered</span>
+            <Counter value={flights.total} className="text-3xl font-extrabold text-[#F8FAFC]" />
+            <span className="text-xs text-[#94A3B8]">flights registered</span>
           </div>
-          <div className="mt-3 pt-3 border-t border-[#333333] flex flex-wrap gap-1 text-[11px] text-[#A3A3A3]">
+          <div className="mt-3 pt-3 border-t border-[#222E42] flex flex-wrap gap-1 text-[11px] text-[#94A3B8]">
             <span>{flights.scheduled} sched</span>
             <span>•</span>
             <span>{flights.boarding} boarding</span>
@@ -347,9 +348,9 @@ export const Dashboard = () => {
             <span>•</span>
             <span>{flights.arrived} arrived</span>
           </div>
-          <div className="mt-2 flex items-center justify-between text-[11px] text-[#A3A3A3]">
+          <div className="mt-2 flex items-center justify-between text-[11px] text-[#94A3B8]">
             <span>Fleet Registry</span>
-            <Link to="/flights" className="text-[#FFFFFF] hover:underline flex items-center gap-0.5 font-medium">
+            <Link to="/flights" className="text-sky-400 hover:text-sky-300 flex items-center gap-0.5 font-medium">
               <span>Manage</span>
               <ChevronRight className="w-3 h-3" />
             </Link>
@@ -357,29 +358,29 @@ export const Dashboard = () => {
         </Card>
 
         {/* Card 2: Available Gates */}
-        <Card className="hover:border-[#555555] transition-colors p-4 bg-[#181818] border-[#333333]">
+        <Card className="hover:border-emerald-500/40 transition-colors p-4 bg-[#121826] border-[#222E42]">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs uppercase font-medium tracking-wider text-[#A3A3A3]">
+            <span className="text-xs uppercase font-medium tracking-wider text-[#94A3B8]">
               Available Gates
             </span>
-            <div className="p-2 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+            <div className="p-2 rounded-lg bg-[#1E2638] text-emerald-400 border border-[#222E42]">
               <DoorClosed className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <Counter value={gates.available} className="text-3xl font-extrabold text-[#FFFFFF]" />
-            <span className="text-xs text-[#A3A3A3]">of {gates.total} stands</span>
+            <Counter value={gates.available} className="text-3xl font-extrabold text-[#F8FAFC]" />
+            <span className="text-xs text-[#94A3B8]">of {gates.total} stands</span>
           </div>
-          <div className="mt-3 pt-3 border-t border-[#333333] flex flex-wrap gap-1 text-[11px] text-[#A3A3A3]">
-            <span className="text-[#FFFFFF] font-medium">{gates.available} open</span>
+          <div className="mt-3 pt-3 border-t border-[#222E42] flex flex-wrap gap-1 text-[11px] text-[#94A3B8]">
+            <span className="text-emerald-400 font-medium">{gates.available} open</span>
             <span>•</span>
             <span>{gates.occupied} occupied</span>
             <span>•</span>
             <span>{gates.maintenance} maint</span>
           </div>
-          <div className="mt-2 flex items-center justify-between text-[11px] text-[#A3A3A3]">
+          <div className="mt-2 flex items-center justify-between text-[11px] text-[#94A3B8]">
             <span>Terminal 1 & 2</span>
-            <Link to="/gates" className="text-[#FFFFFF] hover:underline flex items-center gap-0.5 font-medium">
+            <Link to="/gates" className="text-sky-400 hover:text-sky-300 flex items-center gap-0.5 font-medium">
               <span>Manage</span>
               <ChevronRight className="w-3 h-3" />
             </Link>
@@ -387,29 +388,29 @@ export const Dashboard = () => {
         </Card>
 
         {/* Card 3: Gate Utilization */}
-        <Card className="hover:border-[#555555] transition-colors p-4 bg-[#181818] border-[#333333]">
+        <Card className="hover:border-sky-500/40 transition-colors p-4 bg-[#121826] border-[#222E42]">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs uppercase font-medium tracking-wider text-[#A3A3A3]">
+            <span className="text-xs uppercase font-medium tracking-wider text-[#94A3B8]">
               Gate Utilization
             </span>
-            <div className="p-2 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+            <div className="p-2 rounded-lg bg-[#1E2638] text-sky-400 border border-[#222E42]">
               <BarChart3 className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-[#FFFFFF]">
+            <span className="text-3xl font-extrabold text-[#F8FAFC]">
               {gateUtilization}%
             </span>
-            <span className="text-xs text-[#A3A3A3]">stand occupancy</span>
+            <span className="text-xs text-[#94A3B8]">stand occupancy</span>
           </div>
-          <div className="mt-3 pt-3 border-t border-[#333333] flex flex-wrap gap-1 text-[11px] text-[#A3A3A3]">
+          <div className="mt-3 pt-3 border-t border-[#222E42] flex flex-wrap gap-1 text-[11px] text-[#94A3B8]">
             <span>{gates.occupied} occupied</span>
             <span>•</span>
             <span>{gates.total - gates.occupied} vacant</span>
           </div>
-          <div className="mt-2 flex items-center justify-between text-[11px] text-[#A3A3A3]">
+          <div className="mt-2 flex items-center justify-between text-[11px] text-[#94A3B8]">
             <span>Apron Stands</span>
-            <Link to="/airport-map" className="text-[#FFFFFF] hover:underline flex items-center gap-0.5 font-medium">
+            <Link to="/airport-map" className="text-sky-400 hover:text-sky-300 flex items-center gap-0.5 font-medium">
               <span>Layout Map</span>
               <ChevronRight className="w-3 h-3" />
             </Link>
@@ -417,29 +418,29 @@ export const Dashboard = () => {
         </Card>
 
         {/* Card 4: Forbidden Flight-Gate Combinations */}
-        <Card className="hover:border-[#555555] transition-colors p-4 bg-[#181818] border-[#333333]">
+        <Card className="hover:border-amber-500/40 transition-colors p-4 bg-[#121826] border-[#222E42]">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs uppercase font-medium tracking-wider text-[#A3A3A3]">
+            <span className="text-xs uppercase font-medium tracking-wider text-[#94A3B8]">
               Forbidden Combinations
             </span>
-            <div className="p-2 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+            <div className="p-2 rounded-lg bg-[#1E2638] text-amber-400 border border-[#222E42]">
               <Grid3X3 className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-[#FFFFFF]">
+            <span className="text-3xl font-extrabold text-[#F8FAFC]">
               {forbiddenCombinations}
             </span>
-            <span className="text-xs text-[#A3A3A3]">matrix cells (r₁)</span>
+            <span className="text-xs text-[#94A3B8]">matrix cells (r₁)</span>
           </div>
-          <div className="mt-3 pt-3 border-t border-[#333333] flex flex-wrap gap-1 text-[11px] text-[#A3A3A3]">
+          <div className="mt-3 pt-3 border-t border-[#222E42] flex flex-wrap gap-1 text-[11px] text-[#94A3B8]">
             <span>{math ? `${math.restriction_density}% density` : 'No active scenario'}</span>
             <span>•</span>
             <span className="font-mono">{math ? math.simulation_id : '—'}</span>
           </div>
-          <div className="mt-2 flex items-center justify-between text-[11px] text-[#A3A3A3]">
+          <div className="mt-2 flex items-center justify-between text-[11px] text-[#94A3B8]">
             <span>Restriction Matrix</span>
-            <Link to="/restrictions" className="text-[#FFFFFF] hover:underline flex items-center gap-0.5 font-medium">
+            <Link to="/restrictions" className="text-sky-400 hover:text-sky-300 flex items-center gap-0.5 font-medium">
               <span>Inspect</span>
               <ChevronRight className="w-3 h-3" />
             </Link>
@@ -450,92 +451,92 @@ export const Dashboard = () => {
       {/* ----------------- 3. OPERATIONAL OVERVIEW ----------------- */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-xs font-semibold text-[#FFFFFF] uppercase tracking-wider font-mono">
+          <h2 className="text-xs font-semibold text-[#F8FAFC] uppercase tracking-wider font-mono">
             Operational Overview
           </h2>
-          <span className="text-[11px] text-[#A3A3A3] font-mono">
+          <span className="text-[11px] text-[#94A3B8] font-mono">
             Kempegowda International Airport (BLR / VOBL)
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Flight Fleet Breakdown */}
-          <Card className="p-4 bg-[#181818] border-[#333333] space-y-3">
-            <div className="flex items-center justify-between border-b border-[#333333] pb-2">
-              <span className="text-xs font-semibold text-[#FFFFFF]">Flight Fleet Status</span>
-              <Plane className="w-4 h-4 text-[#FFFFFF]" />
+          <Card className="p-4 bg-[#121826] border-[#222E42] space-y-3">
+            <div className="flex items-center justify-between border-b border-[#222E42] pb-2">
+              <span className="text-xs font-semibold text-[#F8FAFC]">Flight Fleet Status</span>
+              <Plane className="w-4 h-4 text-sky-400" />
             </div>
             <div className="space-y-1.5 text-xs">
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Scheduled:</span>
-                <span className="font-mono text-[#FFFFFF] font-medium">{flights.scheduled}</span>
+                <span className="font-mono text-[#F8FAFC] font-medium">{flights.scheduled}</span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Boarding:</span>
-                <span className="font-mono text-[#FFFFFF] font-medium">{flights.boarding}</span>
+                <span className="font-mono text-[#F8FAFC] font-medium">{flights.boarding}</span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Delayed:</span>
-                <span className="font-mono text-[#E5E5E5] font-medium">{flights.delayed}</span>
+                <span className="font-mono text-amber-400 font-medium">{flights.delayed}</span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Arrived / Complete:</span>
-                <span className="font-mono text-[#737373] font-medium">{flights.arrived}</span>
+                <span className="font-mono text-[#64748B] font-medium">{flights.arrived}</span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3] pt-1 border-t border-[#333333]">
+              <div className="flex items-center justify-between text-[#94A3B8] pt-1 border-t border-[#222E42]">
                 <span>Unallocated Flights:</span>
-                <span className="font-mono text-[#FFFFFF] font-medium">{unallocatedFlights}</span>
+                <span className="font-mono text-[#F8FAFC] font-medium">{unallocatedFlights}</span>
               </div>
             </div>
           </Card>
 
           {/* Gate Facility Breakdown */}
-          <Card className="p-4 bg-[#181818] border-[#333333] space-y-3">
-            <div className="flex items-center justify-between border-b border-[#333333] pb-2">
-              <span className="text-xs font-semibold text-[#FFFFFF]">Gate Facility Status</span>
-              <DoorClosed className="w-4 h-4 text-[#FFFFFF]" />
+          <Card className="p-4 bg-[#121826] border-[#222E42] space-y-3">
+            <div className="flex items-center justify-between border-b border-[#222E42] pb-2">
+              <span className="text-xs font-semibold text-[#F8FAFC]">Gate Facility Status</span>
+              <DoorClosed className="w-4 h-4 text-emerald-400" />
             </div>
             <div className="space-y-1.5 text-xs">
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Available (Open):</span>
-                <span className="font-mono text-[#FFFFFF] font-medium">{gates.available}</span>
+                <span className="font-mono text-emerald-400 font-medium">{gates.available}</span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Occupied (In-Use):</span>
-                <span className="font-mono text-[#E5E5E5] font-medium">{gates.occupied}</span>
+                <span className="font-mono text-sky-400 font-medium">{gates.occupied}</span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Maintenance / Closed:</span>
-                <span className="font-mono text-[#737373] font-medium">{gates.maintenance}</span>
+                <span className="font-mono text-[#64748B] font-medium">{gates.maintenance}</span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Total Capacity:</span>
-                <span className="font-mono text-[#FFFFFF] font-medium">{gates.total} stands</span>
+                <span className="font-mono text-[#F8FAFC] font-medium">{gates.total} stands</span>
               </div>
             </div>
           </Card>
 
           {/* Terminal Distribution */}
-          <Card className="p-4 bg-[#181818] border-[#333333] space-y-3">
-            <div className="flex items-center justify-between border-b border-[#333333] pb-2">
-              <span className="text-xs font-semibold text-[#FFFFFF]">Terminal Distribution</span>
-              <Building2 className="w-4 h-4 text-[#FFFFFF]" />
+          <Card className="p-4 bg-[#121826] border-[#222E42] space-y-3">
+            <div className="flex items-center justify-between border-b border-[#222E42] pb-2">
+              <span className="text-xs font-semibold text-[#F8FAFC]">Terminal Distribution</span>
+              <Building2 className="w-4 h-4 text-sky-400" />
             </div>
             <div className="space-y-1.5 text-xs">
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Terminal 1 (Domestic):</span>
-                <span className="font-mono text-[#FFFFFF] font-medium">Code C / D</span>
+                <span className="font-mono text-[#F8FAFC] font-medium">Code C / D</span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Terminal 2 (Int'l / Premium):</span>
-                <span className="font-mono text-[#E5E5E5] font-medium">Code E / F</span>
+                <span className="font-mono text-sky-300 font-medium">Code E / F</span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Key Carriers:</span>
-                <span className="text-[#A3A3A3] text-[11px] truncate">6E, AI, QP, EK, SQ</span>
+                <span className="text-[#94A3B8] text-[11px] truncate">6E, AI, QP, EK, SQ</span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3] pt-1">
-                <Link to="/airport-map" className="text-[#FFFFFF] text-[11px] hover:underline flex items-center gap-1">
+              <div className="flex items-center justify-between text-[#94A3B8] pt-1">
+                <Link to="/airport-map" className="text-sky-400 text-[11px] hover:text-sky-300 flex items-center gap-1 font-medium">
                   <span>View Terminal Aprons</span>
                   <ArrowRight className="w-3 h-3" />
                 </Link>
@@ -544,33 +545,33 @@ export const Dashboard = () => {
           </Card>
 
           {/* Active Feasibility */}
-          <Card className="p-4 bg-[#181818] border-[#333333] space-y-3">
-            <div className="flex items-center justify-between border-b border-[#333333] pb-2">
-              <span className="text-xs font-semibold text-[#FFFFFF]">Scenario Feasibility</span>
-              <Calculator className="w-4 h-4 text-[#FFFFFF]" />
+          <Card className="p-4 bg-[#121826] border-[#222E42] space-y-3">
+            <div className="flex items-center justify-between border-b border-[#222E42] pb-2">
+              <span className="text-xs font-semibold text-[#F8FAFC]">Scenario Feasibility</span>
+              <Calculator className="w-4 h-4 text-sky-400" />
             </div>
             <div className="space-y-1.5 text-xs">
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Active Scenario:</span>
-                <span className="font-mono text-[#FFFFFF] font-medium truncate max-w-[120px]">
+                <span className="font-mono text-sky-400 font-medium truncate max-w-[120px]">
                   {math ? math.simulation_id : 'None'}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Board Dimensions:</span>
-                <span className="font-mono text-[#FFFFFF] font-medium">
+                <span className="font-mono text-[#F8FAFC] font-medium">
                   {math ? `${math.matrix_size} × ${math.matrix_size}` : '—'}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Exact Valid (PIE):</span>
-                <span className="font-mono text-[#FFFFFF] font-medium">
+                <span className="font-mono text-emerald-400 font-medium">
                   {math ? math.exact_valid_assignments.toLocaleString() : '—'}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-[#A3A3A3]">
+              <div className="flex items-center justify-between text-[#94A3B8]">
                 <span>Feasibility Ratio:</span>
-                <span className="font-mono text-[#E5E5E5] font-medium">
+                <span className="font-mono text-[#F8FAFC] font-medium">
                   {math ? `${math.feasibility_percentage.toFixed(1)}%` : '—'}
                 </span>
               </div>
@@ -583,12 +584,12 @@ export const Dashboard = () => {
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Bell className="w-4 h-4 text-[#FFFFFF]" />
-            <h2 className="text-xs font-semibold text-[#FFFFFF] uppercase tracking-wider font-mono">
+            <Bell className="w-4 h-4 text-sky-400" />
+            <h2 className="text-xs font-semibold text-[#F8FAFC] uppercase tracking-wider font-mono">
               Alerts & Notifications
             </h2>
           </div>
-          <span className="text-xs text-[#A3A3A3] font-mono">
+          <span className="text-xs text-[#94A3B8] font-mono">
             {alerts && alerts.length > 0 ? `${alerts.length} Active` : 'All Clear'}
           </span>
         </div>
@@ -596,23 +597,23 @@ export const Dashboard = () => {
         {alerts && alerts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {alerts.map((a) => (
-              <div key={a.id} className="p-3 rounded-lg bg-[#181818] border border-[#333333] flex items-start gap-3">
-                <AlertTriangle className="w-4 h-4 text-[#FFFFFF] shrink-0 mt-0.5" />
+              <div key={a.id} className="p-3 rounded-lg bg-[#121826] border border-[#222E42] flex items-start gap-3">
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#222222] text-[#E5E5E5] border border-[#333333]">
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#1E2638] text-sky-300 border border-[#222E42]">
                       {a.category || 'OPERATIONAL'}
                     </span>
-                    <span className="text-xs font-semibold text-[#FFFFFF] truncate">{a.title}</span>
+                    <span className="text-xs font-semibold text-[#F8FAFC] truncate">{a.title}</span>
                   </div>
-                  <p className="text-[11px] text-[#A3A3A3] mt-1 leading-relaxed">{a.explanation}</p>
+                  <p className="text-[11px] text-[#94A3B8] mt-1 leading-relaxed">{a.explanation}</p>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] flex items-center gap-3 text-xs text-[#A3A3A3]">
-            <CheckCircle2 className="w-4 h-4 text-[#FFFFFF] shrink-0" />
+          <div className="p-3.5 rounded-xl bg-[#121826] border border-[#222E42] flex items-center gap-3 text-xs text-[#94A3B8]">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>No active alerts in the current demonstration dataset.</span>
           </div>
         )}
@@ -623,21 +624,21 @@ export const Dashboard = () => {
         {/* Left Column: Combinatorial Engine & Theory Evaluation (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <h2 className="text-sm font-semibold text-[#FFFFFF] flex items-center gap-2 uppercase tracking-wider font-mono">
-              <Cpu className="w-4 h-4 text-[#FFFFFF]" />
+            <h2 className="text-sm font-semibold text-[#F8FAFC] flex items-center gap-2 uppercase tracking-wider font-mono">
+              <Cpu className="w-4 h-4 text-sky-400" />
               <span>Discrete Mathematical Engine</span>
             </h2>
 
             {/* Target Scenario Selector */}
             <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
-              <span className="text-xs text-[#A3A3A3] font-mono shrink-0">Target Scenario:</span>
+              <span className="text-xs text-[#94A3B8] font-mono shrink-0">Target Scenario:</span>
               <select
                 value={selectedSimId}
                 onChange={(e) => handleSimulationChange(e.target.value)}
-                className="bg-[#181818] border border-[#333333] rounded-lg px-2.5 py-1 text-xs text-[#FFFFFF] font-mono focus:border-[#777777] focus:outline-none cursor-pointer max-w-[240px] truncate"
+                className="bg-[#121826] border border-[#222E42] rounded-lg px-2.5 py-1 text-xs text-[#F8FAFC] font-mono focus:border-sky-400 focus:outline-none cursor-pointer max-w-[240px] truncate"
               >
                 {simulationOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value} className="bg-[#181818] text-[#FFFFFF]">
+                  <option key={opt.value} value={opt.value} className="bg-[#121826] text-[#F8FAFC]">
                     {opt.label}
                   </option>
                 ))}
@@ -645,18 +646,18 @@ export const Dashboard = () => {
             </div>
           </div>
 
-          <Card className="space-y-5 p-5 bg-[#181818] border-[#333333]">
+          <Card className="space-y-5 p-5 bg-[#121826] border-[#222E42]">
             {math ? (
               <>
-                <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#333333]">
+                <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#222E42]">
                   <div>
-                    <h3 className="text-base font-bold text-[#FFFFFF] flex items-center gap-2">
+                    <h3 className="text-base font-bold text-[#F8FAFC] flex items-center gap-2">
                       <span>{math.simulation_name}</span>
-                      <Badge variant="default" size="sm" className="font-mono text-[#FFFFFF] border-[#555555]">
+                      <Badge variant="cyan" size="sm" className="font-mono">
                         {math.matrix_size} × {math.matrix_size} Board
                       </Badge>
                     </h3>
-                    <p className="text-xs text-[#A3A3A3] mt-1">
+                    <p className="text-xs text-[#94A3B8] mt-1">
                       Exact combinatorial calculation derived via Rook Polynomial dynamic programming and Principle of Inclusion-Exclusion.
                     </p>
                   </div>
@@ -670,45 +671,45 @@ export const Dashboard = () => {
                 {/* Mathematical Formulations Display */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Formula Box 1: Rook Polynomial */}
-                  <div className="p-3.5 rounded-xl bg-[#111111] border border-[#333333] space-y-2">
+                  <div className="p-3.5 rounded-xl bg-[#0D121F] border border-[#222E42] space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#A3A3A3]">
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-sky-400">
                         1. Rook Polynomial R(B, x)
                       </span>
-                      <Badge variant="default" size="sm" className="font-mono text-[10px] text-[#FFFFFF]">
+                      <Badge variant="outline" size="sm" className="font-mono text-[10px]">
                         Deg {math.rook_coefficients.length - 1}
                       </Badge>
                     </div>
-                    <div className="text-xs break-all font-mono py-2 text-[#FFFFFF]">
+                    <div className="text-xs break-all font-mono py-2 text-[#F8FAFC]">
                       {math.rook_polynomial}
                     </div>
-                    <p className="text-[11px] text-[#A3A3A3] leading-relaxed">
-                      Coefficients <span className="font-mono text-[#FFFFFF]">rₖ</span> represent non-attacking rooks on forbidden cells.
+                    <p className="text-[11px] text-[#94A3B8] leading-relaxed">
+                      Coefficients <span className="font-mono text-sky-400">rₖ</span> represent non-attacking rooks on forbidden cells.
                     </p>
                   </div>
 
                   {/* Formula Box 2: PIE Exact Sum */}
-                  <div className="p-3.5 rounded-xl bg-[#111111] border border-[#333333] space-y-2">
+                  <div className="p-3.5 rounded-xl bg-[#0D121F] border border-[#222E42] space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#A3A3A3]">
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-400">
                         2. Inclusion-Exclusion (PIE)
                       </span>
-                      <Badge variant="default" size="sm" className="font-mono text-[10px] text-[#FFFFFF]">
+                      <Badge variant="outline" size="sm" className="font-mono text-[10px]">
                         Exact Integer
                       </Badge>
                     </div>
-                    <div className="text-xs break-all font-mono py-2 text-[#FFFFFF]">
-                      N = Σ [(-1)ᵏ · rₖ · (n - k)!] = {math.exact_valid_assignments.toLocaleString()}
+                    <div className="text-xs break-all font-mono py-2 text-[#F8FAFC]">
+                      N = Σ [(-1)ᵏ · rₖ · (n - k)!] = <span className="text-emerald-400 font-bold">{math.exact_valid_assignments.toLocaleString()}</span>
                     </div>
-                    <p className="text-[11px] text-[#A3A3A3] leading-relaxed">
+                    <p className="text-[11px] text-[#94A3B8] leading-relaxed">
                       Exact number of bijective assignments violating zero restriction constraints out of{' '}
-                      <span className="font-mono text-[#FFFFFF]">{math.total_possible_assignments.toLocaleString()}</span>.
+                      <span className="font-mono text-[#F8FAFC]">{math.total_possible_assignments.toLocaleString()}</span>.
                     </p>
                   </div>
                 </div>
 
                 {/* Combinatorial Breakdown Visualization */}
-                <div className="pt-2 border-t border-[#333333] flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div className="pt-2 border-t border-[#222E42] flex flex-col sm:flex-row items-center justify-between gap-6">
                   <div className="w-full sm:w-48 h-36 relative shrink-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -722,7 +723,7 @@ export const Dashboard = () => {
                           dataKey="value"
                         >
                           {feasibilityChartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} stroke="#090909" strokeWidth={2} />
+                            <Cell key={`cell-${index}`} fill={entry.color} stroke="#080B11" strokeWidth={2} />
                           ))}
                         </Pie>
                         <Tooltip
@@ -730,9 +731,9 @@ export const Dashboard = () => {
                             if (active && payload && payload.length) {
                               const data = payload[0].payload
                               return (
-                                <div className="p-2 rounded bg-[#181818] border border-[#333333] text-xs font-mono shadow-lg">
-                                  <div className="font-bold text-[#FFFFFF]">{data.name}</div>
-                                  <div className="text-[#E5E5E5]">{data.value.toLocaleString()} assignments</div>
+                                <div className="p-2.5 rounded bg-[#121826] border border-[#222E42] text-xs font-mono shadow-xl">
+                                  <div className="font-bold text-[#F8FAFC]">{data.name}</div>
+                                  <div className="text-sky-300">{data.value.toLocaleString()} assignments</div>
                                 </div>
                               )
                             }
@@ -742,40 +743,40 @@ export const Dashboard = () => {
                       </PieChart>
                     </ResponsiveContainer>
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                      <span className="text-xs font-bold font-mono text-[#FFFFFF]">
+                      <span className="text-xs font-bold font-mono text-[#F8FAFC]">
                         {math.feasibility_percentage.toFixed(0)}%
                       </span>
-                      <span className="text-[9px] uppercase tracking-wider text-[#A3A3A3]">Valid</span>
+                      <span className="text-[9px] uppercase tracking-wider text-[#94A3B8]">Valid</span>
                     </div>
                   </div>
 
-                  <div className="flex-1 space-y-2.5 text-xs text-[#A3A3A3] w-full">
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-[#111111] border border-[#333333]">
+                  <div className="flex-1 space-y-2.5 text-xs text-[#94A3B8] w-full">
+                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#0D121F] border border-[#222E42]">
                       <span className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#FFFFFF]" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
                         <span>Valid Assignments (N)</span>
                       </span>
-                      <span className="font-mono font-bold text-[#FFFFFF]">
+                      <span className="font-mono font-bold text-sky-400">
                         {math.exact_valid_assignments.toLocaleString()}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-[#111111] border border-[#333333]">
+                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#0D121F] border border-[#222E42]">
                       <span className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#333333]" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#1E2638] border border-[#222E42]" />
                         <span>Infeasible Permutations</span>
                       </span>
-                      <span className="font-mono text-[#A3A3A3]">
+                      <span className="font-mono text-[#94A3B8]">
                         {(math.total_possible_assignments - math.exact_valid_assignments).toLocaleString()}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-[#111111] border border-[#333333]">
+                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#0D121F] border border-[#222E42]">
                       <span className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#737373]" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                         <span>Forbidden Matrix Cells</span>
                       </span>
-                      <span className="font-mono text-[#FFFFFF]">
+                      <span className="font-mono text-amber-400">
                         {math.forbidden_assignment_count} / {math.matrix_size * math.matrix_size} ({math.restriction_density}%)
                       </span>
                     </div>
@@ -784,9 +785,9 @@ export const Dashboard = () => {
               </>
             ) : (
               <div className="p-8 text-center space-y-3">
-                <AlertTriangle className="w-10 h-10 text-[#A3A3A3] mx-auto" />
-                <h3 className="text-sm font-bold text-[#FFFFFF]">No Balanced Scenario Selected</h3>
-                <p className="text-xs text-[#A3A3A3] max-w-md mx-auto">
+                <AlertTriangle className="w-10 h-10 text-amber-400 mx-auto" />
+                <h3 className="text-sm font-bold text-[#F8FAFC]">No Balanced Scenario Selected</h3>
+                <p className="text-xs text-[#94A3B8] max-w-md mx-auto">
                   The selected scenario has an unbalanced flight/gate configuration or an uninitialized restriction matrix.
                   Select a valid n × n scenario to view exact mathematical derivations.
                 </p>
@@ -803,83 +804,83 @@ export const Dashboard = () => {
         {/* Right Column: Allocation Generator & Conflict Audit (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-[#FFFFFF] flex items-center gap-2 uppercase tracking-wider font-mono">
-              <ShieldCheck className="w-4 h-4 text-[#FFFFFF]" />
+            <h2 className="text-sm font-semibold text-[#F8FAFC] flex items-center gap-2 uppercase tracking-wider font-mono">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>Allocation Generation & Audit</span>
             </h2>
-            <Link to="/workspace" className="text-xs text-[#FFFFFF] hover:underline flex items-center gap-0.5">
+            <Link to="/workspace" className="text-xs text-sky-400 hover:text-sky-300 flex items-center gap-0.5 font-medium">
               <span>Workspace</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <Card className="space-y-4 p-5 bg-[#181818] border-[#333333]">
+          <Card className="space-y-4 p-5 bg-[#121826] border-[#222E42]">
             <div className="space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-[#FFFFFF]">On-Demand Generation Engine</span>
-                <Badge variant={allocationSample ? 'default' : 'default'} size="sm" className="font-mono text-[10px] text-[#FFFFFF]">
+                <span className="text-xs font-semibold text-[#F8FAFC]">On-Demand Generation Engine</span>
+                <Badge variant={allocationSample ? 'success' : 'outline'} size="sm" className="font-mono text-[10px]">
                   {allocationSample ? 'Sample Loaded' : 'Ready'}
                 </Badge>
               </div>
-              <p className="text-xs text-[#A3A3A3] leading-relaxed">
+              <p className="text-xs text-[#94A3B8] leading-relaxed">
                 Backtracking engine with independent conflict audit. Distinguishes exact theoretical counts from materialized plans.
               </p>
             </div>
 
             {/* Clear Callout Distinguishing Exact Theoretical vs Materialized Plans */}
-            <div className="p-3 rounded-lg bg-[#111111] border border-[#333333] text-[11px] text-[#A3A3A3] space-y-1">
-              <div className="flex items-center gap-1.5 font-semibold text-[#FFFFFF]">
-                <Info className="w-3.5 h-3.5 shrink-0" />
+            <div className="p-3 rounded-lg bg-[#0D121F] border border-[#222E42] text-[11px] text-[#94A3B8] space-y-1">
+              <div className="flex items-center gap-1.5 font-semibold text-[#F8FAFC]">
+                <Info className="w-3.5 h-3.5 text-sky-400 shrink-0" />
                 <span>Exact Total vs. Generated Sample</span>
               </div>
               <p className="leading-relaxed">
                 The PIE engine proves there are{' '}
-                <strong className="text-[#FFFFFF]">{math ? math.exact_valid_assignments.toLocaleString() : 'N'}</strong>{' '}
+                <strong className="text-emerald-400">{math ? math.exact_valid_assignments.toLocaleString() : 'N'}</strong>{' '}
                 valid assignments. The allocation generator produces materialized plans on demand with zero conflict tolerance.
               </p>
             </div>
 
             {/* Allocation Results Panel */}
             {allocationSample ? (
-              <div className="space-y-3 pt-2 border-t border-[#333333]">
+              <div className="space-y-3 pt-2 border-t border-[#222E42]">
                 <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-                  <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333] space-y-0.5">
-                    <span className="text-[10px] text-[#A3A3A3] uppercase block">Generated Plans</span>
-                    <span className="text-lg font-bold text-[#FFFFFF]">
+                  <div className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42] space-y-0.5">
+                    <span className="text-[10px] text-[#94A3B8] uppercase block">Generated Plans</span>
+                    <span className="text-lg font-bold text-sky-400">
                       {allocationSample.generated_count}{' '}
-                      <span className="text-xs font-normal text-[#A3A3A3]">/ {allocationSample.total_valid_assignments}</span>
+                      <span className="text-xs font-normal text-[#94A3B8]">/ {allocationSample.total_valid_assignments}</span>
                     </span>
                   </div>
 
-                  <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333] space-y-0.5">
-                    <span className="text-[10px] text-[#A3A3A3] uppercase block">Conflict Status</span>
-                    <span className="text-lg font-bold text-[#FFFFFF] flex items-center gap-1">
+                  <div className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42] space-y-0.5">
+                    <span className="text-[10px] text-[#94A3B8] uppercase block">Conflict Status</span>
+                    <span className="text-lg font-bold text-emerald-400 flex items-center gap-1">
                       <CheckCircle2 className="w-4 h-4" />
                       <span>100% Valid</span>
                     </span>
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded-lg bg-[#111111] border border-[#333333] text-xs space-y-1">
-                  <div className="flex items-center justify-between text-[#A3A3A3]">
+                <div className="p-2.5 rounded-lg bg-[#0D121F] border border-[#222E42] text-xs space-y-1">
+                  <div className="flex items-center justify-between text-[#94A3B8]">
                     <span>Actual Allocation Conflicts:</span>
-                    <span className="font-mono text-[#FFFFFF] font-medium">{actualAllocationConflicts} (Conflict-Free)</span>
+                    <span className="font-mono text-emerald-400 font-medium">{actualAllocationConflicts} (Conflict-Free)</span>
                   </div>
-                  <div className="flex items-center justify-between text-[#A3A3A3]">
+                  <div className="flex items-center justify-between text-[#94A3B8]">
                     <span>Forbidden Pairs Enforced:</span>
-                    <span className="font-mono text-[#FFFFFF] font-medium">{forbiddenCombinations}</span>
+                    <span className="font-mono text-amber-400 font-medium">{forbiddenCombinations}</span>
                   </div>
-                  <div className="flex items-center justify-between text-[#A3A3A3]">
+                  <div className="flex items-center justify-between text-[#94A3B8]">
                     <span>Algorithm:</span>
-                    <span className="font-mono text-[#FFFFFF]">{allocationSample.algorithm}</span>
+                    <span className="font-mono text-[#F8FAFC]">{allocationSample.algorithm}</span>
                   </div>
-                  <div className="flex items-center justify-between text-[#A3A3A3]">
+                  <div className="flex items-center justify-between text-[#94A3B8]">
                     <span>Validation Engine:</span>
-                    <span className="font-mono text-[#FFFFFF]">Independent Conflict Auditor</span>
+                    <span className="font-mono text-emerald-400">Independent Conflict Auditor</span>
                   </div>
-                  <div className="flex items-center justify-between text-[#A3A3A3]">
+                  <div className="flex items-center justify-between text-[#94A3B8]">
                     <span>Completion Status:</span>
-                    <span className="font-mono text-[#FFFFFF]">
+                    <span className="font-mono text-sky-400">
                       {allocationSample.generation_complete ? 'Complete (All Generated)' : 'Sample Window (More Exist)'}
                     </span>
                   </div>
@@ -902,14 +903,14 @@ export const Dashboard = () => {
                 </div>
               </div>
             ) : (
-              <div className="space-y-3 pt-2 border-t border-[#333333]">
-                <p className="text-xs text-[#A3A3A3] leading-relaxed">
+              <div className="space-y-3 pt-2 border-t border-[#222E42]">
+                <p className="text-xs text-[#94A3B8] leading-relaxed">
                   Generate and independently audit a batch of 50 conflict-free flight-to-gate assignments for scenario{' '}
-                  <strong className="text-[#FFFFFF] font-mono">{selectedSimId}</strong>.
+                  <strong className="text-sky-400 font-mono">{selectedSimId}</strong>.
                 </p>
 
                 {allocationError && (
-                  <div className="p-2.5 rounded-lg bg-[#222222] border border-[#555555] text-xs text-[#FFFFFF] flex items-start gap-2">
+                  <div className="p-2.5 rounded-lg bg-rose-950/30 border border-rose-800/40 text-xs text-rose-300 flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                     <span>{allocationError}</span>
                   </div>
@@ -934,11 +935,11 @@ export const Dashboard = () => {
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 className="text-xs font-semibold text-[#FFFFFF] uppercase tracking-wider font-mono flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#FFFFFF]" />
+            <h2 className="text-xs font-semibold text-[#F8FAFC] uppercase tracking-wider font-mono flex items-center gap-2">
+              <Layers className="w-4 h-4 text-sky-400" />
               <span>Registered Simulation Scenarios</span>
             </h2>
-            <p className="text-xs text-[#A3A3A3] mt-0.5">
+            <p className="text-xs text-[#94A3B8] mt-0.5">
               Allocation scenario windows configured in the database storage layer.
             </p>
           </div>
@@ -950,10 +951,10 @@ export const Dashboard = () => {
         </div>
 
         {simulations.simulations.length > 0 ? (
-          <Card className="p-0 overflow-hidden border-[#333333] bg-[#181818]">
+          <Card className="p-0 overflow-hidden border-[#222E42] bg-[#121826]">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs divide-y divide-[#333333]/60">
-                <thead className="bg-[#111111] text-[#A3A3A3] uppercase font-mono text-[10px] tracking-wider">
+              <table className="w-full text-left text-xs divide-y divide-[#222E42]">
+                <thead className="bg-[#0D121F] text-[#94A3B8] uppercase font-mono text-[10px] tracking-wider">
                   <tr>
                     <th className="py-3 px-4">Scenario</th>
                     <th className="py-3 px-4">Dimensions</th>
@@ -963,23 +964,23 @@ export const Dashboard = () => {
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#333333]/40">
+                <tbody className="divide-y divide-[#222E42]/60">
                   {simulations.simulations.map((sim) => {
                     const isSelected = sim.id === selectedSimId
                     return (
                       <tr
                         key={sim.id}
                         className={`transition-colors ${
-                          isSelected ? 'bg-[#2A2A2A]' : 'hover:bg-[#222222]'
+                          isSelected ? 'bg-sky-500/10' : 'hover:bg-[#1E2638]/50'
                         }`}
                       >
                         <td className="py-3.5 px-4">
                           <div className="flex items-center gap-2.5">
-                            <span className="font-mono text-[#FFFFFF] font-bold text-xs">{sim.id}</span>
+                            <span className="font-mono text-sky-400 font-bold text-xs">{sim.id}</span>
                             <div>
-                              <div className="font-semibold text-[#FFFFFF] text-xs">{sim.name}</div>
+                              <div className="font-semibold text-[#F8FAFC] text-xs">{sim.name}</div>
                               {sim.description && (
-                                <div className="text-[11px] text-[#A3A3A3] truncate max-w-xs">
+                                <div className="text-[11px] text-[#94A3B8] truncate max-w-xs">
                                   {sim.description}
                                 </div>
                               )}
@@ -988,30 +989,30 @@ export const Dashboard = () => {
                         </td>
 
                         <td className="py-3.5 px-4 font-mono">
-                          <span className="text-[#FFFFFF] font-medium">{sim.flight_count} flights</span>
-                          <span className="text-[#737373]"> × </span>
-                          <span className="text-[#FFFFFF] font-medium">{sim.gate_count} gates</span>
+                          <span className="text-[#F8FAFC] font-medium">{sim.flight_count} flights</span>
+                          <span className="text-[#64748B]"> × </span>
+                          <span className="text-[#F8FAFC] font-medium">{sim.gate_count} gates</span>
                         </td>
 
                         <td className="py-3.5 px-4">
-                          <span className="font-mono text-[#E5E5E5] text-[11px] bg-[#222222] px-2 py-0.5 rounded border border-[#333333]">
+                          <span className="font-mono text-[#F8FAFC] text-[11px] bg-[#1E2638] px-2 py-0.5 rounded border border-[#222E42]">
                             {sim.matrix_status}
                           </span>
                         </td>
 
                         <td className="py-3.5 px-4">
                           {sim.is_valid ? (
-                            <Badge variant="default" size="sm" className="font-mono text-[10px] text-[#FFFFFF] border-[#555555]">
+                            <Badge variant="cyan" size="sm" className="font-mono text-[10px]">
                               Balanced (n × n)
                             </Badge>
                           ) : (
-                            <Badge variant="default" size="sm" className="font-mono text-[10px] text-[#A3A3A3] border-[#333333]">
+                            <Badge variant="outline" size="sm" className="font-mono text-[10px]">
                               Incomplete
                             </Badge>
                           )}
                         </td>
 
-                        <td className="py-3.5 px-4 font-mono text-[11px] text-[#A3A3A3]">
+                        <td className="py-3.5 px-4 font-mono text-[11px] text-[#94A3B8]">
                           {formatTime(sim.updated_at)}
                         </td>
 
@@ -1045,9 +1046,9 @@ export const Dashboard = () => {
             </div>
           </Card>
         ) : (
-          <Card className="p-8 text-center space-y-3 bg-[#181818] border-[#333333]">
-            <Layers className="w-8 h-8 text-[#A3A3A3] mx-auto" />
-            <p className="text-sm text-[#A3A3A3]">No simulation scenarios found in the registry.</p>
+          <Card className="p-8 text-center space-y-3 bg-[#121826] border-[#222E42]">
+            <Layers className="w-8 h-8 text-[#94A3B8] mx-auto" />
+            <p className="text-sm text-[#94A3B8]">No simulation scenarios found in the registry.</p>
             <Link to="/scenarios">
               <Button size="sm" icon={PlayCircle}>
                 Create Initial Scenario
@@ -1061,21 +1062,21 @@ export const Dashboard = () => {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xs font-semibold text-[#FFFFFF] uppercase tracking-wider font-mono flex items-center gap-2">
-              <Activity className="w-4 h-4 text-[#FFFFFF]" />
+            <h2 className="text-xs font-semibold text-[#F8FAFC] uppercase tracking-wider font-mono flex items-center gap-2">
+              <Activity className="w-4 h-4 text-sky-400" />
               <span>Operational Activity Stream</span>
             </h2>
-            <p className="text-xs text-[#A3A3A3] mt-0.5">
+            <p className="text-xs text-[#94A3B8] mt-0.5">
               Chronological log of database operations and calculation events.
             </p>
           </div>
-          <span className="text-xs font-mono text-[#A3A3A3]">
+          <span className="text-xs font-mono text-[#94A3B8]">
             Audit Stream
           </span>
         </div>
 
         {summary?.recent_activities?.length > 0 ? (
-          <Card className="p-0 overflow-hidden divide-y divide-[#333333] bg-[#181818] border-[#333333]">
+          <Card className="p-0 overflow-hidden divide-y divide-[#222E42] bg-[#121826] border-[#222E42]">
             {summary.recent_activities.map((act) => {
               let Icon = Activity
               if (act.entity_type === 'Flight') Icon = Plane
@@ -1085,25 +1086,25 @@ export const Dashboard = () => {
               else if (act.entity_type === 'Allocation') Icon = Calculator
 
               return (
-                <div key={act.id} className="p-3.5 hover:bg-[#222222] transition-colors flex items-start gap-3.5">
-                  <div className="p-2 rounded-lg shrink-0 mt-0.5 bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+                <div key={act.id} className="p-3.5 hover:bg-[#1E2638]/50 transition-colors flex items-start gap-3.5">
+                  <div className="p-2 rounded-lg shrink-0 mt-0.5 bg-[#1E2638] text-sky-400 border border-[#222E42]">
                     <Icon className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <h4 className="text-sm font-semibold text-[#FFFFFF] truncate">{act.title}</h4>
-                      <span className="text-[11px] text-[#A3A3A3] font-mono shrink-0">
+                      <h4 className="text-sm font-semibold text-[#F8FAFC] truncate">{act.title}</h4>
+                      <span className="text-[11px] text-[#94A3B8] font-mono shrink-0">
                         {formatTime(act.timestamp)}
                       </span>
                     </div>
-                    <p className="text-xs text-[#A3A3A3] mt-0.5 leading-relaxed">{act.detail}</p>
+                    <p className="text-xs text-[#94A3B8] mt-0.5 leading-relaxed">{act.detail}</p>
                   </div>
                 </div>
               )
             })}
           </Card>
         ) : (
-          <Card className="p-6 text-center text-xs text-[#A3A3A3] bg-[#181818] border-[#333333]">
+          <Card className="p-6 text-center text-xs text-[#94A3B8] bg-[#121826] border-[#222E42]">
             No activity events recorded yet. Operational actions will populate this audit log.
           </Card>
         )}
@@ -1113,15 +1114,15 @@ export const Dashboard = () => {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xs font-semibold text-[#FFFFFF] uppercase tracking-wider font-mono flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#FFFFFF]" />
+            <h2 className="text-xs font-semibold text-[#F8FAFC] uppercase tracking-wider font-mono flex items-center gap-2">
+              <Layers className="w-4 h-4 text-sky-400" />
               <span>Operational Modules</span>
             </h2>
-            <p className="text-xs text-[#A3A3A3] mt-0.5">
+            <p className="text-xs text-[#94A3B8] mt-0.5">
               Direct access to all GateWise BLR facilities and analytical subsystems.
             </p>
           </div>
-          <span className="text-xs text-[#A3A3A3] font-mono">8 Subsystems</span>
+          <span className="text-xs text-[#94A3B8] font-mono">8 Subsystems</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1131,30 +1132,30 @@ export const Dashboard = () => {
               <Link
                 key={mod.path}
                 to={mod.path}
-                className="group block rounded-xl transition-all duration-200"
+                className="group block rounded-xl transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
               >
-                <Card className="h-full bg-[#181818] border-[#333333] group-hover:border-[#555555] group-hover:bg-[#222222] transition-all flex flex-col justify-between p-4">
+                <Card className="h-full bg-[#121826] border-[#222E42] group-hover:border-sky-500/40 group-hover:bg-[#1E2638] transition-all flex flex-col justify-between p-4 shadow-sm">
                   <div>
                     <div className="flex items-start justify-between gap-3 mb-3">
-                      <div className="p-2 rounded-lg bg-[#222222] border border-[#333333] text-[#FFFFFF] transition-transform">
+                      <div className="p-2 rounded-lg bg-[#1E2638] border border-[#222E42] text-sky-400 transition-transform">
                         <Icon className="w-4 h-4" />
                       </div>
-                      <Badge variant="default" size="sm" className="font-mono text-[10px]">
+                      <Badge variant="cyan" size="sm" className="font-mono text-[10px]">
                         {mod.tag}
                       </Badge>
                     </div>
 
-                    <h3 className="text-sm font-semibold text-[#FFFFFF] group-hover:text-[#FFFFFF] transition-colors flex items-center justify-between">
+                    <h3 className="text-sm font-semibold text-[#F8FAFC] group-hover:text-sky-300 transition-colors flex items-center justify-between">
                       <span>{mod.title}</span>
-                      <ChevronRight className="w-4 h-4 text-[#737373] group-hover:text-[#FFFFFF] group-hover:translate-x-1 transition-all shrink-0" />
+                      <ChevronRight className="w-4 h-4 text-[#64748B] group-hover:text-sky-400 group-hover:translate-x-1 transition-all shrink-0" />
                     </h3>
 
-                    <p className="text-xs text-[#A3A3A3] mt-1.5 leading-relaxed">
+                    <p className="text-xs text-[#94A3B8] mt-1.5 leading-relaxed">
                       {mod.description}
                     </p>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-[#333333] flex items-center justify-between text-[11px] text-[#A3A3A3] group-hover:text-[#FFFFFF]">
+                  <div className="mt-4 pt-3 border-t border-[#222E42] flex items-center justify-between text-[11px] text-[#94A3B8] group-hover:text-sky-300">
                     <span>Open Module</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </div>

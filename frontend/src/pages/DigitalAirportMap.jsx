@@ -62,41 +62,41 @@ export const DigitalAirportMap = () => {
     switch (status?.toLowerCase()) {
       case 'available':
         return {
-          fill: '#222222',
-          stroke: '#444444',
-          text: '#FFFFFF',
-          border: 'border-[#444444]',
-          bg: 'bg-[#222222]',
-          badge: 'bg-[#222222] text-[#FFFFFF] border border-[#444444]'
+          fill: '#064E3B',
+          stroke: '#10B981',
+          text: '#6EE7B7',
+          border: 'border-emerald-500/50',
+          bg: 'bg-emerald-950/40',
+          badge: 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/40'
         }
       case 'occupied':
         return {
-          fill: '#383838',
-          stroke: '#FFFFFF',
-          text: '#FFFFFF',
-          border: 'border-[#FFFFFF]',
-          bg: 'bg-[#383838]',
-          badge: 'bg-[#FFFFFF] text-[#090909]'
+          fill: '#0C4A6E',
+          stroke: '#0284C7',
+          text: '#7DD3FC',
+          border: 'border-sky-500/50',
+          bg: 'bg-sky-950/40',
+          badge: 'bg-sky-950/60 text-sky-300 border border-sky-500/40'
         }
       case 'maintenance':
       case 'restricted':
       case 'closed':
         return {
-          fill: '#111111',
-          stroke: '#555555',
-          text: '#A3A3A3',
-          border: 'border-[#555555]',
-          bg: 'bg-[#111111]',
-          badge: 'bg-[#111111] text-[#A3A3A3] border border-[#555555]'
+          fill: '#450A0A',
+          stroke: '#EF4444',
+          text: '#FCA5A5',
+          border: 'border-rose-500/50',
+          bg: 'bg-rose-950/40',
+          badge: 'bg-rose-950/60 text-rose-300 border border-rose-500/40'
         }
       default:
         return {
-          fill: '#181818',
-          stroke: '#333333',
-          text: '#737373',
-          border: 'border-[#333333]',
-          bg: 'bg-[#181818]',
-          badge: 'bg-[#181818] text-[#737373] border border-[#333333]'
+          fill: '#121826',
+          stroke: '#222E42',
+          text: '#94A3B8',
+          border: 'border-[#222E42]',
+          bg: 'bg-[#121826]',
+          badge: 'bg-[#121826] text-[#94A3B8] border border-[#222E42]'
         }
     }
   }
@@ -107,13 +107,13 @@ export const DigitalAirportMap = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#333333]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#222E42]">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xs font-mono text-[#A3A3A3] font-bold tracking-wider uppercase">
               Operational Digital Twin
             </span>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-[#222222] border border-[#333333] text-[#FFFFFF] font-mono">
+            <span className="text-[10px] px-2 py-0.5 rounded bg-[#1E2638] border border-[#222E42] text-[#FFFFFF] font-mono">
               BLR AIRPORT MAP
             </span>
           </div>
@@ -132,7 +132,7 @@ export const DigitalAirportMap = () => {
       </div>
 
       {/* Mandatory Disclaimer */}
-      <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] text-xs flex items-start justify-between gap-4">
+      <div className="p-3.5 rounded-xl bg-[#121826] border border-[#222E42] text-xs flex items-start justify-between gap-4">
         <div className="flex items-start gap-3">
           <Info className="w-4 h-4 text-[#FFFFFF] shrink-0 mt-0.5" />
           <p className="text-[11px] text-gw-text-secondary">
@@ -152,7 +152,7 @@ export const DigitalAirportMap = () => {
             <span className="text-gw-text-secondary">Occupied</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#111111] border border-[#555555]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0D121F] border border-[#334155]" />
             <span className="text-gw-text-secondary">Restricted / Maint</span>
           </span>
         </div>
@@ -162,21 +162,21 @@ export const DigitalAirportMap = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Main Map Canvas Area */}
         <div className="lg:col-span-8 space-y-4">
-          <Card className="overflow-hidden border border-[#333333] bg-[#111111]">
-            <CardHeader className="py-3 px-4 border-b border-[#333333] bg-[#181818] flex flex-row items-center justify-between">
+          <Card className="overflow-hidden border border-[#222E42] bg-[#0D121F]">
+            <CardHeader className="py-3 px-4 border-b border-[#222E42] bg-[#121826] flex flex-row items-center justify-between">
               <div className="flex items-center gap-2">
                 <Compass className="w-4 h-4 text-[#FFFFFF]" />
                 <span className="text-xs font-bold text-gw-text font-mono uppercase tracking-wider">
                   BLR Apron Operations Schematic
                 </span>
               </div>
-              <span className="text-[10px] text-[#FFFFFF] font-mono bg-[#222222] px-2 py-0.5 rounded border border-[#333333]">
+              <span className="text-[10px] text-[#FFFFFF] font-mono bg-[#1E2638] px-2 py-0.5 rounded border border-[#222E42]">
                 13°11'56" N, 77°42'20" E
               </span>
             </CardHeader>
             <CardContent className="p-4 sm:p-6">
               {/* SVG Schematic Blueprint */}
-              <div className="relative w-full aspect-16/10 bg-[#0d0d0d] rounded-xl border border-[#333333] overflow-hidden p-2 sm:p-4 select-none">
+              <div className="relative w-full aspect-16/10 bg-[#0d0d0d] rounded-xl border border-[#222E42] overflow-hidden p-2 sm:p-4 select-none">
                 <svg
                   viewBox="0 0 900 520"
                   className="w-full h-full"
@@ -342,8 +342,8 @@ export const DigitalAirportMap = () => {
 
         {/* Side Details Drawer: Stand Inspection */}
         <div className="lg:col-span-4 space-y-4">
-          <Card className="border border-[#333333]">
-            <CardHeader className="py-3 px-4 border-b border-[#333333] bg-[#181818] flex flex-row items-center justify-between">
+          <Card className="border border-[#222E42]">
+            <CardHeader className="py-3 px-4 border-b border-[#222E42] bg-[#121826] flex flex-row items-center justify-between">
               <CardTitle className="text-sm flex items-center gap-2">
                 <DoorClosed className="w-4 h-4 text-[#FFFFFF]" />
                 <span>Stand Inspection Telemetry</span>
@@ -362,7 +362,7 @@ export const DigitalAirportMap = () => {
               {selectedStand ? (
                 <div className="space-y-4 text-xs">
                   {/* Stand Identity Card */}
-                  <div className="p-3 rounded-xl bg-[#181818] border border-[#333333] flex items-center justify-between">
+                  <div className="p-3 rounded-xl bg-[#121826] border border-[#222E42] flex items-center justify-between">
                     <div>
                       <div className="text-[10px] text-gw-text-secondary font-mono">STAND CODE</div>
                       <div className="text-lg font-bold text-gw-text font-mono flex items-center gap-2">
@@ -377,28 +377,28 @@ export const DigitalAirportMap = () => {
 
                   {/* Specifications Grid */}
                   <div className="grid grid-cols-2 gap-2 font-mono">
-                    <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
+                    <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42]">
                       <div className="text-[10px] text-gw-text-secondary">TERMINAL</div>
                       <div className="text-xs font-bold text-gw-text mt-0.5">
                         {selectedStand.terminal === 'T1' ? 'Terminal 1' : 'Terminal 2'}
                       </div>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
+                    <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42]">
                       <div className="text-[10px] text-gw-text-secondary">MAX CATEGORY</div>
                       <div className="text-xs font-bold text-[#FFFFFF] mt-0.5">
                         {selectedStand.aircraft_category}
                       </div>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
+                    <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42]">
                       <div className="text-[10px] text-gw-text-secondary">MAX WINGSPAN</div>
                       <div className="text-xs font-bold text-gw-text mt-0.5">
                         {selectedStand.max_wingspan_m} meters
                       </div>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-[#181818] border border-[#333333]">
+                    <div className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42]">
                       <div className="text-[10px] text-gw-text-secondary">BOARDING TYPE</div>
                       <div className="text-xs font-bold text-[#FFFFFF] mt-0.5">
                         {selectedStand.has_jetway ? 'Contact Jetway' : 'Bus Apron'}
@@ -407,7 +407,7 @@ export const DigitalAirportMap = () => {
                   </div>
 
                   {/* Compatibility Diagnostic Information */}
-                  <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-2">
+                  <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] space-y-2">
                     <div className="flex items-center gap-1.5 font-semibold text-gw-text text-[11px]">
                       <ShieldCheck className="w-3.5 h-3.5 text-[#FFFFFF]" />
                       <span>Operational Compatibility Rules</span>
@@ -422,7 +422,7 @@ export const DigitalAirportMap = () => {
                   </div>
 
                   {/* Data Tier Tag */}
-                  <div className="pt-2 border-t border-[#333333] flex items-center justify-between text-[10px] text-gw-text-secondary font-mono">
+                  <div className="pt-2 border-t border-[#222E42] flex items-center justify-between text-[10px] text-gw-text-secondary font-mono">
                     <span>DATA TIER:</span>
                     <span className="text-[#A3A3A3]">CONFIGURABLE DEMONSTRATION</span>
                   </div>

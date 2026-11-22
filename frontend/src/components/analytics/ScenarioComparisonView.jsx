@@ -38,7 +38,7 @@ import comparisonService from '../../lib/comparisonService'
 import simulationService from '../../lib/simulationService'
 import exportService from '../../lib/exportService'
 
-const SCENARIO_PALETTE = ['#FFFFFF', '#E5E5E5', '#CCCCCC', '#A3A3A3', '#888888', '#666666']
+const SCENARIO_PALETTE = ['#38BDF8', '#818CF8', '#34D399', '#FBBF24', '#F472B6', '#A78BFA']
 
 export const ScenarioComparisonView = () => {
   const [allSimulations, setAllSimulations] = useState([])
@@ -162,8 +162,8 @@ export const ScenarioComparisonView = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* ----------------- 1. SCENARIO SELECTION TOOLBAR ----------------- */}
-      <Card className="p-4 space-y-4 bg-[#181818] border-[#333333]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+      <Card className="p-4 space-y-4 bg-[#121826] border-[#222E42]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
           <div>
             <h3 className="gw-card-heading flex items-center gap-2">
               <Scale className="w-4 h-4 text-[#FFFFFF]" />
@@ -237,7 +237,7 @@ export const ScenarioComparisonView = () => {
                   className={`px-3 py-1.5 rounded-lg border text-xs font-mono transition-all flex items-center gap-2 cursor-pointer ${
                     isSelected
                       ? 'bg-[#FFFFFF] text-[#090909] font-bold border-[#FFFFFF]'
-                      : 'bg-[#222222] border-[#333333] text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#2A2A2A]'
+                      : 'bg-[#1E2638] border-[#222E42] text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#1E2638]'
                   }`}
                 >
                   <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: isSelected ? '#090909' : '#737373' }} />
@@ -253,7 +253,7 @@ export const ScenarioComparisonView = () => {
         </div>
 
         {selectedIds.length < 2 && (
-          <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333] text-xs text-[#FFFFFF] flex items-center gap-2">
+          <div className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42] text-xs text-[#FFFFFF] flex items-center gap-2">
             <Info className="w-4 h-4 shrink-0 text-[#FFFFFF]" />
             <span>Select at least 2 simulation scenarios to generate comparative analytics.</span>
           </div>
@@ -262,7 +262,7 @@ export const ScenarioComparisonView = () => {
 
       {/* Error state */}
       {error && (
-        <div className="p-3.5 rounded-xl bg-[#111111] border border-[#333333] text-xs text-white flex items-start gap-2.5">
+        <div className="p-3.5 rounded-xl bg-[#0D121F] border border-[#222E42] text-xs text-white flex items-start gap-2.5">
           <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#A3A3A3]" />
           <div>
             <strong className="block font-bold">Comparison Error:</strong>
@@ -335,7 +335,7 @@ export const ScenarioComparisonView = () => {
 
                     {sim.is_valid_config ? (
                       <div className="space-y-2 pt-2 text-xs font-mono">
-                        <div className="flex items-center justify-between text-gw-text-secondary pb-1 border-b border-[#333333]">
+                        <div className="flex items-center justify-between text-gw-text-secondary pb-1 border-b border-[#222E42]">
                           <span>Feasibility Ratio:</span>
                           <strong className="text-sm font-bold" style={{ color }}>
                             {sim.feasibility_percentage.toFixed(1)}%
@@ -368,18 +368,18 @@ export const ScenarioComparisonView = () => {
                           <span className="text-[#FFFFFF]">deg {sim.polynomial_degree}</span>
                         </div>
 
-                        <div className="pt-2 text-[11px] text-gw-text-secondary border-t border-[#333333] break-all font-mono">
+                        <div className="pt-2 text-[11px] text-gw-text-secondary border-t border-[#222E42] break-all font-mono">
                           <span className="text-[#A3A3A3]">{sim.rook_polynomial}</span>
                         </div>
                       </div>
                     ) : (
-                      <div className="p-3 rounded-lg bg-[#111111] border border-[#333333] text-xs text-white">
+                      <div className="p-3 rounded-lg bg-[#0D121F] border border-[#222E42] text-xs text-white">
                         {sim.validation_message}
                       </div>
                     )}
                   </div>
 
-                  <div className="pt-3 border-t border-[#333333] flex items-center justify-between text-xs">
+                  <div className="pt-3 border-t border-[#222E42] flex items-center justify-between text-xs">
                     <Link to={`/simulator?sim=${sim.id}`} className="text-[#FFFFFF] hover:underline flex items-center gap-1">
                       <span>Simulate</span>
                       <PlayCircle className="w-3.5 h-3.5" />
@@ -396,8 +396,8 @@ export const ScenarioComparisonView = () => {
 
           {/* ----------------- 3. DETERMINISTIC RULE-BASED INSIGHTS ----------------- */}
           {comparisonData.insights?.length > 0 && (
-            <Card className="space-y-3 bg-[#181818] border-[#333333]">
-              <div className="flex items-center justify-between pb-2 border-b border-[#333333]">
+            <Card className="space-y-3 bg-[#121826] border-[#222E42]">
+              <div className="flex items-center justify-between pb-2 border-b border-[#222E42]">
                 <h3 className="gw-card-heading flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[#FFFFFF]" />
                   <span>Deterministic Mathematical Insights</span>
@@ -411,7 +411,7 @@ export const ScenarioComparisonView = () => {
                 {comparisonData.insights.map((ins, i) => (
                   <div
                     key={i}
-                    className="p-3 rounded-lg border border-[#333333] bg-[#222222] text-[#FFFFFF] space-y-1"
+                    className="p-3 rounded-lg border border-[#222E42] bg-[#1E2638] text-[#FFFFFF] space-y-1"
                   >
                     <div className="flex items-center gap-2 font-bold font-mono text-[11px]">
                       <span className="text-[#FFFFFF]">
@@ -428,8 +428,8 @@ export const ScenarioComparisonView = () => {
           {/* ----------------- 4. VISUAL COMPARISON CHARTS ----------------- */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Chart 1: Restriction Density vs Feasibility (7 cols) */}
-            <Card className="lg:col-span-7 space-y-3 bg-[#181818] border-[#333333]">
-              <div className="pb-2 border-b border-[#333333]">
+            <Card className="lg:col-span-7 space-y-3 bg-[#121826] border-[#222E42]">
+              <div className="pb-2 border-b border-[#222E42]">
                 <h4 className="text-xs font-bold text-gw-text uppercase font-mono tracking-wider">
                   Restriction Density vs. Feasibility Ratio
                 </h4>
@@ -448,7 +448,7 @@ export const ScenarioComparisonView = () => {
                         if (active && payload && payload.length) {
                           const data = payload[0].payload
                           return (
-                            <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333] shadow-lg text-xs space-y-1 font-mono">
+                            <div className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42] shadow-lg text-xs space-y-1 font-mono">
                               <div className="font-bold text-[#FFFFFF]">{data.name} ({data.id})</div>
                               <div className="text-[#A3A3A3]">Density: {data.density}%</div>
                               <div className="text-[#FFFFFF]">Feasibility: {data.feasibility}%</div>
@@ -467,8 +467,8 @@ export const ScenarioComparisonView = () => {
             </Card>
 
             {/* Chart 2: Rook Polynomial Spectra Comparison when dimensions match (5 cols) */}
-            <Card className="lg:col-span-5 space-y-3 bg-[#181818] border-[#333333]">
-              <div className="pb-2 border-b border-[#333333]">
+            <Card className="lg:col-span-5 space-y-3 bg-[#121826] border-[#222E42]">
+              <div className="pb-2 border-b border-[#222E42]">
                 <h4 className="text-xs font-bold text-gw-text uppercase font-mono tracking-wider">
                   Rook Coefficient Spectrum Comparison
                 </h4>
@@ -489,7 +489,7 @@ export const ScenarioComparisonView = () => {
                         content={({ active, payload }) => {
                           if (active && payload && payload.length) {
                             return (
-                              <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333] shadow-lg text-xs space-y-1 font-mono">
+                              <div className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42] shadow-lg text-xs space-y-1 font-mono">
                                 <div className="font-bold text-[#FFFFFF]">{payload[0].payload.k}</div>
                                 {payload.map((p) => (
                                   <div key={p.dataKey} style={{ color: p.color }}>
@@ -527,8 +527,8 @@ export const ScenarioComparisonView = () => {
           </div>
 
           {/* ----------------- 5. CELL-BY-CELL RESTRICTION MATRIX DIFFERENCE ----------------- */}
-          <Card className="space-y-4 bg-[#181818] border-[#333333]">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+          <Card className="space-y-4 bg-[#121826] border-[#222E42]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
               <div>
                 <h3 className="gw-card-heading flex items-center gap-2">
                   <Grid3X3 className="w-4 h-4 text-[#FFFFFF]" />
@@ -554,7 +554,7 @@ export const ScenarioComparisonView = () => {
             {comparisonData.matrix_comparison?.is_compatible && comparisonData.matrix_comparison.difference_matrix ? (
               <div className="space-y-3">
                 <div className="overflow-x-auto pb-2 flex justify-center">
-                  <div className="inline-block p-4 rounded-xl bg-[#111111] border border-[#333333]">
+                  <div className="inline-block p-4 rounded-xl bg-[#0D121F] border border-[#222E42]">
                     <div
                       className="grid gap-1.5"
                       style={{
@@ -563,13 +563,13 @@ export const ScenarioComparisonView = () => {
                     >
                       {comparisonData.matrix_comparison.difference_matrix.map((row, r) =>
                         row.map((cell, c) => {
-                          let bgColor = 'bg-[#181818] border border-[#333333] text-[#737373]'
+                          let bgColor = 'bg-[#121826] border border-[#222E42] text-[#737373]'
                           let label = '0'
                           if (cell > 0) {
                             bgColor = 'bg-[#FFFFFF] text-[#090909] font-bold border-[#FFFFFF]'
                             label = '+1'
                           } else if (cell < 0) {
-                            bgColor = 'bg-[#222222] border-2 border-[#555555] text-[#FFFFFF] font-bold'
+                            bgColor = 'bg-[#1E2638] border-2 border-[#334155] text-[#FFFFFF] font-bold'
                             label = '-1'
                           }
 
@@ -590,7 +590,7 @@ export const ScenarioComparisonView = () => {
 
                 <div className="flex flex-wrap justify-center gap-4 text-xs font-mono pt-1 text-gw-text-secondary">
                   <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded bg-[#181818] border border-[#333333]" />
+                    <span className="w-3 h-3 rounded bg-[#121826] border border-[#222E42]" />
                     <span>0: Identical Cell Constraint</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -598,28 +598,28 @@ export const ScenarioComparisonView = () => {
                     <span>+1: Restricted in Scenario A, Allowed in B</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded bg-[#222222] border-2 border-[#555555]" />
+                    <span className="w-3 h-3 rounded bg-[#1E2638] border-2 border-[#334155]" />
                     <span>-1: Allowed in Scenario A, Restricted in B</span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="p-6 rounded-lg bg-[#181818] border border-[#333333] text-center text-xs text-gw-text-secondary">
+              <div className="p-6 rounded-lg bg-[#121826] border border-[#222E42] text-center text-xs text-gw-text-secondary">
                 {comparisonData.matrix_comparison?.explanation}
               </div>
             )}
           </Card>
 
           {/* ----------------- 6. COMPARATIVE MATHEMATICAL TABLE ----------------- */}
-          <Card className="p-0 overflow-hidden border-[#333333] bg-[#181818]">
-            <div className="p-3.5 bg-[#111111] border-b border-[#333333]">
+          <Card className="p-0 overflow-hidden border-[#222E42] bg-[#121826]">
+            <div className="p-3.5 bg-[#0D121F] border-b border-[#222E42]">
               <h3 className="gw-card-heading text-xs uppercase font-mono tracking-wider">
                 Comprehensive Mathematical Metrics Side-by-Side
               </h3>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs divide-y divide-[#333333] font-mono">
-                <thead className="bg-[#111111] text-gw-text-secondary text-[10px] uppercase">
+                <thead className="bg-[#0D121F] text-gw-text-secondary text-[10px] uppercase">
                   <tr>
                     <th className="py-2.5 px-3">Metric</th>
                     {comparisonData.scenarios.map((s, idx) => (

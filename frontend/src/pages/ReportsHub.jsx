@@ -116,7 +116,7 @@ export const ReportsHub = () => {
   return (
     <div className="space-y-6 animate-fadeIn max-w-6xl mx-auto">
       {/* -------------------- HEADER -------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#333333]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#222E42]">
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">Reports & Exports Central</h1>
@@ -147,9 +147,9 @@ export const ReportsHub = () => {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="p-4 flex items-center justify-between border-[#333333] hover:border-[#555555] transition-all">
+          <Card className="p-4 flex items-center justify-between border-[#222E42] hover:border-[#334155] transition-all">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-[#222222] border border-[#333333] text-[#FFFFFF]">
+              <div className="p-2.5 rounded-xl bg-[#1E2638] border border-[#222E42] text-[#FFFFFF]">
                 <Plane className="w-5 h-5" />
               </div>
               <div>
@@ -167,9 +167,9 @@ export const ReportsHub = () => {
             </Button>
           </Card>
 
-          <Card className="p-4 flex items-center justify-between border-[#333333] hover:border-[#555555] transition-all">
+          <Card className="p-4 flex items-center justify-between border-[#222E42] hover:border-[#334155] transition-all">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-[#222222] border border-[#333333] text-[#FFFFFF]">
+              <div className="p-2.5 rounded-xl bg-[#1E2638] border border-[#222E42] text-[#FFFFFF]">
                 <DoorClosed className="w-5 h-5" />
               </div>
               <div>
@@ -190,8 +190,8 @@ export const ReportsHub = () => {
       </div>
 
       {/* -------------------- SECTION 2: SCENARIO-SPECIFIC REPORTS -------------------- */}
-      <Card className="p-5 space-y-5 border-[#333333]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+      <Card className="p-5 space-y-5 border-[#222E42]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
           <div>
             <h2 className="gw-section-heading flex items-center gap-2">
               <FileText className="w-5 h-5 text-[#FFFFFF]" />
@@ -207,7 +207,7 @@ export const ReportsHub = () => {
             <select
               value={selectedSimId}
               onChange={(e) => setSelectedSimId(e.target.value)}
-              className="bg-[#181818] border border-[#333333] rounded-lg px-3 py-1.5 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer max-w-xs truncate"
+              className="bg-[#121826] border border-[#222E42] rounded-lg px-3 py-1.5 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer max-w-xs truncate"
             >
               {simulations.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -219,7 +219,7 @@ export const ReportsHub = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl bg-[#181818] border border-[#333333] flex flex-col justify-between space-y-3">
+          <div className="p-4 rounded-xl bg-[#121826] border border-[#222E42] flex flex-col justify-between space-y-3">
             <div>
               <FileText className="w-6 h-6 text-[#FFFFFF] mb-2" />
               <h4 className="text-xs font-bold text-gw-text">Executive PDF Report</h4>
@@ -238,7 +238,7 @@ export const ReportsHub = () => {
             </Button>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#181818] border border-[#333333] flex flex-col justify-between space-y-3">
+          <div className="p-4 rounded-xl bg-[#121826] border border-[#222E42] flex flex-col justify-between space-y-3">
             <div>
               <CheckCircle2 className="w-6 h-6 text-[#FFFFFF] mb-2" />
               <h4 className="text-xs font-bold text-gw-text">Allocations CSV</h4>
@@ -257,7 +257,7 @@ export const ReportsHub = () => {
             </Button>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#181818] border border-[#333333] flex flex-col justify-between space-y-3">
+          <div className="p-4 rounded-xl bg-[#121826] border border-[#222E42] flex flex-col justify-between space-y-3">
             <div>
               <Calculator className="w-6 h-6 text-[#FFFFFF] mb-2" />
               <h4 className="text-xs font-bold text-gw-text">Mathematical CSV</h4>
@@ -276,7 +276,7 @@ export const ReportsHub = () => {
             </Button>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#181818] border border-[#333333] flex flex-col justify-between space-y-3">
+          <div className="p-4 rounded-xl bg-[#121826] border border-[#222E42] flex flex-col justify-between space-y-3">
             <div>
               <Grid3X3 className="w-6 h-6 text-[#FFFFFF] mb-2" />
               <h4 className="text-xs font-bold text-gw-text">Restriction Matrix CSV</h4>
@@ -298,8 +298,8 @@ export const ReportsHub = () => {
       </Card>
 
       {/* -------------------- SECTION 3: MULTI-SCENARIO COMPARISON PDF -------------------- */}
-      <Card className="p-5 space-y-4 border-[#333333]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+      <Card className="p-5 space-y-4 border-[#222E42]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
           <div>
             <h2 className="gw-section-heading flex items-center gap-2">
               <Scale className="w-5 h-5 text-[#FFFFFF]" />
@@ -333,8 +333,8 @@ export const ReportsHub = () => {
                 }}
                 className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
                   isSelected
-                    ? 'bg-[#222222] border-[#555555] text-gw-text'
-                    : 'bg-[#181818] border-[#333333] text-gw-text-secondary hover:border-[#555555]'
+                    ? 'bg-[#1E2638] border-[#334155] text-gw-text'
+                    : 'bg-[#121826] border-[#222E42] text-gw-text-secondary hover:border-[#334155]'
                 }`}
               >
                 <div className="min-w-0 pr-2">
@@ -343,7 +343,7 @@ export const ReportsHub = () => {
                 </div>
                 <div
                   className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                    isSelected ? 'bg-[#FFFFFF] border-[#FFFFFF] text-[#090909]' : 'border-[#333333]'
+                    isSelected ? 'bg-sky-500 border-sky-400 text-slate-950' : 'border-[#222E42]'
                   }`}
                 >
                   {isSelected && <span className="text-[10px] font-bold">✓</span>}

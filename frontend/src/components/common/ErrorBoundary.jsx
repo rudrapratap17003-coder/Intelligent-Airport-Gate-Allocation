@@ -26,8 +26,8 @@ export class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div className="min-h-[50vh] flex flex-col items-center justify-center p-6 text-center">
-          <div className="max-w-md w-full p-6 rounded-xl bg-[#181818] border border-[#333333] space-y-4">
-            <div className="w-12 h-12 rounded-full bg-[#222222] border border-[#333333] mx-auto flex items-center justify-center">
+          <div className="max-w-md w-full p-6 rounded-xl bg-[#121826] border border-[#222E42] space-y-4">
+            <div className="w-12 h-12 rounded-full bg-[#1E2638] border border-[#222E42] mx-auto flex items-center justify-center">
               <span className="text-xl font-bold text-white">!</span>
             </div>
             <div>
@@ -40,7 +40,7 @@ export class ErrorBoundary extends React.Component {
               <button
                 type="button"
                 onClick={this.handleReset}
-                className="px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-lg border border-[#333333] text-white hover:bg-[#2A2A2A] transition-colors cursor-pointer"
+                className="px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-lg border border-[#222E42] text-white hover:bg-[#1E2638] transition-colors cursor-pointer"
               >
                 Retry
               </button>

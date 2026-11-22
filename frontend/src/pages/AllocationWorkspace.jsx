@@ -343,11 +343,11 @@ export const AllocationWorkspace = () => {
   return (
     <div className="space-y-6 animate-fadeIn max-w-6xl mx-auto">
       {/* -------------------- 1. WORKSPACE HEADER & STEPS PROGRESS -------------------- */}
-      <div className="border-b border-[#333333] pb-5 space-y-4">
+      <div className="border-b border-[#222E42] pb-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-[#222222] border border-[#333333] text-[#FFFFFF]">
+              <div className="p-2 rounded-xl bg-[#1E2638] border border-[#222E42] text-[#FFFFFF]">
                 <Sparkles className="w-5 h-5" />
               </div>
               <h1 className="gw-page-heading">Guided Allocation Workspace</h1>
@@ -365,8 +365,8 @@ export const AllocationWorkspace = () => {
             <span
               className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold border ${
                 isBalanced
-                  ? 'bg-[#222222] text-[#FFFFFF] border-[#333333]'
-                  : 'bg-[#181818] text-[#A3A3A3] border-[#333333]'
+                  ? 'bg-[#1E2638] text-[#FFFFFF] border-[#222E42]'
+                  : 'bg-[#121826] text-[#A3A3A3] border-[#222E42]'
               }`}
             >
               {selectedFlightIds.length} Flights ↔ {selectedGateIds.length} Gates
@@ -402,10 +402,10 @@ export const AllocationWorkspace = () => {
                   <div
                     className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold font-mono transition-all border ${
                       isCurrent
-                        ? 'bg-[#FFFFFF] text-[#090909] border-[#FFFFFF] scale-110 shadow-none'
+                        ? 'bg-sky-500 text-slate-950 border-sky-400 scale-110 shadow-xs'
                         : isPassed
-                        ? 'bg-[#222222] text-[#FFFFFF] border-[#333333]'
-                        : 'bg-[#181818] text-[#737373] border-[#333333]'
+                        ? 'bg-[#1E2638] text-sky-300 border border-[#222E42]'
+                        : 'bg-[#121826] text-[#64748B] border-[#222E42]'
                     }`}
                   >
                     {isPassed ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
@@ -434,7 +434,7 @@ export const AllocationWorkspace = () => {
         />
       )}
       {errorMsg && (
-        <div className="p-3.5 rounded-xl bg-[#111111] border border-[#333333] text-xs text-white flex items-start gap-2.5">
+        <div className="p-3.5 rounded-xl bg-[#0D121F] border border-[#222E42] text-xs text-white flex items-start gap-2.5">
           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#A3A3A3]" />
           <span>{errorMsg}</span>
         </div>
@@ -442,8 +442,8 @@ export const AllocationWorkspace = () => {
 
       {/* -------------------- STEP 1: SELECT FLIGHTS -------------------- */}
       {currentStep === 1 && (
-        <Card className="p-5 space-y-4 bg-[#181818] border-[#333333]">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+        <Card className="p-5 space-y-4 bg-[#121826] border-[#222E42]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
             <div>
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
                 <Plane className="w-5 h-5 text-[#FFFFFF]" />
@@ -480,8 +480,8 @@ export const AllocationWorkspace = () => {
                   onClick={() => toggleFlight(flight.id)}
                   className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start justify-between ${
                     isSelected
-                      ? 'bg-[#222222] border-[#FFFFFF]'
-                      : 'bg-[#181818] border-[#333333] hover:border-[#555555]'
+                      ? 'bg-[#1E2638] border-[#FFFFFF]'
+                      : 'bg-[#121826] border-[#222E42] hover:border-[#334155]'
                   }`}
                 >
                   <div className="space-y-1">
@@ -497,7 +497,7 @@ export const AllocationWorkspace = () => {
                   </div>
                   <div
                     className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
-                      isSelected ? 'bg-[#FFFFFF] border-[#FFFFFF] text-[#090909]' : 'border-[#333333] bg-[#181818]'
+                      isSelected ? 'bg-sky-500 border-sky-400 text-slate-950' : 'border-[#222E42] bg-[#121826]'
                     }`}
                   >
                     {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
@@ -507,7 +507,7 @@ export const AllocationWorkspace = () => {
             })}
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#333333]">
+          <div className="flex items-center justify-between pt-4 border-t border-[#222E42]">
             <span className="text-xs font-mono text-gw-text-secondary">
               Selected: <strong className="text-[#FFFFFF]">{selectedFlightIds.length}</strong> flights
             </span>
@@ -525,8 +525,8 @@ export const AllocationWorkspace = () => {
 
       {/* -------------------- STEP 2: SELECT GATES -------------------- */}
       {currentStep === 2 && (
-        <Card className="p-5 space-y-4 bg-[#181818] border-[#333333]">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+        <Card className="p-5 space-y-4 bg-[#121826] border-[#222E42]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
             <div>
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
                 <DoorClosed className="w-5 h-5 text-[#FFFFFF]" />
@@ -563,8 +563,8 @@ export const AllocationWorkspace = () => {
                   onClick={() => toggleGate(gate.id)}
                   className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start justify-between ${
                     isSelected
-                      ? 'bg-[#222222] border-[#FFFFFF]'
-                      : 'bg-[#181818] border-[#333333] hover:border-[#555555]'
+                      ? 'bg-[#1E2638] border-[#FFFFFF]'
+                      : 'bg-[#121826] border-[#222E42] hover:border-[#334155]'
                   }`}
                 >
                   <div className="space-y-1">
@@ -579,7 +579,7 @@ export const AllocationWorkspace = () => {
                   </div>
                   <div
                     className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
-                      isSelected ? 'bg-[#FFFFFF] border-[#FFFFFF] text-[#090909]' : 'border-[#333333] bg-[#181818]'
+                      isSelected ? 'bg-sky-500 border-sky-400 text-slate-950' : 'border-[#222E42] bg-[#121826]'
                     }`}
                   >
                     {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
@@ -589,7 +589,7 @@ export const AllocationWorkspace = () => {
             })}
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#333333]">
+          <div className="flex items-center justify-between pt-4 border-t border-[#222E42]">
             <Button variant="ghost" size="md" icon={ArrowLeft} onClick={() => setCurrentStep(1)}>
               Back to Flights
             </Button>
@@ -612,8 +612,8 @@ export const AllocationWorkspace = () => {
 
       {/* -------------------- STEP 3: CONFIGURE RESTRICTIONS MATRIX -------------------- */}
       {currentStep === 3 && (
-        <Card className="p-5 space-y-5 bg-[#181818] border-[#333333]">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+        <Card className="p-5 space-y-5 bg-[#121826] border-[#222E42]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
             <div>
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
                 <Grid3X3 className="w-5 h-5 text-[#FFFFFF]" />
@@ -625,7 +625,7 @@ export const AllocationWorkspace = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <Button variant="outline" size="sm" onClick={applyBlrCompatibilityRestrictions} className="border-[#333333] text-[#FFFFFF] hover:bg-[#222222]">
+              <Button variant="outline" size="sm" onClick={applyBlrCompatibilityRestrictions} className="border-[#222E42] text-[#FFFFFF] hover:bg-[#1E2638]">
                 Apply BLR Compatibility Rules
               </Button>
               <Button variant="secondary" size="sm" onClick={applySampleRestrictions}>
@@ -638,7 +638,7 @@ export const AllocationWorkspace = () => {
           </div>
 
           {/* Matrix Stats Banner */}
-          <div className="p-3 rounded-xl bg-[#222222] border border-[#333333] flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+          <div className="p-3 rounded-xl bg-[#1E2638] border border-[#222E42] flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
             <div className="flex items-center gap-4">
               <span>
                 Board Size: <strong className="text-gw-text">{selectedFlightIds.length} × {selectedGateIds.length}</strong>
@@ -683,8 +683,8 @@ export const AllocationWorkspace = () => {
                             onClick={() => toggleCell(r, c)}
                             className={`w-full py-2.5 rounded-lg font-mono text-xs font-bold transition-all border cursor-pointer ${
                               isForbidden
-                                ? 'bg-[#111111] border-2 border-[#555555] text-[#FFFFFF] hover:border-[#FFFFFF]'
-                                : 'bg-[#181818] border border-[#333333] text-[#737373] hover:border-[#FFFFFF] hover:text-[#FFFFFF]'
+                                ? 'bg-[#0D121F] border-2 border-[#334155] text-[#FFFFFF] hover:border-[#FFFFFF]'
+                                : 'bg-[#121826] border border-[#222E42] text-[#737373] hover:border-[#FFFFFF] hover:text-[#FFFFFF]'
                             }`}
                             title={`Toggle ${flight.flightNumber} at Gate ${gate.gateNumber} (${isForbidden ? 'Forbidden' : 'Allowed'})`}
                           >
@@ -699,7 +699,7 @@ export const AllocationWorkspace = () => {
             </table>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#333333]">
+          <div className="flex items-center justify-between pt-4 border-t border-[#222E42]">
             <Button variant="ghost" size="md" icon={ArrowLeft} onClick={() => setCurrentStep(2)}>
               Back to Gates
             </Button>
@@ -717,8 +717,8 @@ export const AllocationWorkspace = () => {
 
       {/* -------------------- STEP 4: MATHEMATICAL ANALYSIS -------------------- */}
       {currentStep === 4 && mathResult && (
-        <Card className="p-5 space-y-5 bg-[#181818] border-[#333333]">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+        <Card className="p-5 space-y-5 bg-[#121826] border-[#222E42]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
             <div>
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
                 <Calculator className="w-5 h-5 text-[#FFFFFF]" />
@@ -735,7 +735,7 @@ export const AllocationWorkspace = () => {
 
           {/* Formulas Display */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-3.5 rounded-xl bg-[#222222] border border-[#333333] space-y-2">
+            <div className="p-3.5 rounded-xl bg-[#1E2638] border border-[#222E42] space-y-2">
               <span className="text-[11px] font-mono uppercase tracking-wider text-gw-text-secondary">
                 1. Rook Polynomial R(B, x)
               </span>
@@ -747,7 +747,7 @@ export const AllocationWorkspace = () => {
               </p>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#222222] border border-[#333333] space-y-2">
+            <div className="p-3.5 rounded-xl bg-[#1E2638] border border-[#222E42] space-y-2">
               <span className="text-[11px] font-mono uppercase tracking-wider text-gw-text-secondary">
                 2. Principle of Inclusion-Exclusion (PIE)
               </span>
@@ -763,7 +763,7 @@ export const AllocationWorkspace = () => {
           {/* PIE Itemized Breakdown Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono text-left divide-y divide-[#333333] min-w-[500px]">
-              <thead className="bg-[#111111] text-gw-text-secondary uppercase">
+              <thead className="bg-[#0D121F] text-gw-text-secondary uppercase">
                 <tr>
                   <th className="p-2.5">Term k</th>
                   <th className="p-2.5">Rook Coeff (r_k)</th>
@@ -794,7 +794,7 @@ export const AllocationWorkspace = () => {
             </table>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#333333]">
+          <div className="flex items-center justify-between pt-4 border-t border-[#222E42]">
             <Button variant="ghost" size="md" icon={ArrowLeft} onClick={() => setCurrentStep(3)}>
               Modify Restrictions
             </Button>
@@ -841,8 +841,8 @@ export const AllocationWorkspace = () => {
       )}
 
       {currentStep >= 6 && allocationResult && (
-        <Card className="p-5 space-y-5 bg-[#181818] border-[#333333]">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+        <Card className="p-5 space-y-5 bg-[#121826] border-[#222E42]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
             <div>
               <h2 className="text-base font-bold text-gw-text flex items-center gap-2">
                 <PlayCircle className="w-5 h-5 text-[#FFFFFF]" />
@@ -858,7 +858,7 @@ export const AllocationWorkspace = () => {
               <select
                 value={selectedPlanIndex}
                 onChange={(e) => setSelectedPlanIndex(Number(e.target.value))}
-                className="bg-[#222222] border border-[#333333] rounded-lg px-2.5 py-1 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer"
+                className="bg-[#1E2638] border border-[#222E42] rounded-lg px-2.5 py-1 text-xs text-gw-text font-mono focus:border-[#FFFFFF] focus:outline-none cursor-pointer"
               >
                 {allocationResult.allocations.map((a, idx) => (
                   <option key={a.allocation_id} value={idx}>
@@ -874,7 +874,7 @@ export const AllocationWorkspace = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Plan Pairings List */}
-                <div className="p-3.5 rounded-xl bg-[#222222] border border-[#333333] space-y-2">
+                <div className="p-3.5 rounded-xl bg-[#1E2638] border border-[#222E42] space-y-2">
                   <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary">
                     Flight-to-Gate Pairings (Plan #{selectedPlanIndex + 1})
                   </span>
@@ -882,7 +882,7 @@ export const AllocationWorkspace = () => {
                     {allocationResult.allocations[selectedPlanIndex].assignments.map((asgn) => (
                       <div
                         key={asgn.flight_id}
-                        className="p-2 rounded-lg bg-[#181818] border border-[#333333] flex items-center justify-between text-xs font-mono"
+                        className="p-2 rounded-lg bg-[#121826] border border-[#222E42] flex items-center justify-between text-xs font-mono"
                       >
                         <span className="text-[#FFFFFF] font-bold">{asgn.flight_number}</span>
                         <ArrowRight className="w-3.5 h-3.5 text-gw-text-secondary" />
@@ -894,7 +894,7 @@ export const AllocationWorkspace = () => {
                 </div>
 
                 {/* Conflict Audit Card */}
-                <div className="p-3.5 rounded-xl bg-[#222222] border border-[#333333] space-y-3">
+                <div className="p-3.5 rounded-xl bg-[#1E2638] border border-[#222E42] space-y-3">
                   <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary">
                     Independent Conflict Audit Verification
                   </span>
@@ -924,7 +924,7 @@ export const AllocationWorkspace = () => {
               </div>
 
               {/* Bipartite Graph Visualization of Selected Plan */}
-              <div className="p-4 rounded-xl bg-[#111111] border border-[#333333]">
+              <div className="p-4 rounded-xl bg-[#0D121F] border border-[#222E42]">
                 <span className="text-xs font-mono uppercase tracking-wider text-gw-text-secondary block mb-2">
                   Bipartite Graph Matching Visualization
                 </span>
@@ -942,7 +942,7 @@ export const AllocationWorkspace = () => {
             </div>
           )}
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#333333]">
+          <div className="flex items-center justify-between pt-4 border-t border-[#222E42]">
             <Button variant="ghost" size="md" icon={ArrowLeft} onClick={() => setCurrentStep(4)}>
               Back to Math
             </Button>
@@ -959,8 +959,8 @@ export const AllocationWorkspace = () => {
 
       {/* -------------------- STEP 7: SAVE & EXPORT -------------------- */}
       {currentStep === 7 && savedSimulationId && (
-        <Card className="p-6 space-y-6 text-center bg-[#181818] border-[#333333]">
-          <div className="w-12 h-12 rounded-2xl bg-[#222222] border border-[#333333] text-[#FFFFFF] flex items-center justify-center mx-auto">
+        <Card className="p-6 space-y-6 text-center bg-[#121826] border-[#222E42]">
+          <div className="w-12 h-12 rounded-2xl bg-[#1E2638] border border-[#222E42] text-[#FFFFFF] flex items-center justify-center mx-auto">
             <CheckCircle2 className="w-6 h-6 text-[#FFFFFF]" />
           </div>
 
@@ -972,7 +972,7 @@ export const AllocationWorkspace = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto pt-2">
-            <div className="p-4 rounded-xl bg-[#222222] border border-[#333333] space-y-3 flex flex-col justify-between">
+            <div className="p-4 rounded-xl bg-[#1E2638] border border-[#222E42] space-y-3 flex flex-col justify-between">
               <div>
                 <FileText className="w-6 h-6 text-[#FFFFFF] mx-auto mb-2" />
                 <h3 className="text-xs font-bold text-gw-text">Scenario PDF Report</h3>
@@ -990,7 +990,7 @@ export const AllocationWorkspace = () => {
               </Button>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#222222] border border-[#333333] space-y-3 flex flex-col justify-between">
+            <div className="p-4 rounded-xl bg-[#1E2638] border border-[#222E42] space-y-3 flex flex-col justify-between">
               <div>
                 <Download className="w-6 h-6 text-[#FFFFFF] mx-auto mb-2" />
                 <h3 className="text-xs font-bold text-gw-text">Allocation CSV</h3>
@@ -1008,7 +1008,7 @@ export const AllocationWorkspace = () => {
               </Button>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#222222] border border-[#333333] space-y-3 flex flex-col justify-between">
+            <div className="p-4 rounded-xl bg-[#1E2638] border border-[#222E42] space-y-3 flex flex-col justify-between">
               <div>
                 <Calculator className="w-6 h-6 text-[#FFFFFF] mx-auto mb-2" />
                 <h3 className="text-xs font-bold text-gw-text">Math Derivation CSV</h3>
@@ -1027,7 +1027,7 @@ export const AllocationWorkspace = () => {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#333333] flex items-center justify-center gap-3">
+          <div className="pt-4 border-t border-[#222E42] flex items-center justify-center gap-3">
             <Button
               variant="outline"
               size="md"

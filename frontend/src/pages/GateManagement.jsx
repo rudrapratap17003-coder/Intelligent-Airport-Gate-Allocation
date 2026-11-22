@@ -297,7 +297,7 @@ export const GateManagement = () => {
       header: 'Terminal',
       key: 'terminal',
       render: (row) => (
-        <span className="font-mono text-xs text-gw-text px-2 py-0.5 rounded bg-[#181818] border border-[#333333]">
+        <span className="font-mono text-xs text-gw-text px-2 py-0.5 rounded bg-[#121826] border border-[#222E42]">
           {row.terminal}
         </span>
       )
@@ -351,7 +351,7 @@ export const GateManagement = () => {
           <button
             type="button"
             onClick={() => handleOpenEditModal(row)}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#1E2638] transition-colors cursor-pointer"
             title="Edit Gate"
           >
             <Edit2 className="w-4 h-4" />
@@ -359,7 +359,7 @@ export const GateManagement = () => {
           <button
             type="button"
             onClick={() => handleOpenDeleteModal(row)}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#1E2638] transition-colors cursor-pointer"
             title="Delete Gate"
           >
             <Trash2 className="w-4 h-4" />
@@ -372,7 +372,7 @@ export const GateManagement = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* -------------------- 1. HEADER -------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#333333]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#222E42]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">Gate Management</h1>
@@ -516,7 +516,7 @@ export const GateManagement = () => {
       />
 
       {/* Architecture Notice */}
-      <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] flex items-center justify-between text-xs text-gw-text-secondary">
+      <div className="p-3.5 rounded-xl bg-[#121826] border border-[#222E42] flex items-center justify-between text-xs text-gw-text-secondary">
         <div className="flex items-center gap-2">
           <Info className="w-4 h-4 text-[#FFFFFF] shrink-0" />
           <span>
@@ -639,7 +639,7 @@ export const GateManagement = () => {
       >
         {gateToDelete && (
           <div className="space-y-3">
-            <div className="p-3 rounded-xl bg-[#111111] border border-[#333333] text-xs text-white flex items-start gap-2.5">
+            <div className="p-3 rounded-xl bg-[#0D121F] border border-[#222E42] text-xs text-white flex items-start gap-2.5">
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#A3A3A3]" />
               <div>
                 Are you sure you want to remove gate{' '}

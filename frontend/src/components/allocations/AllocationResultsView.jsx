@@ -279,7 +279,7 @@ export const AllocationResultsView = ({
   return (
     <div className="space-y-6">
       {/* Simulation Selector & Generator Controls Header */}
-      <Card className="p-5 border-[#333333] bg-[#181818]">
+      <Card className="p-5 border-[#222E42] bg-[#121826]">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Simulation dropdown */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -291,7 +291,7 @@ export const AllocationResultsView = ({
                 <select
                   value={currentSimulation?.id || ''}
                   onChange={(e) => onSelectSimulation(e.target.value)}
-                  className="w-full bg-[#222222] border border-[#333333] rounded-xl px-3 py-2 text-sm text-gw-text font-medium focus:outline-none focus:border-[#FFFFFF] transition-colors cursor-pointer appearance-none pr-9"
+                  className="w-full bg-[#1E2638] border border-[#222E42] rounded-xl px-3 py-2 text-sm text-gw-text font-medium focus:outline-none focus:border-[#FFFFFF] transition-colors cursor-pointer appearance-none pr-9"
                 >
                   {simulations.map((sim) => (
                     <option key={sim.id} value={sim.id}>
@@ -321,7 +321,7 @@ export const AllocationResultsView = ({
 
           {/* Generator Limit Config & Run Button */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 bg-[#222222] border border-[#333333] rounded-xl p-1.5">
+            <div className="flex items-center gap-2 bg-[#1E2638] border border-[#222E42] rounded-xl p-1.5">
               <span className="text-xs text-gw-text-secondary font-mono px-2">Limit:</span>
               <div className="flex items-center gap-1">
                 {RESULT_LIMIT_PRESETS.map((val) => (
@@ -346,7 +346,7 @@ export const AllocationResultsView = ({
                 value={customMaxResults}
                 onChange={(e) => setCustomMaxResults(e.target.value)}
                 onBlur={handleCustomLimitBlur}
-                className="w-16 bg-[#181818] border border-[#333333] rounded-lg px-2 py-0.5 text-xs font-mono text-gw-text text-center focus:outline-none focus:border-[#FFFFFF]"
+                className="w-16 bg-[#121826] border border-[#222E42] rounded-lg px-2 py-0.5 text-xs font-mono text-gw-text text-center focus:outline-none focus:border-[#FFFFFF]"
                 title="Custom maximum results (1 to 10000)"
               />
             </div>
@@ -388,7 +388,7 @@ export const AllocationResultsView = ({
 
         {/* Warning if unbalanced */}
         {!isBalanced && (
-          <div className="mt-4 p-3 bg-[#111111] border border-[#333333] rounded-xl flex items-center gap-2.5 text-xs text-white">
+          <div className="mt-4 p-3 bg-[#0D121F] border border-[#222E42] rounded-xl flex items-center gap-2.5 text-xs text-white">
             <AlertTriangle className="w-4 h-4 shrink-0 text-[#A3A3A3]" />
             <span>
               The GateWise allocation engine requires an exact 1-to-1 square problem ($n \times n$). Please ensure the simulation has equal flights and gates in the Scenario Management tab.
@@ -399,7 +399,7 @@ export const AllocationResultsView = ({
 
       {/* API Error Notification */}
       {apiError && (
-        <div className="p-4 bg-[#111111] border border-[#333333] rounded-xl flex items-start gap-3 text-white text-sm">
+        <div className="p-4 bg-[#0D121F] border border-[#222E42] rounded-xl flex items-start gap-3 text-white text-sm">
           <XCircle className="w-5 h-5 shrink-0 mt-0.5 text-[#A3A3A3]" />
           <div className="flex-1">
             <span className="font-semibold block">Allocation Generation Failed</span>
@@ -418,7 +418,7 @@ export const AllocationResultsView = ({
       {/* Authoritative Results Summary Bar (Section 3) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Metric 1: Total Possible Assignments */}
-        <Card className="p-4 border-[#333333] bg-[#181818]">
+        <Card className="p-4 border-[#222E42] bg-[#121826]">
           <div className="flex items-center justify-between text-xs text-gw-text-secondary uppercase tracking-wider font-semibold">
             <span>Total Permutations</span>
             <Layers className="w-4 h-4 text-[#A3A3A3]" />
@@ -441,7 +441,7 @@ export const AllocationResultsView = ({
         </Card>
 
         {/* Metric 2: Exact Mathematically Valid Total (Authoritative PIE) */}
-        <Card className="p-4 border-[#333333] bg-[#181818] relative overflow-hidden">
+        <Card className="p-4 border-[#222E42] bg-[#121826] relative overflow-hidden">
           <div className="flex items-center justify-between text-xs text-[#FFFFFF] uppercase tracking-wider font-semibold">
             <span>Exact Valid Total (N)</span>
             <Calculator className="w-4 h-4 text-[#FFFFFF]" />
@@ -468,7 +468,7 @@ export const AllocationResultsView = ({
         </Card>
 
         {/* Metric 3: Generated Count & Generation Status */}
-        <Card className="p-4 border-[#333333] bg-[#181818]">
+        <Card className="p-4 border-[#222E42] bg-[#121826]">
           <div className="flex items-center justify-between text-xs text-gw-text-secondary uppercase tracking-wider font-semibold">
             <span>Generated Allocations</span>
             <PlayCircle className="w-4 h-4 text-[#FFFFFF]" />
@@ -503,7 +503,7 @@ export const AllocationResultsView = ({
         </Card>
 
         {/* Metric 4: Independent Conflict Audit Status (Phase 17) */}
-        <Card className="p-4 border-[#333333] bg-[#181818]">
+        <Card className="p-4 border-[#222E42] bg-[#121826]">
           <div className="flex items-center justify-between text-xs text-gw-text-secondary uppercase tracking-wider font-semibold">
             <span>Conflict Audit (Phase 17)</span>
             <ShieldCheck className="w-4 h-4 text-[#FFFFFF]" />
@@ -539,7 +539,7 @@ export const AllocationResultsView = ({
 
       {/* Clarification Callout: Mathematical Total vs Generated Subset */}
       {allocationData && allocationData.has_more && (
-        <div className="p-3.5 bg-[#181818] border border-[#333333] rounded-xl flex items-start gap-3 text-xs text-gw-text">
+        <div className="p-3.5 bg-[#121826] border border-[#222E42] rounded-xl flex items-start gap-3 text-xs text-gw-text">
           <Info className="w-4 h-4 text-[#FFFFFF] shrink-0 mt-0.5" />
           <div className="space-y-1">
             <span className="font-semibold text-[#FFFFFF] block">
@@ -554,8 +554,8 @@ export const AllocationResultsView = ({
 
       {/* Zero Valid Allocations State */}
       {calculationData && calculationData.valid_assignments === 0 && (
-        <Card className="p-8 text-center border-[#333333] bg-[#181818]">
-          <div className="w-12 h-12 rounded-2xl bg-[#222222] border border-[#333333] flex items-center justify-center mx-auto mb-3">
+        <Card className="p-8 text-center border-[#222E42] bg-[#121826]">
+          <div className="w-12 h-12 rounded-2xl bg-[#1E2638] border border-[#222E42] flex items-center justify-center mx-auto mb-3">
             <AlertTriangle className="w-6 h-6 text-[#FFFFFF]" />
           </div>
           <h4 className="text-base font-bold text-gw-text">
@@ -581,9 +581,9 @@ export const AllocationResultsView = ({
       {allocationData && allocationData.generated_count > 0 && (
         <div className="space-y-5">
           {/* View Mode Switcher & Active Allocation Stepper */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-xl bg-[#181818] border border-[#333333]">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-xl bg-[#121826] border border-[#222E42]">
             {/* View Mode Toggle Buttons */}
-            <div className="flex items-center gap-1.5 bg-[#111111] p-1 rounded-xl border border-[#333333]">
+            <div className="flex items-center gap-1.5 bg-[#0D121F] p-1 rounded-xl border border-[#222E42]">
               <button
                 type="button"
                 onClick={() => setViewMode('visualizer')}
@@ -653,7 +653,7 @@ export const AllocationResultsView = ({
                 <select
                   value={selectedAllocationIndex}
                   onChange={(e) => setSelectedAllocationIndex(Number(e.target.value))}
-                  className="bg-[#222222] border border-[#333333] rounded-lg px-2.5 py-1 text-xs font-mono font-bold text-[#FFFFFF] focus:outline-none focus:border-[#FFFFFF] cursor-pointer"
+                  className="bg-[#1E2638] border border-[#222E42] rounded-lg px-2.5 py-1 text-xs font-mono font-bold text-[#FFFFFF] focus:outline-none focus:border-[#FFFFFF] cursor-pointer"
                 >
                   {allocationData.allocations.map((alloc, idx) => (
                     <option key={idx} value={idx}>
@@ -717,10 +717,10 @@ export const AllocationResultsView = ({
 
               {/* Bottom: Pair Inspector Card (When flight, gate, or cell is hovered or clicked) */}
               {activePairDetails ? (
-                <Card className="p-4 border-[#333333] bg-[#181818] shadow-md">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#333333]">
+                <Card className="p-4 border-[#222E42] bg-[#121826] shadow-md">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#222E42]">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-[#222222] border border-[#333333] flex items-center justify-center text-[#FFFFFF]">
+                      <div className="w-8 h-8 rounded-lg bg-[#1E2638] border border-[#222E42] flex items-center justify-center text-[#FFFFFF]">
                         <Plane className="w-4 h-4" />
                       </div>
                       <div>
@@ -771,7 +771,7 @@ export const AllocationResultsView = ({
 
                   {/* Pair Details Grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 text-xs">
-                    <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333]">
+                    <div className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42]">
                       <span className="text-[10px] text-gw-text-secondary uppercase block mb-0.5">Flight Info</span>
                       <span className="font-semibold text-gw-text block">{activePairDetails.flight.airline || 'Aviation'}</span>
                       <span className="text-[11px] text-gw-text-secondary font-mono">
@@ -779,7 +779,7 @@ export const AllocationResultsView = ({
                       </span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333]">
+                    <div className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42]">
                       <span className="text-[10px] text-gw-text-secondary uppercase block mb-0.5">Gate Info</span>
                       <span className="font-semibold text-gw-text block">{activePairDetails.gate.terminal || 'Main Terminal'}</span>
                       <span className="text-[11px] text-gw-text-secondary font-mono">
@@ -787,7 +787,7 @@ export const AllocationResultsView = ({
                       </span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-[#222222] border border-[#333333]">
+                    <div className="p-2.5 rounded-lg bg-[#1E2638] border border-[#222E42]">
                       <span className="text-[10px] text-gw-text-secondary uppercase block mb-0.5">Matrix Coordinate</span>
                       <span className="font-mono text-[#FFFFFF] block">
                         Cell [{activePairDetails.fIdx}, {activePairDetails.gIdx}] = {activePairDetails.isForbidden ? '1 (Restricted)' : '0 (Allowed)'}
@@ -799,7 +799,7 @@ export const AllocationResultsView = ({
                   </div>
                 </Card>
               ) : (
-                <div className="p-3 rounded-xl bg-[#181818] border border-[#333333] text-center text-xs text-gw-text-secondary">
+                <div className="p-3 rounded-xl bg-[#121826] border border-[#222E42] text-center text-xs text-gw-text-secondary">
                   Hover or click any flight node, gate node, connection line, or matrix cell to inspect discrete relationship details.
                 </div>
               )}
@@ -821,7 +821,7 @@ export const AllocationResultsView = ({
                       setSearchQuery(e.target.value)
                       setCurrentPage(1)
                     }}
-                    className="w-full bg-[#222222] border border-[#333333] rounded-xl pl-9 pr-3 py-2 text-xs text-gw-text placeholder:text-gw-text-secondary/60 focus:outline-none focus:border-[#FFFFFF] transition-colors"
+                    className="w-full bg-[#1E2638] border border-[#222E42] rounded-xl pl-9 pr-3 py-2 text-xs text-gw-text placeholder:text-gw-text-secondary/60 focus:outline-none focus:border-[#FFFFFF] transition-colors"
                   />
                   {searchQuery && (
                     <button
@@ -841,7 +841,7 @@ export const AllocationResultsView = ({
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
-                      className="bg-[#222222] border border-[#333333] rounded-lg px-2 py-1.5 text-xs text-gw-text focus:outline-none focus:border-[#FFFFFF]"
+                      className="bg-[#1E2638] border border-[#222E42] rounded-lg px-2 py-1.5 text-xs text-gw-text focus:outline-none focus:border-[#FFFFFF]"
                     >
                       <option value="number_asc">Allocation # (Ascending)</option>
                       <option value="number_desc">Allocation # (Descending)</option>
@@ -857,7 +857,7 @@ export const AllocationResultsView = ({
                         setItemsPerPage(Number(e.target.value))
                         setCurrentPage(1)
                       }}
-                      className="bg-[#222222] border border-[#333333] rounded-lg px-2 py-1.5 text-xs text-gw-text focus:outline-none focus:border-[#FFFFFF]"
+                      className="bg-[#1E2638] border border-[#222E42] rounded-lg px-2 py-1.5 text-xs text-gw-text focus:outline-none focus:border-[#FFFFFF]"
                     >
                       <option value={10}>10</option>
                       <option value={25}>25</option>
@@ -868,9 +868,9 @@ export const AllocationResultsView = ({
               </div>
 
               {/* Table Container */}
-              <div className="w-full overflow-x-auto rounded-xl border border-[#333333] bg-[#181818] shadow-md">
+              <div className="w-full overflow-x-auto rounded-xl border border-[#222E42] bg-[#121826] shadow-md">
                 <table className="w-full text-left text-sm text-gw-text">
-                  <thead className="bg-[#111111] text-xs uppercase tracking-wider text-gw-text-secondary border-b border-[#333333]">
+                  <thead className="bg-[#0D121F] text-xs uppercase tracking-wider text-gw-text-secondary border-b border-[#222E42]">
                     <tr>
                       <th className="px-4 py-3.5 font-semibold text-center w-24">Allocation #</th>
                       <th className="px-4 py-3.5 font-semibold">Flight-to-Gate Assignment Plan</th>
@@ -908,7 +908,7 @@ export const AllocationResultsView = ({
                                 {alloc.assignments.map((a, idx) => (
                                   <span
                                     key={idx}
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#222222] border border-[#333333] text-[11px] text-gw-text"
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#1E2638] border border-[#222E42] text-[11px] text-gw-text"
                                   >
                                     <span className="font-semibold text-[#FFFFFF]">{a.flight_id}</span>
                                     <ArrowRight className="w-2.5 h-2.5 text-gw-text-secondary" />
@@ -1063,7 +1063,7 @@ export const AllocationResultsView = ({
         {inspectedAllocation && (
           <div className="space-y-5">
             {inspectedAllocation.validation?.is_valid ? (
-              <div className="p-3.5 bg-[#181818] border border-[#333333] rounded-xl flex items-start gap-3 text-xs text-white">
+              <div className="p-3.5 bg-[#121826] border border-[#222E42] rounded-xl flex items-start gap-3 text-xs text-white">
                 <ShieldCheck className="w-5 h-5 shrink-0 mt-0.5 text-white" />
                 <div>
                   <span className="font-bold block">Independently Audited & Conflict-Free</span>
@@ -1073,7 +1073,7 @@ export const AllocationResultsView = ({
                 </div>
               </div>
             ) : (
-              <div className="p-3.5 bg-[#111111] border border-[#333333] rounded-xl flex items-start gap-3 text-xs text-white">
+              <div className="p-3.5 bg-[#0D121F] border border-[#222E42] rounded-xl flex items-start gap-3 text-xs text-white">
                 <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5 text-[#A3A3A3]" />
                 <div>
                   <span className="font-bold block">
@@ -1095,9 +1095,9 @@ export const AllocationResultsView = ({
                 <span>Flight-to-Gate Linkage Breakdown</span>
                 <span className="font-mono text-[#FFFFFF]">{inspectedAllocation.assignments.length} Pairs</span>
               </h5>
-              <div className="rounded-xl border border-[#333333] bg-[#181818] overflow-hidden">
+              <div className="rounded-xl border border-[#222E42] bg-[#121826] overflow-hidden">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#111111] text-gw-text-secondary font-semibold uppercase border-b border-[#333333]">
+                  <thead className="bg-[#0D121F] text-gw-text-secondary font-semibold uppercase border-b border-[#222E42]">
                     <tr>
                       <th className="px-4 py-2.5">Flight</th>
                       <th className="px-4 py-2.5 text-center">Direction</th>

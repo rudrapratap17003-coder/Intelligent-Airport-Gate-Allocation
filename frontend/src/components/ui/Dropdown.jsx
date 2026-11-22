@@ -50,9 +50,9 @@ export const Dropdown = ({
         aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
         className={`
-          w-full flex items-center justify-between gap-2 bg-[#181818] text-left text-sm rounded-lg border px-3.5 py-2.5 transition-all outline-none cursor-pointer min-h-[42px]
-          ${disabled ? 'opacity-40 cursor-not-allowed' : 'hover:border-[#555555]'}
-          ${isOpen ? 'border-[#777777] ring-1 ring-white/20' : 'border-[#333333]'}
+          w-full flex items-center justify-between gap-2 bg-[#121826] text-left text-sm rounded-lg border px-3.5 py-2.5 transition-all outline-none cursor-pointer min-h-[42px]
+          ${disabled ? 'opacity-40 cursor-not-allowed' : 'hover:border-[#334155]'}
+          ${isOpen ? 'border-[#777777] ring-1 ring-white/20' : 'border-[#222E42]'}
           ${selectedOption ? 'text-[#FFFFFF] font-medium' : 'text-[#737373]'}
         `}
       >
@@ -71,7 +71,7 @@ export const Dropdown = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.12 }}
-            className="absolute left-0 right-0 mt-1.5 bg-[#222222] border border-[#333333] rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto py-1"
+            className="absolute left-0 right-0 mt-1.5 bg-[#1E2638] border border-[#222E42] rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto py-1"
             role="listbox"
           >
             {options.map((opt) => {
@@ -88,7 +88,7 @@ export const Dropdown = ({
                   }}
                   className={`
                     w-full flex items-center justify-between px-3.5 py-2 text-xs text-left transition-colors cursor-pointer
-                    ${isSelected ? 'bg-[#383838] text-[#FFFFFF] font-semibold' : 'text-[#E5E5E5] hover:bg-[#2A2A2A] hover:text-[#FFFFFF]'}
+                    ${isSelected ? 'bg-[#383838] text-[#FFFFFF] font-semibold' : 'text-[#E5E5E5] hover:bg-[#1E2638] hover:text-[#FFFFFF]'}
                   `}
                 >
                   <span className="truncate">{opt.label}</span>

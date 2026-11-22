@@ -329,7 +329,7 @@ export const FlightManagement = () => {
       header: 'Terminal',
       key: 'terminal',
       render: (row) => (
-        <span className="font-mono text-xs text-gw-text px-2 py-0.5 rounded bg-[#181818] border border-[#333333]">
+        <span className="font-mono text-xs text-gw-text px-2 py-0.5 rounded bg-[#121826] border border-[#222E42]">
           {row.terminal}
         </span>
       )
@@ -363,7 +363,7 @@ export const FlightManagement = () => {
           <button
             type="button"
             onClick={() => handleOpenEditModal(row)}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#1E2638] transition-colors cursor-pointer"
             title="Edit Flight"
           >
             <Edit2 className="w-4 h-4" />
@@ -371,7 +371,7 @@ export const FlightManagement = () => {
           <button
             type="button"
             onClick={() => handleOpenDeleteModal(row)}
-            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#222222] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-gw-text-secondary hover:text-[#FFFFFF] hover:bg-[#1E2638] transition-colors cursor-pointer"
             title="Delete Flight"
           >
             <Trash2 className="w-4 h-4" />
@@ -384,7 +384,7 @@ export const FlightManagement = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* -------------------- 1. HEADER -------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#333333]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#222E42]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h1 className="gw-page-heading">Flight Management</h1>
@@ -519,14 +519,14 @@ export const FlightManagement = () => {
       {/* Mobile Flight Cards (sm:hidden) */}
       <div className="block sm:hidden space-y-3">
         {isLoading ? (
-          <div className="p-8 text-center text-gw-text-secondary bg-[#181818] rounded-xl border border-[#333333]">
+          <div className="p-8 text-center text-gw-text-secondary bg-[#121826] rounded-xl border border-[#222E42]">
             <div className="flex items-center justify-center gap-2">
               <div className="w-4 h-4 border-2 border-[#FFFFFF] border-t-transparent rounded-full animate-spin" />
               <span>Loading flights...</span>
             </div>
           </div>
         ) : filteredFlights.length === 0 ? (
-          <div className="p-6 text-center space-y-3 bg-[#181818] rounded-xl border border-[#333333]">
+          <div className="p-6 text-center space-y-3 bg-[#121826] rounded-xl border border-[#222E42]">
             <p className="text-sm font-semibold text-gw-text">No matching flights found</p>
             <p className="text-xs text-gw-text-secondary">Try adjusting your search criteria or filters.</p>
             <Button
@@ -544,11 +544,11 @@ export const FlightManagement = () => {
         ) : (
           filteredFlights.map((flight) => {
             return (
-              <Card key={flight.id} className="p-4 space-y-3 border-[#333333]">
+              <Card key={flight.id} className="p-4 space-y-3 border-[#222E42]">
                 {/* Header: Flight number, Airline, Status */}
-                <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-[#333333]">
+                <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-[#222E42]">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-lg bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+                    <div className="p-2 rounded-lg bg-[#1E2638] text-[#FFFFFF] border border-[#222E42]">
                       <Plane className="w-4 h-4" />
                     </div>
                     <div>
@@ -566,7 +566,7 @@ export const FlightManagement = () => {
 
                 {/* Details Grid */}
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2 rounded-lg bg-[#181818] border border-[#333333] space-y-0.5">
+                  <div className="p-2 rounded-lg bg-[#121826] border border-[#222E42] space-y-0.5">
                     <span className="text-[10px] text-gw-text-secondary uppercase">Schedule</span>
                     <div className="font-mono font-medium text-gw-text flex items-center gap-1">
                       <Clock className="w-3 h-3 text-[#FFFFFF] shrink-0" />
@@ -574,10 +574,10 @@ export const FlightManagement = () => {
                     </div>
                   </div>
 
-                  <div className="p-2 rounded-lg bg-[#181818] border border-[#333333] space-y-0.5">
+                  <div className="p-2 rounded-lg bg-[#121826] border border-[#222E42] space-y-0.5">
                     <span className="text-[10px] text-gw-text-secondary uppercase">Terminal & Pax</span>
                     <div className="font-mono font-medium text-gw-text flex items-center gap-1.5">
-                      <span className="px-1.5 py-0.5 rounded bg-[#222222] border border-[#333333] text-[11px]">
+                      <span className="px-1.5 py-0.5 rounded bg-[#1E2638] border border-[#222E42] text-[11px]">
                         {flight.terminal}
                       </span>
                       <span className="text-gw-text-secondary">{flight.passengerCapacity} pax</span>
@@ -592,7 +592,7 @@ export const FlightManagement = () => {
                 </div>
 
                 {/* Action buttons */}
-                <div className="flex items-center gap-2 pt-2 border-t border-[#333333]">
+                <div className="flex items-center gap-2 pt-2 border-t border-[#222E42]">
                   <Button
                     variant="outline"
                     size="sm"
@@ -606,7 +606,7 @@ export const FlightManagement = () => {
                     variant="ghost"
                     size="sm"
                     icon={Trash2}
-                    className="flex-1 justify-center text-xs h-9 hover:bg-[#222222]"
+                    className="flex-1 justify-center text-xs h-9 hover:bg-[#1E2638]"
                     onClick={() => handleOpenDeleteModal(flight)}
                   >
                     Delete
@@ -619,7 +619,7 @@ export const FlightManagement = () => {
       </div>
 
       {/* Storage & Architecture Notice */}
-      <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] flex items-center justify-between text-xs text-gw-text-secondary">
+      <div className="p-3.5 rounded-xl bg-[#121826] border border-[#222E42] flex items-center justify-between text-xs text-gw-text-secondary">
         <div className="flex items-center gap-2">
           <Info className="w-4 h-4 text-[#FFFFFF] shrink-0" />
           <span>
@@ -755,7 +755,7 @@ export const FlightManagement = () => {
       >
         {flightToDelete && (
           <div className="space-y-3">
-            <div className="p-3 rounded-xl bg-[#111111] border border-[#333333] text-xs text-white flex items-start gap-2.5">
+            <div className="p-3 rounded-xl bg-[#0D121F] border border-[#222E42] text-xs text-white flex items-start gap-2.5">
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#A3A3A3]" />
               <div>
                 Are you sure you want to remove flight{' '}

@@ -11,10 +11,10 @@ const icons = {
 }
 
 const styles = {
-  success: 'bg-[#222222] border-[#555555] text-[#FFFFFF]',
-  warning: 'bg-[#1E1E1E] border-[#333333] text-[#E5E5E5]',
-  error: 'bg-[#181818] border-[#555555] text-[#FFFFFF]',
-  info: 'bg-[#222222] border-[#333333] text-[#E5E5E5]'
+  success: 'bg-[#1E2638] border-[#334155] text-[#FFFFFF]',
+  warning: 'bg-[#1E1E1E] border-[#222E42] text-[#E5E5E5]',
+  error: 'bg-[#121826] border-[#334155] text-[#FFFFFF]',
+  info: 'bg-[#1E2638] border-[#222E42] text-[#E5E5E5]'
 }
 
 export const Notification = ({

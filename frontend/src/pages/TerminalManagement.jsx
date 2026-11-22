@@ -65,13 +65,13 @@ export const TerminalManagement = () => {
   return (
     <div className="space-y-6">
       {/* Header and Terminal Switcher Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#333333]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#222E42]">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xs font-mono text-[#A3A3A3] font-bold tracking-wider uppercase">
               Bengaluru Airport Digital Twin
             </span>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-[#222222] border border-[#333333] text-[#FFFFFF] font-mono">
+            <span className="text-[10px] px-2 py-0.5 rounded bg-[#1E2638] border border-[#222E42] text-[#FFFFFF] font-mono">
               VOBL / BLR
             </span>
           </div>
@@ -84,14 +84,14 @@ export const TerminalManagement = () => {
         </div>
 
         {/* Tab Controls */}
-        <div className="flex items-center gap-2 bg-[#181818] p-1.5 rounded-xl border border-[#333333]">
+        <div className="flex items-center gap-2 bg-[#121826] p-1.5 rounded-xl border border-[#222E42]">
           <button
             type="button"
             onClick={() => handleTabChange('T1')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
               activeTab === 'T1'
-                ? 'bg-[#FFFFFF] text-[#090909]'
-                : 'text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222]'
+                ? 'bg-sky-500 text-slate-950 font-bold shadow-xs'
+                : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E2638]'
             }`}
           >
             <Plane className="w-3.5 h-3.5" />
@@ -100,21 +100,21 @@ export const TerminalManagement = () => {
           <button
             type="button"
             onClick={() => handleTabChange('T2')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
               activeTab === 'T2'
-                ? 'bg-[#FFFFFF] text-[#090909]'
-                : 'text-[#A3A3A3] hover:text-[#FFFFFF] hover:bg-[#222222]'
+                ? 'bg-sky-500 text-slate-950 font-bold shadow-xs'
+                : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E2638]'
             }`}
           >
             <Building2 className="w-3.5 h-3.5" />
             <span>Terminal 2 (Int'l / Premium)</span>
-            <span className="text-[9px] px-1 py-0.2 rounded bg-[#222222] text-[#FFFFFF] font-mono border border-[#333333]">Code F</span>
+            <span className="text-[9px] px-1 py-0.2 rounded bg-[#1E2638] text-sky-300 font-mono border border-[#222E42]">Code F</span>
           </button>
         </div>
       </div>
 
       {/* Academic Simulation Notice */}
-      <div className="p-3.5 rounded-xl bg-[#181818] border border-[#333333] text-xs flex items-start gap-3">
+      <div className="p-3.5 rounded-xl bg-[#121826] border border-[#222E42] text-xs flex items-start gap-3">
         <Info className="w-4 h-4 text-[#FFFFFF] shrink-0 mt-0.5" />
         <div className="space-y-1">
           <p className="font-semibold text-[#FFFFFF]">
@@ -131,7 +131,7 @@ export const TerminalManagement = () => {
           <RefreshCw className="w-6 h-6 text-[#FFFFFF] animate-spin" />
         </div>
       ) : error ? (
-        <div className="p-4 rounded-xl bg-[#181818] border border-[#333333] text-[#A3A3A3] text-sm">
+        <div className="p-4 rounded-xl bg-[#121826] border border-[#222E42] text-[#A3A3A3] text-sm">
           {error}
         </div>
       ) : (
@@ -220,10 +220,10 @@ export const TerminalManagement = () => {
                     {terminalData.primary_airlines.map((airline) => (
                       <div
                         key={airline.code}
-                        className="p-2.5 rounded-lg bg-[#181818] border border-[#333333] flex items-center justify-between"
+                        className="p-2.5 rounded-lg bg-[#121826] border border-[#222E42] flex items-center justify-between"
                       >
                         <div className="flex items-center gap-2">
-                          <span className="w-7 h-7 rounded-md bg-[#222222] text-[#FFFFFF] font-mono font-bold text-xs flex items-center justify-center border border-[#333333]">
+                          <span className="w-7 h-7 rounded-md bg-[#1E2638] text-[#FFFFFF] font-mono font-bold text-xs flex items-center justify-center border border-[#222E42]">
                             {airline.code}
                           </span>
                           <div>
@@ -247,7 +247,7 @@ export const TerminalManagement = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-xs">
-                  <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-2">
+                  <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] space-y-2">
                     <div className="flex items-center gap-2 font-semibold text-gw-text">
                       <span className="w-2 h-2 rounded-full bg-[#FFFFFF]" />
                       <span>Flight Eligibility Boundary</span>
@@ -259,7 +259,7 @@ export const TerminalManagement = () => {
                     </p>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-[#181818] border border-[#333333] space-y-2">
+                  <div className="p-3 rounded-lg bg-[#121826] border border-[#222E42] space-y-2">
                     <div className="flex items-center gap-2 font-semibold text-gw-text">
                       <span className="w-2 h-2 rounded-full bg-[#FFFFFF]" />
                       <span>Wingspan & Jetway Capabilities</span>
@@ -288,7 +288,7 @@ export const TerminalManagement = () => {
               <CardContent>
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs text-left">
-                    <thead className="bg-[#181818] text-gw-text-secondary border-b border-[#333333] font-mono uppercase text-[11px]">
+                    <thead className="bg-[#121826] text-gw-text-secondary border-b border-[#222E42] font-mono uppercase text-[11px]">
                       <tr>
                         <th className="py-2.5 px-3">Gate / Stand</th>
                         <th className="py-2.5 px-3">Type</th>
@@ -303,14 +303,14 @@ export const TerminalManagement = () => {
                       {stands.map((s) => (
                         <tr key={s.id} className="hover:bg-white/5 transition-colors">
                           <td className="py-2.5 px-3 font-bold text-gw-text flex items-center gap-2">
-                            <span className="w-6 h-6 rounded bg-[#222222] text-[#FFFFFF] text-xs flex items-center justify-center border border-[#333333]">
+                            <span className="w-6 h-6 rounded bg-[#1E2638] text-[#FFFFFF] text-xs flex items-center justify-center border border-[#222E42]">
                               {s.gate_number}
                             </span>
                             <span>{s.stand_number}</span>
                           </td>
                           <td className="py-2.5 px-3 text-gw-text-secondary">{s.stand_type}</td>
                           <td className="py-2.5 px-3">
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#1E2638] text-[#FFFFFF] border border-[#222E42]">
                               {s.aircraft_category}
                             </span>
                           </td>
@@ -328,7 +328,7 @@ export const TerminalManagement = () => {
                           </td>
                           <td className="py-2.5 px-3 text-gw-text-secondary">{s.max_capacity} pax</td>
                           <td className="py-2.5 px-3">
-                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#222222] text-[#FFFFFF] border border-[#333333]">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#1E2638] text-[#FFFFFF] border border-[#222E42]">
                               {s.status.toUpperCase()}
                             </span>
                           </td>

@@ -106,24 +106,24 @@ export const Modal = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            className={`relative w-full ${maxWidth} bg-[#181818] border border-[#333333] rounded-2xl shadow-2xl z-10 overflow-hidden flex flex-col max-h-[88vh] my-auto`}
+            className={`relative w-full ${maxWidth} bg-[#121826] border border-[#222E42] rounded-2xl shadow-2xl z-10 overflow-hidden flex flex-col max-h-[88vh] my-auto`}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-[#333333] bg-[#111111] shrink-0">
+            <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-[#222E42] bg-[#0D121F] shrink-0">
               <div className="flex items-center gap-3 min-w-0">
                 {Icon && (
-                  <div className="p-2 rounded-xl bg-[#222222] border border-[#333333] text-[#FFFFFF] shrink-0">
+                  <div className="p-2 rounded-xl bg-[#1E283D] border border-[#26354D] text-[#38BDF8] shrink-0" aria-hidden="true">
                     <Icon className="w-5 h-5" />
                   </div>
                 )}
                 <div className="min-w-0">
                   {title && (
-                    <h3 id="modal-title" className="text-base sm:text-lg font-bold text-[#FFFFFF] truncate">
+                    <h3 id="modal-title" className="text-base sm:text-lg font-bold text-[#F8FAFC] truncate">
                       {title}
                     </h3>
                   )}
                   {subtitle && (
-                    <p id="modal-subtitle" className="text-xs text-[#A3A3A3] mt-0.5 truncate">
+                    <p id="modal-subtitle" className="text-xs text-[#94A3B8] mt-0.5 truncate">
                       {subtitle}
                     </p>
                   )}
@@ -133,18 +133,18 @@ export const Modal = ({
                 type="button"
                 onClick={onClose}
                 aria-label="Close dialog"
-                className="text-[#A3A3A3] hover:text-[#FFFFFF] p-1.5 rounded-lg hover:bg-[#222222] border border-transparent hover:border-[#444444] transition-all cursor-pointer shrink-0"
+                className="text-[#94A3B8] hover:text-[#F8FAFC] p-1.5 rounded-lg hover:bg-[#1E283D] border border-transparent hover:border-[#222E42] transition-all cursor-pointer shrink-0 focus-visible:ring-2 focus-visible:ring-sky-400"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Content Body */}
-            <div className="p-5 sm:p-6 overflow-y-auto flex-1">{children}</div>
+            <div className="p-5 sm:p-6 overflow-y-auto flex-1 text-[#F8FAFC]">{children}</div>
 
             {/* Footer */}
             {footer && (
-              <div className="flex items-center justify-end gap-3 px-5 sm:px-6 py-3.5 border-t border-[#333333] bg-[#111111] shrink-0">
+              <div className="flex items-center justify-end gap-3 px-5 sm:px-6 py-3.5 border-t border-[#222E42] bg-[#0D121F]/80 shrink-0">
                 {footer}
               </div>
             )}

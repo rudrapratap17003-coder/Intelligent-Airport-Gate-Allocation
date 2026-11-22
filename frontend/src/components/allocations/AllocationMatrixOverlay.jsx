@@ -28,9 +28,9 @@ export const AllocationMatrixOverlay = ({
   const activePair = selectedPair || hoveredPair
 
   return (
-    <div className="w-full bg-[#181818] border border-[#333333] rounded-2xl p-4 shadow-sm">
+    <div className="w-full bg-[#121826] border border-[#222E42] rounded-2xl p-4 shadow-sm">
       {/* Header and Legend */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#333333] mb-3 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#222E42] mb-3 text-xs">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-[#FFFFFF] uppercase tracking-wider font-mono">
             Restriction Matrix B with Allocation Overlay
@@ -55,13 +55,13 @@ export const AllocationMatrixOverlay = ({
             <span className="text-[#A3A3A3]">Assigned Forbidden (1)</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-3.5 h-3.5 rounded bg-[#111111] border border-[#555555] text-[#FFFFFF] flex items-center justify-center text-[9px] font-bold">
+            <span className="w-3.5 h-3.5 rounded bg-[#0D121F] border border-[#334155] text-[#FFFFFF] flex items-center justify-center text-[9px] font-bold">
               1
             </span>
             <span className="text-[#A3A3A3]">Forbidden (1)</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-3.5 h-3.5 rounded bg-[#181818] border border-[#333333] text-[#737373] flex items-center justify-center text-[9px]">
+            <span className="w-3.5 h-3.5 rounded bg-[#121826] border border-[#222E42] text-[#737373] flex items-center justify-center text-[9px]">
               0
             </span>
             <span className="text-[#A3A3A3]">Allowed (0)</span>
@@ -76,7 +76,7 @@ export const AllocationMatrixOverlay = ({
             {/* Gate Column Headers */}
             <thead>
               <tr>
-                <th className="p-2 text-left text-[#A3A3A3] text-[11px] font-medium border-b border-r border-[#333333] min-w-[90px]">
+                <th className="p-2 text-left text-[#A3A3A3] text-[11px] font-medium border-b border-r border-[#222E42] min-w-[90px]">
                   Flights \ Gates
                 </th>
                 {gates.map((g, colIdx) => {
@@ -84,9 +84,9 @@ export const AllocationMatrixOverlay = ({
                   return (
                     <th
                       key={g.id || colIdx}
-                      className={`p-2.5 text-center text-xs font-bold border-b border-[#333333] min-w-[70px] transition-colors ${
+                      className={`p-2.5 text-center text-xs font-bold border-b border-[#222E42] min-w-[70px] transition-colors ${
                         isColActive
-                          ? 'bg-[#222222] text-[#FFFFFF] border-b-2 border-b-white'
+                          ? 'bg-[#1E2638] text-[#FFFFFF] border-b-2 border-b-white'
                           : 'text-[#FFFFFF] hover:text-[#FFFFFF]'
                       }`}
                     >
@@ -108,12 +108,12 @@ export const AllocationMatrixOverlay = ({
                 const isRowActive = activePair?.flight_id === f.id
 
                 return (
-                  <tr key={f.id || rowIdx} className="hover:bg-[#222222]/40">
+                  <tr key={f.id || rowIdx} className="hover:bg-[#1E2638]/40">
                     {/* Flight Row Header */}
                     <th
-                      className={`p-2.5 text-left text-xs font-bold border-r border-[#333333] transition-colors ${
+                      className={`p-2.5 text-left text-xs font-bold border-r border-[#222E42] transition-colors ${
                         isRowActive
-                          ? 'bg-[#222222] text-[#FFFFFF] border-r-2 border-r-white'
+                          ? 'bg-[#1E2638] text-[#FFFFFF] border-r-2 border-r-white'
                           : 'text-[#FFFFFF]'
                       }`}
                     >
@@ -131,8 +131,8 @@ export const AllocationMatrixOverlay = ({
                       const isAssigned = assignedPairsSet.has(`${f.id}->${g.id}`)
                       const isCellFocused = activePair?.flight_id === f.id && activePair?.gate_id === g.id
 
-                      let cellBg = 'bg-[#181818]'
-                      let cellBorder = 'border border-[#333333]'
+                      let cellBg = 'bg-[#121826]'
+                      let cellBorder = 'border border-[#222E42]'
                       let textColor = 'text-[#737373]'
 
                       if (isAssigned) {
@@ -146,8 +146,8 @@ export const AllocationMatrixOverlay = ({
                           textColor = 'text-[#090909] font-bold'
                         }
                       } else if (isForbidden) {
-                        cellBg = 'bg-[#111111]'
-                        cellBorder = 'border-2 border-[#555555]'
+                        cellBg = 'bg-[#0D121F]'
+                        cellBorder = 'border-2 border-[#334155]'
                         textColor = 'text-[#FFFFFF]'
                       }
 
