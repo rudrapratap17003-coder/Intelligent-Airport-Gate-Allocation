@@ -58,7 +58,10 @@ class InclusionExclusionService:
             InvalidMatrixError: If input fails structural or binary validation.
         """
         # 1. Validate matrix dimensions and binary integrity
-        n = validate_restriction_matrix(matrix)
+        dims = validate_restriction_matrix(matrix)
+        num_rows, num_cols = dims.rows, dims.cols
+        is_square = (num_rows == num_cols)
+        matrix_size = num_rows if is_square else max(num_rows, num_cols)
 
         # 2. Invoke authoritative Rook Polynomial Engine (Phase 13)
         rook_result = RookPolynomialService.calculate(matrix, trim_trailing_zeros=False)
@@ -66,11 +69,42 @@ class InclusionExclusionService:
         forbidden_cell_count = rook_result["forbidden_cell_count"]
         polynomial = rook_result["polynomial"]
 
-        # 3. Factorial terms: (n - k)! for k = 0, ..., n
-        factorial_terms: List[int] = [math.factorial(n - k) for k in range(n + 1)]
-        total_possible_assignments = factorial_terms[0]  # n!
+        # Truncate rook_coefficients for display past highest non-zero rook count, keeping at least r0
+        display_rook_coeffs = list(r_coeffs)
+        while len(display_rook_coeffs) > 1 and display_rook_coeffs[-1] == 0:
+            display_rook_coeffs.pop()
 
-        # 4. Itemized Inclusion-Exclusion terms
+        # 3. Handle over-constrained case: more flights than gates (m > n)
+        if num_rows > num_cols:
+            return {
+                "matrix_size": matrix_size,
+                "num_rows": num_rows,
+                "num_cols": num_cols,
+                "is_square": False,
+                "is_over_constrained": True,
+                "forbidden_cell_count": forbidden_cell_count,
+                "rook_coefficients": display_rook_coeffs,
+                "polynomial": polynomial,
+                "factorial_terms": [0],
+                "inclusion_exclusion_terms": [],
+                "total_possible_assignments": 0,
+                "valid_assignments": 0,
+                "invalid_assignments": 0,
+                "feasibility_percentage": 0.0,
+                "calculation_steps": [
+                    f"N = 0 (Pigeonhole Principle: {num_rows} flights exceed {num_cols} gates)"
+                ]
+            }
+
+        # 4. For m <= n:
+        # Total unrestricted injective assignments P(n, m) = n! / (n - m)!
+        total_possible_assignments = math.perm(num_cols, num_rows)
+
+        # Factorial / permutation terms: P(n - k, m - k) for k = 0, ..., m
+        # When m == n, math.perm(n - k, n - k) == (n - k)! exactly
+        factorial_terms: List[int] = [math.perm(num_cols - k, num_rows - k) for k in range(num_rows + 1)]
+
+        # 5. Itemized Inclusion-Exclusion terms
         inclusion_exclusion_terms: List[Dict[str, Any]] = []
         valid_assignments: int = 0
 
@@ -78,7 +112,7 @@ class InclusionExclusionService:
         step1_parts: List[str] = []
         step2_parts: List[str] = []
 
-        for k in range(n + 1):
+        for k in range(num_rows + 1):
             sign = 1 if k % 2 == 0 else -1
             r_k = r_coeffs[k] if k < len(r_coeffs) else 0
             fact_val = factorial_terms[k]
@@ -96,12 +130,17 @@ class InclusionExclusionService:
 
             # Build readable calculation step strings for non-zero contributions (and always for k=0)
             if k == 0 or r_k > 0:
+                if is_square:
+                    term_symbol = f"{r_k}({num_rows - k}!)"
+                else:
+                    term_symbol = f"{r_k}·P({num_cols - k}, {num_rows - k})"
+
                 if not step1_parts:
-                    step1_parts.append(f"{r_k}({n - k}!)")
+                    step1_parts.append(term_symbol)
                     step2_parts.append(str(contribution))
                 else:
                     sign_symbol = "+" if sign > 0 else "-"
-                    step1_parts.append(f"{sign_symbol} {r_k}({n - k}!)")
+                    step1_parts.append(f"{sign_symbol} {term_symbol}")
                     step2_parts.append(f"{sign_symbol} {abs(contribution)}")
 
         # Mathematical sanity check
@@ -124,13 +163,12 @@ class InclusionExclusionService:
             f"N = {valid_assignments}"
         ]
 
-        # Truncate rook_coefficients for display past highest non-zero rook count, keeping at least r0
-        display_rook_coeffs = list(r_coeffs)
-        while len(display_rook_coeffs) > 1 and display_rook_coeffs[-1] == 0:
-            display_rook_coeffs.pop()
-
         return {
-            "matrix_size": n,
+            "matrix_size": matrix_size,
+            "num_rows": num_rows,
+            "num_cols": num_cols,
+            "is_square": is_square,
+            "is_over_constrained": False,
             "forbidden_cell_count": forbidden_cell_count,
             "rook_coefficients": display_rook_coeffs,
             "polynomial": polynomial,

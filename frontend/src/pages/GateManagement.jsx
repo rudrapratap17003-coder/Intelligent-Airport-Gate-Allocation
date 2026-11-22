@@ -72,6 +72,8 @@ export const GateManagement = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingGate, setEditingGate] = useState(null)
   const [gateToDelete, setGateToDelete] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -191,10 +193,12 @@ export const GateManagement = () => {
 
   // Submit Add / Edit
   const handleSaveGate = async (e) => {
-    e.preventDefault()
+    if (e && e.preventDefault) e.preventDefault()
+    if (isSubmitting) return
     if (!validateForm()) return
 
     try {
+      setIsSubmitting(true)
       if (editingGate) {
         await gateService.updateGate(editingGate.id, formData)
         toast.success('Gate Updated', `Gate ${formData.gateNumber.toUpperCase()} properties updated.`)
@@ -222,13 +226,16 @@ export const GateManagement = () => {
         message: err.message
       })
       setFormErrors(prev => ({ ...prev, gateNumber: err.message }))
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
   // Confirm delete
   const handleConfirmDelete = async () => {
-    if (!gateToDelete) return
+    if (!gateToDelete || isDeleting) return
     try {
+      setIsDeleting(true)
       await gateService.deleteGate(gateToDelete.id)
       toast.warning('Gate Removed', `Gate ${gateToDelete.gateNumber} was deleted from airport registry.`)
       setNotification({
@@ -248,6 +255,8 @@ export const GateManagement = () => {
       })
       setIsDeleteModalOpen(false)
       setGateToDelete(null)
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -531,10 +540,10 @@ export const GateManagement = () => {
         }
         footer={
           <>
-            <Button variant="ghost" onClick={() => setIsFormModalOpen(false)}>
+            <Button variant="ghost" onClick={() => setIsFormModalOpen(false)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button onClick={handleSaveGate}>
+            <Button onClick={handleSaveGate} loading={isSubmitting} disabled={isSubmitting} data-testid="save-gate-btn">
               {editingGate ? 'Save Changes' : 'Create Gate'}
             </Button>
           </>
@@ -619,10 +628,10 @@ export const GateManagement = () => {
         maxWidth="max-w-md"
         footer={
           <>
-            <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>
+            <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)} disabled={isDeleting}>
               Cancel
             </Button>
-            <Button variant="danger" onClick={handleConfirmDelete}>
+            <Button variant="danger" onClick={handleConfirmDelete} loading={isDeleting} disabled={isDeleting} data-testid="confirm-delete-gate-btn">
               Confirm Delete
             </Button>
           </>

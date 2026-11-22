@@ -25,11 +25,14 @@ def independent_brute_force_allocations(matrix, flight_ids, gate_ids):
     Generates all valid flight-to-gate assignments using itertools.permutations
     without recursion, bitmasks, or the production service.
     """
-    n = len(matrix)
+    m = len(matrix)
+    n = len(matrix[0]) if m > 0 else 0
+    if m > n:
+        return []
     valid_allocations = []
     
-    # Each permutation of (0, 1, ..., n-1) represents gate assigned to flight i
-    for perm in itertools.permutations(range(n)):
+    # Each permutation of m gates out of n represents gate assigned to flight i
+    for perm in itertools.permutations(range(n), m):
         is_valid = True
         for flight_idx, gate_idx in enumerate(perm):
             if matrix[flight_idx][gate_idx] == 1:
@@ -38,7 +41,7 @@ def independent_brute_force_allocations(matrix, flight_ids, gate_ids):
         if is_valid:
             assignment = [
                 {"flight_id": flight_ids[i], "gate_id": gate_ids[perm[i]]}
-                for i in range(n)
+                for i in range(m)
             ]
             valid_allocations.append(assignment)
             
@@ -48,25 +51,27 @@ def independent_brute_force_allocations(matrix, flight_ids, gate_ids):
 def verify_allocation_validity(matrix, flight_ids, gate_ids, allocation):
     """
     Independent validator: rigorously verifies that a single allocation:
-      1. Contains exactly n flight-to-gate assignments.
+      1. Contains exactly m flight-to-gate assignments.
       2. Contains every flight exactly once.
-      3. Contains every gate exactly once (bijective assignment).
+      3. Contains distinct gates (no gate assigned twice).
       4. Does NOT assign any flight to a forbidden gate (B[f][g] == 0).
     """
-    n = len(matrix)
+    m = len(matrix)
     assignments = allocation["assignments"]
-    assert len(assignments) == n, f"Expected {n} assignments, got {len(assignments)}"
+    assert len(assignments) == m, f"Expected {m} assignments, got {len(assignments)}"
 
     assigned_flights = [a["flight_id"] for a in assignments]
     assigned_gates = [a["gate_id"] for a in assignments]
 
     # Every flight unique and matches flight_ids
-    assert len(set(assigned_flights)) == n, f"Duplicate flights in allocation: {assigned_flights}"
+    assert len(set(assigned_flights)) == m, f"Duplicate flights in allocation: {assigned_flights}"
     assert set(assigned_flights) == set(flight_ids), f"Assigned flights do not match required flight_ids"
 
-    # Every gate unique and matches gate_ids
-    assert len(set(assigned_gates)) == n, f"Duplicate gates in allocation: {assigned_gates}"
-    assert set(assigned_gates) == set(gate_ids), f"Assigned gates do not match required gate_ids"
+    # Distinct gates
+    assert len(set(assigned_gates)) == m, f"Duplicate gates in allocation: {assigned_gates}"
+    assert set(assigned_gates).issubset(set(gate_ids)), f"Assigned gates do not belong to gate_ids"
+    if m == len(gate_ids):
+        assert set(assigned_gates) == set(gate_ids), f"Assigned gates do not match required gate_ids"
 
     # No forbidden matrix cell is used
     flight_to_idx = {fid: idx for idx, fid in enumerate(flight_ids)}
@@ -438,9 +443,14 @@ class TestInputValidation:
         with pytest.raises(InvalidMatrixError):
             generate_allocations([])
 
-    def test_reject_rectangular_matrix(self):
+    def test_accept_rectangular_matrix(self):
+        res = generate_allocations([[0, 0, 0], [0, 0, 0]])
+        assert res["total_valid_assignments"] == 6
+        assert len(res["allocations"]) == 6
+
+    def test_reject_ragged_matrix(self):
         with pytest.raises(InvalidMatrixError):
-            generate_allocations([[0, 0, 0], [0, 0, 0]])
+            generate_allocations([[0, 0, 0], [0, 0]])
 
     def test_reject_non_binary_elements(self):
         with pytest.raises(InvalidMatrixError):
@@ -448,12 +458,12 @@ class TestInputValidation:
 
     def test_flight_ids_count_mismatch(self):
         matrix = [[0, 0], [0, 0]]
-        with pytest.raises(AllocationGeneratorError, match="must match matrix dimension"):
+        with pytest.raises(AllocationGeneratorError, match="must match flight count"):
             generate_allocations(matrix, flight_ids=["F1", "F2", "F3"])
 
     def test_gate_ids_count_mismatch(self):
         matrix = [[0, 0], [0, 0]]
-        with pytest.raises(AllocationGeneratorError, match="must match matrix dimension"):
+        with pytest.raises(AllocationGeneratorError, match="must match gate count"):
             generate_allocations(matrix, gate_ids=["G1"])
 
     def test_duplicate_flight_ids(self):

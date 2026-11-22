@@ -82,23 +82,23 @@ def create_simulation(payload: SimulationCreate, db: Session = Depends(get_db)):
     gate_ids = list(set(payload.selected_gate_ids))
 
     if not flight_ids:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="At least one flight must be selected.")
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="At least one flight must be selected.")
     if not gate_ids:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="At least one gate must be selected.")
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="At least one gate must be selected.")
 
     # Check non-existent flights
     found_flights = db.query(Flight.id).filter(Flight.id.in_(flight_ids)).all()
     found_f_set = {f[0] for f in found_flights}
     missing_f = set(flight_ids) - found_f_set
     if missing_f:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"Flight IDs do not exist: {list(missing_f)}")
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=f"Flight IDs do not exist: {list(missing_f)}")
 
     # Check non-existent gates
     found_gates = db.query(Gate.id).filter(Gate.id.in_(gate_ids)).all()
     found_g_set = {g[0] for g in found_gates}
     missing_g = set(gate_ids) - found_g_set
     if missing_g:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"Gate IDs do not exist: {list(missing_g)}")
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=f"Gate IDs do not exist: {list(missing_g)}")
 
     sim = Simulation(
         id=sim_id,
@@ -175,7 +175,7 @@ def update_simulation(sim_id: str, payload: SimulationUpdate, db: Session = Depe
     if payload.selected_flight_ids is not None:
         flight_ids = list(set(payload.selected_flight_ids))
         if not flight_ids:
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="At least one flight must be selected.")
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="At least one flight must be selected.")
         db.query(SimulationFlight).filter(SimulationFlight.simulation_id == sim_id).delete()
         for f_id in flight_ids:
             db.add(SimulationFlight(simulation_id=sim_id, flight_id=f_id))
@@ -184,7 +184,7 @@ def update_simulation(sim_id: str, payload: SimulationUpdate, db: Session = Depe
     if payload.selected_gate_ids is not None:
         gate_ids = list(set(payload.selected_gate_ids))
         if not gate_ids:
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="At least one gate must be selected.")
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="At least one gate must be selected.")
         db.query(SimulationGate).filter(SimulationGate.simulation_id == sim_id).delete()
         for g_id in gate_ids:
             db.add(SimulationGate(simulation_id=sim_id, gate_id=g_id))

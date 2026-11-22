@@ -93,7 +93,7 @@ def update_restrictions(sim_id: str, payload: RestrictionUpdate, db: Session = D
         for c in range(len(matrix_data[r])):
             if matrix_data[r][c] not in (0, 1):
                 raise HTTPException(
-                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
                     detail=f"Cell at ({r}, {c}) must be binary 0 or 1. Received: {matrix_data[r][c]}"
                 )
 
@@ -103,12 +103,12 @@ def update_restrictions(sim_id: str, payload: RestrictionUpdate, db: Session = D
     # Validate row_flight_ids and column_gate_ids lengths if provided
     if row_f_ids is not None and len(row_f_ids) != rows_count:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=f"rowFlightIds length ({len(row_f_ids)}) must match matrix rows count ({rows_count})."
         )
     if col_g_ids is not None and len(col_g_ids) != cols_count:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=f"columnGateIds length ({len(col_g_ids)}) must match matrix columns count ({cols_count})."
         )
 

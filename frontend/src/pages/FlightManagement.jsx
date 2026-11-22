@@ -68,6 +68,8 @@ export const FlightManagement = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [editingFlight, setEditingFlight] = useState(null)
   const [flightToDelete, setFlightToDelete] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -165,10 +167,18 @@ export const FlightManagement = () => {
   // Form validation
   const validateForm = () => {
     const errors = {}
-    if (!formData.flightNumber.trim()) {
+    const trimmedNum = formData.flightNumber.trim().toUpperCase()
+    if (!trimmedNum) {
       errors.flightNumber = 'Flight number is required (e.g. AI101)'
-    } else if (!/^[A-Z0-9]{2,8}$/i.test(formData.flightNumber.trim())) {
+    } else if (!/^[A-Z0-9]{2,8}$/i.test(trimmedNum)) {
       errors.flightNumber = 'Flight number must be 2-8 alphanumeric characters'
+    } else {
+      const isDuplicate = editingFlight
+        ? flights.some((f) => f.id !== editingFlight.id && f.flightNumber.toUpperCase() === trimmedNum)
+        : flights.some((f) => f.flightNumber.toUpperCase() === trimmedNum)
+      if (isDuplicate) {
+        errors.flightNumber = `Flight number "${trimmedNum}" already exists. Please choose a unique flight number.`
+      }
     }
 
     if (!formData.airline.trim()) {
@@ -194,10 +204,12 @@ export const FlightManagement = () => {
 
   // Submit Add / Edit
   const handleSaveFlight = async (e) => {
-    e.preventDefault()
+    if (e && e.preventDefault) e.preventDefault()
+    if (isSubmitting) return
     if (!validateForm()) return
 
     try {
+      setIsSubmitting(true)
       if (editingFlight) {
         await flightService.updateFlight(editingFlight.id, formData)
         toast.success('Flight Updated', `Flight ${formData.flightNumber.toUpperCase()} was successfully updated.`)
@@ -225,13 +237,16 @@ export const FlightManagement = () => {
         message: err.message
       })
       setFormErrors(prev => ({ ...prev, flightNumber: err.message }))
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
   // Confirm delete
   const handleConfirmDelete = async () => {
-    if (!flightToDelete) return
+    if (!flightToDelete || isDeleting) return
     try {
+      setIsDeleting(true)
       await flightService.deleteFlight(flightToDelete.id)
       toast.warning('Flight Removed', `Flight ${flightToDelete.flightNumber} was deleted from registry.`)
       setNotification({
@@ -243,14 +258,14 @@ export const FlightManagement = () => {
       setFlightToDelete(null)
       await loadFlights()
     } catch (err) {
-      toast.error('Delete Failed', err.message || 'Cannot delete flight assigned to active simulations.')
+      toast.error('Delete Failed', err.message)
       setNotification({
         type: 'danger',
         title: 'Delete Failed',
-        message: err.message || 'Cannot delete flight assigned to active simulations.'
+        message: err.message
       })
-      setIsDeleteModalOpen(false)
-      setFlightToDelete(null)
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -407,6 +422,7 @@ export const FlightManagement = () => {
             size="md"
             icon={Plus}
             onClick={handleOpenAddModal}
+            data-testid="add-flight-btn"
           >
             Add New Flight
           </Button>
@@ -627,10 +643,10 @@ export const FlightManagement = () => {
         }
         footer={
           <>
-            <Button variant="ghost" onClick={() => setIsFormModalOpen(false)}>
+            <Button variant="ghost" onClick={() => setIsFormModalOpen(false)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button onClick={handleSaveFlight}>
+            <Button onClick={handleSaveFlight} loading={isSubmitting} disabled={isSubmitting} data-testid="save-flight-btn">
               {editingFlight ? 'Save Changes' : 'Create Flight'}
             </Button>
           </>
@@ -728,10 +744,10 @@ export const FlightManagement = () => {
         maxWidth="max-w-md"
         footer={
           <>
-            <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>
+            <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)} disabled={isDeleting}>
               Cancel
             </Button>
-            <Button variant="danger" onClick={handleConfirmDelete}>
+            <Button variant="danger" onClick={handleConfirmDelete} loading={isDeleting} disabled={isDeleting} data-testid="confirm-delete-btn">
               Confirm Delete
             </Button>
           </>

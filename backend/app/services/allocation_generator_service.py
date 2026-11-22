@@ -77,19 +77,22 @@ class AllocationGeneratorService:
             )
 
         # 2. Validate restriction matrix dimensions and binary integrity
-        n = validate_restriction_matrix(matrix)
+        dims = validate_restriction_matrix(matrix)
+        m, n = dims.rows, dims.cols
+        is_square = (m == n)
+        matrix_size = m if is_square else max(m, n)
 
-        # 3. Validate or default flight identifiers
+        # 3. Validate or default flight identifiers (m flights)
         if flight_ids is None:
-            resolved_flights = [f"FL-{i+1:03d}" for i in range(n)]
+            resolved_flights = [f"FL-{i+1:03d}" for i in range(m)]
         else:
             if not isinstance(flight_ids, list):
                 raise AllocationGeneratorError("flight_ids must be a list of string identifiers.")
-            if len(flight_ids) != n:
+            if len(flight_ids) != m:
                 raise AllocationGeneratorError(
-                    f"Number of flight_ids ({len(flight_ids)}) must match matrix dimension n={n}."
+                    f"Number of flight_ids ({len(flight_ids)}) must match flight count m={m}."
                 )
-            if len(set(flight_ids)) != n:
+            if len(set(flight_ids)) != m:
                 raise AllocationGeneratorError(
                     "Duplicate flight identifiers detected in flight_ids. Each identifier must be unique."
                 )
@@ -98,7 +101,7 @@ class AllocationGeneratorService:
                     raise AllocationGeneratorError(f"Invalid flight identifier: {repr(f)}. Must be non-empty string.")
             resolved_flights = [f.strip() for f in flight_ids]
 
-        # 4. Validate or default gate identifiers
+        # 4. Validate or default gate identifiers (n gates)
         if gate_ids is None:
             resolved_gates = [f"GT-{j+1:03d}" for j in range(n)]
         else:
@@ -106,7 +109,7 @@ class AllocationGeneratorService:
                 raise AllocationGeneratorError("gate_ids must be a list of string identifiers.")
             if len(gate_ids) != n:
                 raise AllocationGeneratorError(
-                    f"Number of gate_ids ({len(gate_ids)}) must match matrix dimension n={n}."
+                    f"Number of gate_ids ({len(gate_ids)}) must match gate count n={n}."
                 )
             if len(set(gate_ids)) != n:
                 raise AllocationGeneratorError(
@@ -120,13 +123,16 @@ class AllocationGeneratorService:
         # 5. Query authoritative Inclusion-Exclusion Engine (Phase 14) for exact mathematical counts
         if pie_result is None:
             pie_result = InclusionExclusionService.calculate(matrix)
-        total_possible = pie_result["total_possible_assignments"]  # n!
+        total_possible = pie_result["total_possible_assignments"]  # P(n, m)
         total_valid = pie_result["valid_assignments"]              # Exact PIE N
 
-        # If zero valid allocations exist, return immediately without searching
-        if total_valid == 0:
+        # If zero valid allocations exist (or over-constrained m > n), return immediately without searching
+        if total_valid == 0 or m > n:
             return {
-                "matrix_size": n,
+                "matrix_size": matrix_size,
+                "num_rows": m,
+                "num_cols": n,
+                "is_square": is_square,
                 "total_possible_assignments": total_possible,
                 "total_valid_assignments": 0,
                 "generated_count": 0,
@@ -140,13 +146,13 @@ class AllocationGeneratorService:
         # Optimization A: Precompute allowed gate indices for each flight to prune iteration branches
         allowed_gates_by_flight: Tuple[Tuple[int, ...], ...] = tuple(
             tuple(g for g in range(n) if matrix[f][g] == 0)
-            for f in range(n)
+            for f in range(m)
         )
 
         # Optimization B: Pre-allocate pair dictionaries to avoid dictionary construction at leaves
         flight_gate_pair_cache = tuple(
             tuple({"flight_id": resolved_flights[i], "gate_id": resolved_gates[j]} for j in range(n))
-            for i in range(n)
+            for i in range(m)
         )
 
         # 6. Constraint-based recursive backtracking
@@ -158,12 +164,12 @@ class AllocationGeneratorService:
             if len(allocations) >= max_results:
                 return
 
-            # All n flights have been successfully assigned non-forbidden, distinct gates
-            if flight_idx == n:
+            # All m flights have been successfully assigned non-forbidden, distinct gates
+            if flight_idx == m:
                 allocation_num = len(allocations) + 1
                 assignments = [
                     flight_gate_pair_cache[i][current_assignment[i]]
-                    for i in range(n)
+                    for i in range(m)
                 ]
                 allocations.append({
                     "allocation_number": allocation_num,
@@ -187,7 +193,10 @@ class AllocationGeneratorService:
         has_more = (total_valid > generated_count)
 
         return {
-            "matrix_size": n,
+            "matrix_size": matrix_size,
+            "num_rows": m,
+            "num_cols": n,
+            "is_square": is_square,
             "total_possible_assignments": total_possible,
             "total_valid_assignments": total_valid,
             "generated_count": generated_count,

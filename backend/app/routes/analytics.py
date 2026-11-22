@@ -202,7 +202,7 @@ def get_simulation_detailed_analytics(
 
     if f_count == 0 or g_count == 0 or f_count != g_count:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=f"Simulation '{sim_id}' is unbalanced ({f_count} flights vs {g_count} gates). Requires square n x n."
         )
 
@@ -217,7 +217,7 @@ def get_simulation_detailed_analytics(
     n = validate_restriction_matrix(matrix)
     if n != f_count:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=f"Matrix dimension ({n}) does not match flight count ({f_count})."
         )
 

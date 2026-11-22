@@ -31,12 +31,14 @@ def brute_force_rook_coefficients(matrix: list[list[int]]) -> list[int]:
 
     Does NOT use dynamic programming, recursion, or bitmasks.
     """
-    n = len(matrix)
-    forbidden_cells = [(r, c) for r in range(n) for c in range(n) if matrix[r][c] == 1]
+    num_rows = len(matrix)
+    num_cols = len(matrix[0]) if num_rows > 0 else 0
+    forbidden_cells = [(r, c) for r in range(num_rows) for c in range(num_cols) if matrix[r][c] == 1]
 
     coeffs = [1]  # r0 is always 1
+    max_k = min(num_rows, num_cols)
 
-    for k in range(1, n + 1):
+    for k in range(1, max_k + 1):
         if k > len(forbidden_cells):
             break
         valid_placements = 0
@@ -228,15 +230,19 @@ def test_validation_rejects_none_and_empty():
         calculate_rook_polynomial([])
 
 
-def test_validation_rejects_rectangular_matrix():
-    """Engine must strictly reject non-square (rectangular) matrices."""
+def test_validation_accepts_rectangular_matrix():
+    """Engine must accept and correctly calculate rectangular matrices."""
     # 2 rows, 3 columns
     rect_2x3 = [
         [0, 1, 0],
         [1, 0, 1]
     ]
-    with pytest.raises(InvalidMatrixError, match="square"):
-        calculate_rook_polynomial(rect_2x3)
+    res_2x3 = calculate_rook_polynomial(rect_2x3)
+    assert res_2x3["num_rows"] == 2
+    assert res_2x3["num_cols"] == 3
+    assert res_2x3["is_square"] is False
+    assert res_2x3["coefficients"] == brute_force_rook_coefficients(rect_2x3)
+    assert res_2x3["coefficients"] == [1, 3, 2]
 
     # 3 rows, 1 column
     rect_3x1 = [
@@ -244,8 +250,23 @@ def test_validation_rejects_rectangular_matrix():
         [0],
         [1]
     ]
-    with pytest.raises(InvalidMatrixError, match="square"):
-        calculate_rook_polynomial(rect_3x1)
+    res_3x1 = calculate_rook_polynomial(rect_3x1)
+    assert res_3x1["num_rows"] == 3
+    assert res_3x1["num_cols"] == 1
+    assert res_3x1["is_square"] is False
+    assert res_3x1["coefficients"] == brute_force_rook_coefficients(rect_3x1)
+    assert res_3x1["coefficients"] == [1, 2]
+
+    # 4 rows, 5 columns
+    rect_4x5 = [
+        [1, 0, 1, 0, 0],
+        [0, 1, 0, 0, 0],
+        [0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 1]
+    ]
+    res_4x5 = calculate_rook_polynomial(rect_4x5)
+    assert res_4x5["coefficients"] == brute_force_rook_coefficients(rect_4x5)
+    assert res_4x5["coefficients"] == [1, 5, 9, 7, 2]
 
 
 def test_validation_rejects_ragged_matrix():
@@ -255,7 +276,7 @@ def test_validation_rejects_ragged_matrix():
         [0, 1],
         [0, 0, 1]
     ]
-    with pytest.raises(InvalidMatrixError, match="square"):
+    with pytest.raises(InvalidMatrixError, match="ragged|column"):
         calculate_rook_polynomial(ragged)
 
 

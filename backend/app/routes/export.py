@@ -556,7 +556,7 @@ def _parse_comparison_ids(ids_query: Optional[str], ids_body: Optional[List[str]
     unique_ids = list(dict.fromkeys(raw_ids))
     if len(unique_ids) < 2:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="At least 2 distinct simulation scenario IDs are required for comparison export."
         )
     return unique_ids

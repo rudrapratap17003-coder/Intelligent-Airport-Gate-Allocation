@@ -333,9 +333,8 @@ def test_disconnected_sub_board_factorization():
     None,
     [],
     [[]],
-    [[1, 0]],  # Rectangular 1x2
-    [[0], [1]],  # Rectangular 2x1
     [[1, 0], [1]],  # Ragged
+    [[1, 0, 0], [0, 1]],  # Ragged
     [[1, 2], [0, 1]],  # Value > 1
     [[1, -1], [0, 1]],  # Value < 0
     [[1.0, 0], [0, 1]],  # Float
@@ -351,6 +350,32 @@ def test_input_validation_regression(invalid_input):
 
     with pytest.raises(InvalidMatrixError):
         InclusionExclusionService.calculate(invalid_input)
+
+
+def test_rectangular_matrix_comprehensive():
+    """Verify rectangular boards across both RookPolynomialService and InclusionExclusionService."""
+    # 2x3 board
+    m_2x3 = [
+        [1, 0, 0],
+        [0, 1, 0]
+    ]
+    rook_res = RookPolynomialService.calculate(m_2x3)
+    assert rook_res["coefficients"] == [1, 2, 1]
+    assert rook_res["is_square"] is False
+
+    pie_res = InclusionExclusionService.calculate(m_2x3)
+    assert pie_res["valid_assignments"] == 3
+    assert pie_res["total_possible_assignments"] == 6
+
+    # 3x2 over-constrained board (flights > gates)
+    m_3x2 = [
+        [0, 0],
+        [0, 0],
+        [0, 0]
+    ]
+    pie_3x2 = InclusionExclusionService.calculate(m_3x2)
+    assert pie_3x2["is_over_constrained"] is True
+    assert pie_3x2["valid_assignments"] == 0
 
 
 # =====================================================================

@@ -91,13 +91,41 @@ def test_evaluate_ad_hoc_matrix_fully_forbidden():
     assert data["feasibility_percentage"] == 0.0
 
 
-def test_evaluate_ad_hoc_matrix_invalid_dimensions():
-    """Verify rejection of non-square matrix."""
+def test_evaluate_ad_hoc_matrix_rectangular_success():
+    """Verify evaluation of rectangular m x n matrix (2x3)."""
     payload = {
         "matrix": [
             [1, 0, 0],
             [0, 1, 0]
-        ]
+        ],
+        "include_sample_allocations": True
     }
     response = client.post("/api/v1/math/evaluate", json=payload)
-    assert response.status_code == 422
+    assert response.status_code == 200
+    data = response.json()
+    assert data["num_rows"] == 2
+    assert data["num_cols"] == 3
+    assert data["is_square"] is False
+    assert data["total_possible_assignments"] == 6  # P(3, 2)
+    assert data["valid_assignments"] == 3
+    assert len(data["sample_allocations"]) == 3
+
+
+def test_evaluate_ad_hoc_matrix_invalid_dimensions():
+    """Verify rejection of ragged matrix or dimension exceeding explorer limit."""
+    # Ragged matrix
+    payload_ragged = {
+        "matrix": [
+            [1, 0, 0],
+            [0, 1]
+        ]
+    }
+    response_ragged = client.post("/api/v1/math/evaluate", json=payload_ragged)
+    assert response_ragged.status_code == 422
+
+    # Exceeding 8x8 limit (e.g. 1x9)
+    payload_large = {
+        "matrix": [[0] * 9]
+    }
+    response_large = client.post("/api/v1/math/evaluate", json=payload_large)
+    assert response_large.status_code == 422

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 
 export const Input = ({
   label,
@@ -10,7 +10,11 @@ export const Input = ({
   type = 'text',
   ...props
 }) => {
-  const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined)
+  const reactGeneratedId = useId()
+  const inputId = id || (label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : `input-${reactGeneratedId}`)
+  const errorId = error ? `${inputId}-error` : undefined
+  const helperId = !error && helperText ? `${inputId}-helper` : undefined
+  const describedBy = errorId || helperId || undefined
 
   return (
     <div className={`w-full ${className}`}>
@@ -28,6 +32,8 @@ export const Input = ({
         <input
           id={inputId}
           type={type}
+          aria-invalid={Boolean(error)}
+          aria-describedby={describedBy}
           className={`
             w-full bg-[#181818] text-[#FFFFFF] text-sm rounded-lg border px-3.5 py-2.5 transition-all outline-none
             placeholder:text-[#737373] min-h-[42px]
@@ -41,9 +47,9 @@ export const Input = ({
         />
       </div>
       {error ? (
-        <p className="mt-1.5 text-xs text-[#E5E5E5] font-medium">{error}</p>
+        <p id={errorId} role="alert" className="mt-1.5 text-xs text-[#E5E5E5] font-medium">{error}</p>
       ) : helperText ? (
-        <p className="mt-1.5 text-xs text-[#737373]">{helperText}</p>
+        <p id={helperId} className="mt-1.5 text-xs text-[#737373]">{helperText}</p>
       ) : null}
     </div>
   )

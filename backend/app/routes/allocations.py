@@ -50,7 +50,7 @@ def _get_simulation_context(sim_id: str, db: Session):
 
     if rows == 0 or cols == 0 or rows != cols:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=f"Simulation {sim_id} restriction matrix must be square (n x n). Currently: {rows} x {cols}."
         )
 
@@ -60,7 +60,7 @@ def _get_simulation_context(sim_id: str, db: Session):
 
     if len(flight_ids) != rows or len(gate_ids) != cols:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=f"Mismatch between linked entities (flights: {len(flight_ids)}, gates: {len(gate_ids)}) and matrix dimensions ({rows} x {cols})."
         )
 
@@ -90,7 +90,7 @@ def calculate_simulation(sim_id: str, db: Session = Depends(get_db)):
         return InclusionExclusionResponse(**result)
     except (InvalidMatrixError, ValueError) as err:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=str(err)
         )
 
@@ -161,7 +161,7 @@ def generate_simulation_allocations(
         )
     except (AllocationGeneratorError, InvalidMatrixError, ValueError) as err:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=str(err)
         )
 
@@ -188,7 +188,7 @@ def validate_simulation_allocation(
         return ConflictDetectionResponse(**diag)
     except (InvalidMatrixError, ConflictDetectionError, ValueError) as err:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=str(err)
         )
 
@@ -210,6 +210,6 @@ def validate_arbitrary_allocation(payload: AllocationValidationRequest):
         return ConflictDetectionResponse(**diag)
     except (InvalidMatrixError, ConflictDetectionError, ValueError) as err:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=str(err)
         )

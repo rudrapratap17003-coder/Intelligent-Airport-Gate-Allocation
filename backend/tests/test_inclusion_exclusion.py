@@ -23,13 +23,16 @@ from app.database.seed import SAMPLE_SIMULATIONS
 def brute_force_valid_allocations_count(matrix: list[list[int]]) -> int:
     """Independent reference implementation.
 
-    Generates all n! permutations of gates [0, ..., n-1] for flights 0, ..., n-1.
-    A permutation p is valid if matrix[i][p[i]] == 0 for every flight i in range(n).
+    Generates all injective assignments of m flights to n distinct gates.
+    A permutation p is valid if matrix[i][p[i]] == 0 for every flight i in range(m).
     Completely independent of Rook Polynomials, generating functions, and PIE.
     """
-    n = len(matrix)
+    m = len(matrix)
+    n = len(matrix[0]) if m > 0 else 0
+    if m > n:
+        return 0
     count = 0
-    for perm in itertools.permutations(range(n)):
+    for perm in itertools.permutations(range(n), m):
         if all(matrix[flight_idx][gate_idx] == 0 for flight_idx, gate_idx in enumerate(perm)):
             count += 1
     return count
@@ -287,7 +290,63 @@ def test_input_validation_delegation():
         calculate_valid_allocations([])
 
     with pytest.raises(InvalidMatrixError):
-        calculate_valid_allocations([[1, 0]])  # Non-square
+        calculate_valid_allocations([[1, 0], [0]])  # Ragged matrix
 
     with pytest.raises(InvalidMatrixError):
         calculate_valid_allocations([[2, 0], [0, 1]])  # Non-binary value
+
+
+def test_rectangular_inclusion_exclusion_cases():
+    """Verify rectangular configurations: under-constrained (m < n) and over-constrained (m > n)."""
+    # Case 1: 2 flights, 3 gates, unrestricted
+    # P(3, 2) = 6
+    rect_2x3_empty = [[0, 0, 0], [0, 0, 0]]
+    res_2x3_empty = calculate_valid_allocations(rect_2x3_empty)
+    assert res_2x3_empty["valid_assignments"] == 6
+    assert res_2x3_empty["valid_assignments"] == brute_force_valid_allocations_count(rect_2x3_empty)
+
+    # Case 2: 2 flights, 3 gates with restrictions
+    rect_2x3 = [
+        [1, 0, 0],
+        [0, 1, 0]
+    ]
+    res_2x3 = calculate_valid_allocations(rect_2x3)
+    assert res_2x3["num_rows"] == 2
+    assert res_2x3["num_cols"] == 3
+    assert res_2x3["is_square"] is False
+    assert res_2x3["valid_assignments"] == brute_force_valid_allocations_count(rect_2x3)
+    assert res_2x3["valid_assignments"] == 3
+
+    # Case 3: 3 flights, 2 gates (over-constrained: flights > gates) -> N = 0
+    rect_3x2 = [
+        [0, 0],
+        [0, 0],
+        [0, 0]
+    ]
+    res_3x2 = calculate_valid_allocations(rect_3x2)
+    assert res_3x2["is_over_constrained"] is True
+    assert res_3x2["valid_assignments"] == 0
+    assert res_3x2["valid_assignments"] == brute_force_valid_allocations_count(rect_3x2)
+
+    # Case 4: 4 flights, 5 gates
+    rect_4x5 = [
+        [1, 0, 1, 0, 0],
+        [0, 1, 0, 0, 0],
+        [0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 1]
+    ]
+    res_4x5 = calculate_valid_allocations(rect_4x5)
+    assert res_4x5["valid_assignments"] == brute_force_valid_allocations_count(rect_4x5)
+    assert res_4x5["valid_assignments"] == 42
+
+    # Case 5: 5 flights, 4 gates (over-constrained) -> N = 0
+    rect_5x4 = [
+        [1, 0, 1, 0],
+        [0, 1, 0, 0],
+        [0, 0, 0, 1],
+        [0, 0, 0, 0],
+        [0, 1, 0, 0]
+    ]
+    res_5x4 = calculate_valid_allocations(rect_5x4)
+    assert res_5x4["valid_assignments"] == 0
+    assert res_5x4["valid_assignments"] == brute_force_valid_allocations_count(rect_5x4)

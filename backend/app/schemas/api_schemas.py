@@ -171,7 +171,10 @@ class RestrictionResponse(BaseModel):
 # ==================== MATHEMATICAL ENGINE SCHEMAS ====================
 
 class RookPolynomialResponse(BaseModel):
-    matrix_size: int = Field(..., description="Dimension n of the n x n square restriction board")
+    matrix_size: int = Field(..., description="Dimension n of the square board or max(m, n) for rectangular")
+    num_rows: Optional[int] = Field(default=None, description="Number of rows (flights m)")
+    num_cols: Optional[int] = Field(default=None, description="Number of columns (gates n)")
+    is_square: Optional[bool] = Field(default=None, description="Whether the board is square")
     forbidden_cell_count: int = Field(..., description="Total count of restricted (1) cells")
     coefficients: List[int] = Field(..., description="Coefficients [r0, r1, ..., r_k] of the Rook Polynomial")
     polynomial: str = Field(..., description="Formatted algebraic polynomial expression")
@@ -190,16 +193,20 @@ class InclusionExclusionTerm(BaseModel):
 
 
 class InclusionExclusionResponse(BaseModel):
-    matrix_size: int = Field(..., description="Dimension n of the n x n square matrix")
+    matrix_size: int = Field(..., description="Dimension n of the square matrix (or max dimension if rectangular)")
+    num_rows: Optional[int] = Field(default=None, description="Number of rows (flights m)")
+    num_cols: Optional[int] = Field(default=None, description="Number of columns (gates n)")
+    is_square: Optional[bool] = Field(default=None, description="Whether the board is square")
+    is_over_constrained: Optional[bool] = Field(default=None, description="Whether flights exceed gates (m > n)")
     forbidden_cell_count: int = Field(..., description="Total count of restricted (1) cells")
     rook_coefficients: List[int] = Field(..., description="Rook polynomial coefficients [r0, ..., r_k]")
     polynomial: str = Field(..., description="Formatted Rook Polynomial string")
-    factorial_terms: List[int] = Field(..., description="Factorial values [(n)!, (n-1)!, ..., 0!]")
+    factorial_terms: List[int] = Field(..., description="Factorial/permutation values")
     inclusion_exclusion_terms: List[InclusionExclusionTerm] = Field(..., description="Itemized PIE terms")
-    total_possible_assignments: int = Field(..., description="Total unconstrained permutations n!")
+    total_possible_assignments: int = Field(..., description="Total unconstrained permutations P(n, m)")
     valid_assignments: int = Field(..., description="Exact conflict-free valid assignments N")
-    invalid_assignments: int = Field(..., description="Number of invalid assignments (n! - N)")
-    feasibility_percentage: float = Field(..., description="Percentage of valid assignments (N / n! * 100)")
+    invalid_assignments: int = Field(..., description="Number of invalid assignments (total - N)")
+    feasibility_percentage: float = Field(..., description="Percentage of valid assignments")
     calculation_steps: List[str] = Field(..., description="Mathematical derivation steps")
 
     model_config = ConfigDict(from_attributes=True)
@@ -253,8 +260,11 @@ class AllocationPlan(BaseModel):
 
 
 class AllocationGenerationResponse(BaseModel):
-    matrix_size: int = Field(..., description="Dimension n of the assignment problem")
-    total_possible_assignments: int = Field(..., description="Total unconstrained permutations n!")
+    matrix_size: int = Field(..., description="Dimension of the assignment problem")
+    num_rows: Optional[int] = Field(default=None, description="Number of flights m")
+    num_cols: Optional[int] = Field(default=None, description="Number of gates n")
+    is_square: Optional[bool] = Field(default=None, description="Whether problem is square")
+    total_possible_assignments: int = Field(..., description="Total unconstrained permutations P(n, m)")
     total_valid_assignments: int = Field(..., description="Exact total valid allocations from PIE")
     generated_count: int = Field(..., description="Number of allocations generated in this response")
     max_results: int = Field(..., description="Requested allocation limit")
@@ -504,6 +514,10 @@ class AdHocMathRequest(BaseModel):
 
 class AdHocMathResponse(BaseModel):
     matrix_size: int
+    num_rows: Optional[int] = None
+    num_cols: Optional[int] = None
+    is_square: Optional[bool] = None
+    is_over_constrained: Optional[bool] = None
     forbidden_cell_count: int
     restriction_density: float
     rook_coefficients: List[int]

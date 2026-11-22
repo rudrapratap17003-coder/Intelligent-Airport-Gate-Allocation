@@ -35,20 +35,21 @@ router = APIRouter(prefix="/math", tags=["Mathematics Explorer"])
     summary="Ad-hoc combinatorial evaluation of any restriction matrix"
 )
 def evaluate_custom_matrix(payload: AdHocMathRequest):
-    """Evaluate rook polynomial and inclusion-exclusion steps on an arbitrary square binary matrix."""
+    """Evaluate rook polynomial and inclusion-exclusion steps on an arbitrary binary matrix."""
     matrix = payload.matrix
     try:
-        n = validate_restriction_matrix(matrix)
+        dims = validate_restriction_matrix(matrix)
     except InvalidMatrixError as e:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=f"Invalid restriction matrix: {str(e)}"
         )
 
-    if n > 8:
+    num_rows, num_cols = dims.rows, dims.cols
+    if max(num_rows, num_cols) > 8:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"Matrix dimension {n}x{n} exceeds the explorer limit of 8x8."
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail=f"Matrix dimensions {num_rows}x{num_cols} exceed the explorer limit of 8x8."
         )
 
     # 1. Exact Inclusion-Exclusion calculation
@@ -56,7 +57,7 @@ def evaluate_custom_matrix(payload: AdHocMathRequest):
 
     # 2. Derive detailed rook coefficient meanings
     rook_coeffs = pie_result["rook_coefficients"]
-    total_cells = n * n
+    total_cells = num_rows * num_cols
     forbidden_count = pie_result["forbidden_cell_count"]
     density = round((forbidden_count / total_cells) * 100, 2) if total_cells > 0 else 0.0
 
@@ -78,8 +79,8 @@ def evaluate_custom_matrix(payload: AdHocMathRequest):
     # 4. Optional sample allocations using Backtracking generator
     sample_allocations = []
     if payload.include_sample_allocations and pie_result["valid_assignments"] > 0:
-        flight_ids = [f"Flight {i+1}" for i in range(n)]
-        gate_ids = [f"Gate {j+1}" for j in range(n)]
+        flight_ids = [f"Flight {i+1}" for i in range(num_rows)]
+        gate_ids = [f"Gate {j+1}" for j in range(num_cols)]
         try:
             gen_res = AllocationGeneratorService.generate(
                 matrix=matrix,
@@ -94,7 +95,11 @@ def evaluate_custom_matrix(payload: AdHocMathRequest):
             sample_allocations = []
 
     return AdHocMathResponse(
-        matrix_size=n,
+        matrix_size=pie_result["matrix_size"],
+        num_rows=num_rows,
+        num_cols=num_cols,
+        is_square=pie_result["is_square"],
+        is_over_constrained=pie_result.get("is_over_constrained", False),
         forbidden_cell_count=forbidden_count,
         restriction_density=density,
         rook_coefficients=rook_coeffs,

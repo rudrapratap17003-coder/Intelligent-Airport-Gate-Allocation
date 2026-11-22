@@ -62,17 +62,50 @@ class InvalidMatrixError(RookPolynomialError):
     pass
 
 
-def validate_restriction_matrix(matrix: Any) -> int:
-    """Validate that the input is a non-empty, square (n x n) matrix containing only binary integers (0 or 1).
+class MatrixDimensions(int):
+    """Dual integer / tuple representation of matrix dimensions.
+
+    Acts as an integer equal to num_rows (or dimension n when square) for backward compatibility,
+    while also unpacking as a 2-tuple (num_rows, num_cols) and exposing .rows and .cols attributes.
+    """
+    rows: int
+    cols: int
+
+    def __new__(cls, rows: int, cols: int):
+        val = rows
+        obj = super().__new__(cls, val)
+        obj.rows = rows
+        obj.cols = cols
+        return obj
+
+    def __iter__(self):
+        yield self.rows
+        yield self.cols
+
+    def __len__(self):
+        return 2
+
+    def __getitem__(self, index):
+        return (self.rows, self.cols)[index]
+
+    def __repr__(self):
+        return f"MatrixDimensions(rows={self.rows}, cols={self.cols})"
+
+
+def validate_restriction_matrix(matrix: Any, allow_rectangular: bool = True) -> MatrixDimensions:
+    """Validate that the input is a non-empty m x n matrix containing only binary integers (0 or 1).
 
     Args:
         matrix: 2D array representation of the restriction board.
+        allow_rectangular: If True (default), allows rectangular m x n matrices where all rows
+                           have equal length. If False, strictly enforces square n x n matrices.
 
     Returns:
-        int: The board dimension n.
+        MatrixDimensions: Board dimensions (rows, cols), compatible with int(dimension).
 
     Raises:
-        InvalidMatrixError: If matrix is empty, non-square, ragged, or contains non-binary entries.
+        InvalidMatrixError: If matrix is empty, ragged, non-square (when allow_rectangular=False),
+                            or contains non-binary entries.
     """
     if matrix is None:
         raise InvalidMatrixError("Restriction matrix cannot be None.")
@@ -84,12 +117,29 @@ def validate_restriction_matrix(matrix: Any) -> int:
     if num_rows == 0:
         raise InvalidMatrixError("Restriction matrix cannot be empty (0 rows).")
 
+    first_row = matrix[0]
+    if not isinstance(first_row, list):
+        raise InvalidMatrixError(f"Matrix row at index 0 must be a list, received {type(first_row).__name__}.")
+
+    num_cols = len(first_row)
+    if num_cols == 0:
+        raise InvalidMatrixError("Matrix rows cannot be empty (0 columns).")
+
+    if not allow_rectangular and num_rows != num_cols:
+        raise InvalidMatrixError(
+            f"Matrix must be square (n x n). Row count is {num_rows}, expected {num_cols}."
+        )
+
     for r_idx, row in enumerate(matrix):
         if not isinstance(row, list):
             raise InvalidMatrixError(
                 f"Matrix row at index {r_idx} must be a list, received {type(row).__name__}."
             )
-        if len(row) != num_rows:
+        if len(row) != num_cols:
+            raise InvalidMatrixError(
+                f"Matrix has inconsistent row lengths (ragged matrix). Row {r_idx} has {len(row)} column(s), expected {num_cols}."
+            )
+        if not allow_rectangular and len(row) != num_rows:
             raise InvalidMatrixError(
                 f"Matrix must be square (n x n). Row {r_idx} has {len(row)} column(s), expected {num_rows}."
             )
@@ -103,7 +153,7 @@ def validate_restriction_matrix(matrix: Any) -> int:
                     f"Found value {repr(cell)} of type {type_name} at row {r_idx}, column {c_idx}."
                 )
 
-    return num_rows
+    return MatrixDimensions(num_rows, num_cols)
 
 
 def format_polynomial(coefficients: List[int]) -> str:
@@ -151,16 +201,19 @@ class RookPolynomialService:
 
     @classmethod
     def calculate(cls, matrix: List[List[int]], trim_trailing_zeros: bool = True) -> Dict[str, Any]:
-        """Calculate the exact Rook Polynomial coefficients R(B, x) for a given square binary restriction matrix B.
+        """Calculate the exact Rook Polynomial coefficients R(B, x) for a given binary restriction matrix B (m x n).
 
         Args:
-            matrix: Validated square binary 2D array where 1 = forbidden cell, 0 = allowed cell.
+            matrix: Validated binary 2D array where 1 = forbidden cell, 0 = allowed cell.
             trim_trailing_zeros: If True, omits trailing zero coefficients past maximum rook placement.
                                  The constant coefficient r0 = 1 is always preserved.
 
         Returns:
             dict containing:
-                - matrix_size: int (dimension n)
+                - matrix_size: int (dimension n if square, or max(m, n))
+                - num_rows: int (number of rows m)
+                - num_cols: int (number of columns n)
+                - is_square: bool (whether m == n)
                 - forbidden_cell_count: int (total number of 1s)
                 - coefficients: List[int] ([r0, r1, ..., r_k])
                 - polynomial: str (formatted algebraic expression)
@@ -170,12 +223,28 @@ class RookPolynomialService:
         Raises:
             InvalidMatrixError: If input fails validation.
         """
-        n = validate_restriction_matrix(matrix)
+        dims = validate_restriction_matrix(matrix)
+        num_rows, num_cols = dims.rows, dims.cols
+        is_square = (num_rows == num_cols)
 
-        # Precompute forbidden column indices for each row
+        # Optimization: If columns > rows, transpose board so bitmask width is strictly min(num_rows, num_cols)
+        transposed = (num_cols > num_rows)
+        if transposed:
+            effective_matrix = [
+                [matrix[r][c] for r in range(num_rows)]
+                for c in range(num_cols)
+            ]
+            dp_rows = num_cols
+            dp_cols = num_rows
+        else:
+            effective_matrix = matrix
+            dp_rows = num_rows
+            dp_cols = num_cols
+
+        # Precompute forbidden column indices for each row of the effective board
         forbidden_cols_by_row: Tuple[Tuple[int, ...], ...] = tuple(
-            tuple(c for c in range(n) if matrix[r][c] == 1)
-            for r in range(n)
+            tuple(c for c in range(dp_cols) if effective_matrix[r][c] == 1)
+            for r in range(dp_rows)
         )
 
         forbidden_cell_count = sum(len(cols) for cols in forbidden_cols_by_row)
@@ -183,7 +252,10 @@ class RookPolynomialService:
         # Optimization: Zero-forbidden board short-circuit (r0 = 1)
         if forbidden_cell_count == 0:
             return {
-                "matrix_size": n,
+                "matrix_size": num_rows if is_square else max(num_rows, num_cols),
+                "num_rows": num_rows,
+                "num_cols": num_cols,
+                "is_square": is_square,
                 "forbidden_cell_count": 0,
                 "coefficients": [1],
                 "polynomial": "1",
@@ -191,10 +263,10 @@ class RookPolynomialService:
                 "algorithm": "row_based_dynamic_programming"
             }
 
-        # Optimization: Precompute whether forbidden cells exist in row suffix [start_row..n)
+        # Optimization: Precompute whether forbidden cells exist in row suffix [start_row..dp_rows)
         has_forbidden_remaining = [
-            any(len(forbidden_cols_by_row[r]) > 0 for r in range(start_row, n))
-            for start_row in range(n + 1)
+            any(len(forbidden_cols_by_row[r]) > 0 for r in range(start_row, dp_rows))
+            for start_row in range(dp_rows + 1)
         ]
 
         # Dynamic Programming with Bitmask Column State
@@ -242,7 +314,10 @@ class RookPolynomialService:
         polynomial_str = format_polynomial(coeffs)
 
         return {
-            "matrix_size": n,
+            "matrix_size": num_rows if is_square else max(num_rows, num_cols),
+            "num_rows": num_rows,
+            "num_cols": num_cols,
+            "is_square": is_square,
             "forbidden_cell_count": forbidden_cell_count,
             "coefficients": coeffs,
             "polynomial": polynomial_str,

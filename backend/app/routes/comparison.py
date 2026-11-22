@@ -40,7 +40,7 @@ def compare_scenarios(
 
     if len(unique_ids) < 2:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="At least 2 distinct simulation scenarios must be selected for comparison."
         )
 

@@ -60,7 +60,7 @@ def create_app() -> FastAPI:
     async def validation_exception_handler(request: Request, exc: RequestValidationError):
         logger.warning(f"Validation Error on {request.url.path}: {exc.errors()}")
         return JSONResponse(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             content={
                 "success": False,
                 "error": {

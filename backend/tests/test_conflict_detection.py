@@ -234,11 +234,14 @@ class TestConflictDetectorCoreCases:
             detect_allocation_conflicts(MATRIX_3X3, FLIGHTS_3X3, ["G1", "G2", "G1"], [])
 
     def test_15_invalid_matrix_dimensions(self):
-        """15. Rectangular or dimension-mismatched matrix raises InvalidMatrixError or ConflictDetectionError."""
+        """15. Ragged or dimension-mismatched matrix raises InvalidMatrixError or ConflictDetectionError."""
         with pytest.raises(InvalidMatrixError):
+            detect_allocation_conflicts([[0, 1], [0], [1, 0]], FLIGHTS_3X3, GATES_3X3, [])
+
+        with pytest.raises(ConflictDetectionError, match="match matrix gate count"):
             detect_allocation_conflicts([[0, 1], [0, 0], [1, 0]], FLIGHTS_3X3, GATES_3X3, [])
 
-        with pytest.raises(ConflictDetectionError, match="match matrix dimension"):
+        with pytest.raises(ConflictDetectionError, match="match matrix flight count"):
             detect_allocation_conflicts(MATRIX_3X3, ["F1", "F2"], GATES_3X3, [])
 
     def test_16_invalid_binary_matrix_values(self):

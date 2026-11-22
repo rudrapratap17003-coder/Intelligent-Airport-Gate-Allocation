@@ -27,17 +27,21 @@ class ConflictDetector:
         gate_ids: List[str]
     ):
         # 1. Validate restriction matrix dimensions and binary integrity
-        self.n = validate_restriction_matrix(matrix)
+        dims = validate_restriction_matrix(matrix)
+        self.dims = dims
+        self.num_rows = dims.rows
+        self.num_cols = dims.cols
+        self.n = dims.rows
         self.matrix = matrix
 
         # 2. Validate expected flight identifiers
         if not isinstance(flight_ids, list):
             raise ConflictDetectionError("flight_ids must be a list of string identifiers.")
-        if len(flight_ids) != self.n:
+        if len(flight_ids) != self.num_rows:
             raise ConflictDetectionError(
-                f"Number of flight_ids ({len(flight_ids)}) must match matrix dimension n={self.n}."
+                f"Number of flight_ids ({len(flight_ids)}) must match matrix flight count m={self.num_rows}."
             )
-        if len(set(flight_ids)) != self.n:
+        if len(set(flight_ids)) != self.num_rows:
             raise ConflictDetectionError(
                 "Duplicate flight identifiers detected in expected flight_ids."
             )
@@ -50,11 +54,11 @@ class ConflictDetector:
         # 3. Validate expected gate identifiers
         if not isinstance(gate_ids, list):
             raise ConflictDetectionError("gate_ids must be a list of string identifiers.")
-        if len(gate_ids) != self.n:
+        if len(gate_ids) != self.num_cols:
             raise ConflictDetectionError(
-                f"Number of gate_ids ({len(gate_ids)}) must match matrix dimension n={self.n}."
+                f"Number of gate_ids ({len(gate_ids)}) must match matrix gate count n={self.num_cols}."
             )
-        if len(set(gate_ids)) != self.n:
+        if len(set(gate_ids)) != self.num_cols:
             raise ConflictDetectionError(
                 "Duplicate gate identifiers detected in expected gate_ids."
             )

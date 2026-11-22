@@ -40,7 +40,7 @@ export const Table = ({
             <tr>
               <td colSpan={columns.length} className="px-4 py-12 text-center text-[#A3A3A3]">
                 <div className="flex flex-col items-center justify-center gap-2">
-                  <p className="text-sm font-medium">{emptyMessage}</p>
+                  <div className="text-sm font-medium">{emptyMessage}</div>
                 </div>
               </td>
             </tr>
