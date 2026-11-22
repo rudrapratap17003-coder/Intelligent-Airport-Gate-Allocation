@@ -88,29 +88,29 @@ def compare_scenarios(
 
         if f_count == 0 or g_count == 0:
             val_msg = "Incomplete: No flights or gates selected."
-        elif f_count != g_count:
-            val_msg = f"Unbalanced: {f_count} flights vs {g_count} gates (requires square n x n)."
         elif not matrix_rec:
             val_msg = "Incomplete: Restriction matrix not initialized."
         else:
             try:
                 matrix_data = json.loads(matrix_rec.matrix_data)
                 validate_restriction_matrix(matrix_data)
-                n = len(matrix_data)
-                if n != f_count:
-                    val_msg = f"Dimension mismatch: matrix {n}x{n} != flights ({f_count})."
+                rows_cnt = len(matrix_data)
+                cols_cnt = len(matrix_data[0]) if rows_cnt > 0 else 0
+                if rows_cnt != f_count or cols_cnt != g_count:
+                    val_msg = f"Dimension mismatch: matrix {rows_cnt}x{cols_cnt} != entities ({f_count} flights, {g_count} gates)."
                 else:
                     is_valid_config = True
-                    matrix_size = n
-                    val_msg = f"Valid balanced configuration ({n} × {n})."
-                    dimensions_set.add(n)
-                    matrix_list.append((sim.id, sim.name, matrix_data, n))
+                    matrix_size = rows_cnt if rows_cnt == cols_cnt else max(rows_cnt, cols_cnt)
+                    val_msg = f"Valid configuration ({rows_cnt} × {cols_cnt})."
+                    dimensions_set.add((rows_cnt, cols_cnt))
+                    matrix_list.append((sim.id, sim.name, matrix_data, matrix_size))
 
                     # Compute mathematical derivation via Inclusion-Exclusion Engine
                     pie_res = InclusionExclusionService.calculate(matrix_data)
                     forbidden_cnt = pie_res["forbidden_cell_count"]
-                    allowed_cnt = (n * n) - forbidden_cnt
-                    density = round((forbidden_cnt / (n * n) * 100.0), 2) if (n * n) > 0 else 0.0
+                    total_cells = rows_cnt * cols_cnt
+                    allowed_cnt = total_cells - forbidden_cnt
+                    density = round((forbidden_cnt / total_cells * 100.0), 2) if total_cells > 0 else 0.0
                     tot_possible = pie_res["total_possible_assignments"]
                     exact_valid = pie_res["valid_assignments"]
                     invalid_assignments = pie_res["invalid_assignments"]

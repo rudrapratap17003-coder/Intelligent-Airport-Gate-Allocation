@@ -87,6 +87,9 @@ class Simulation(Base):
     id: Mapped[str] = mapped_column(String(50), primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(150), unique=True, nullable=False, index=True)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    category: Mapped[str] = mapped_column(String(50), default="Normal Operations")
+    date: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    time_window: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
     status: Mapped[str] = mapped_column(String(50), default="Draft")
@@ -102,6 +105,11 @@ class Simulation(Base):
     # Restriction Matrix associated with this scenario (one-to-one)
     restriction_matrix: Mapped[Optional["RestrictionMatrix"]] = relationship(
         "RestrictionMatrix", back_populates="simulation", uselist=False, cascade="all, delete-orphan"
+    )
+
+    # Execution run history (one-to-many)
+    runs: Mapped[List["SimulationRun"]] = relationship(
+        "SimulationRun", back_populates="simulation", cascade="all, delete-orphan", order_by="desc(SimulationRun.created_at)"
     )
 
 
@@ -168,4 +176,33 @@ class ActivityLog(Base):
     detail: Mapped[str] = mapped_column(Text, nullable=False)
     timestamp: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
     status: Mapped[str] = mapped_column(String(20), default="info")
+
+
+class SimulationRun(Base):
+    """Immutable point-in-time record of a simulation execution run."""
+
+    __tablename__ = "simulation_runs"
+
+    id: Mapped[str] = mapped_column(String(50), primary_key=True, index=True)
+    simulation_id: Mapped[str] = mapped_column(String(50), ForeignKey("simulations.id", ondelete="CASCADE"), nullable=False, index=True)
+    run_number: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    status: Mapped[str] = mapped_column(String(50), default="Completed")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    duration_ms: Mapped[float] = mapped_column(Float, default=0.0)
+    matrix_rows: Mapped[int] = mapped_column(Integer, nullable=False)
+    matrix_cols: Mapped[int] = mapped_column(Integer, nullable=False)
+    forbidden_cell_count: Mapped[int] = mapped_column(Integer, default=0)
+    rook_coefficients: Mapped[str] = mapped_column(Text, nullable=False)  # JSON-serialized List[int]
+    rook_polynomial: Mapped[str] = mapped_column(String(255), nullable=False)
+    pie_valid_allocations: Mapped[int] = mapped_column(Integer, default=0)
+    pie_total_possible: Mapped[int] = mapped_column(Integer, default=0)
+    feasibility_percentage: Mapped[float] = mapped_column(Float, default=0.0)
+    generated_allocations_count: Mapped[int] = mapped_column(Integer, default=0)
+    allocations_json: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # JSON-serialized sample
+    matrix_snapshot_json: Mapped[str] = mapped_column(Text, nullable=False)  # 2D JSON matrix
+    verification_status: Mapped[str] = mapped_column(String(50), default="VERIFIED_MATCH")
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    simulation: Mapped["Simulation"] = relationship("Simulation", back_populates="runs")
+
 

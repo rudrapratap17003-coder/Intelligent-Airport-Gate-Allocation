@@ -48,10 +48,10 @@ def _get_simulation_context(sim_id: str, db: Session):
     rows = matrix_record.rows_count
     cols = matrix_record.cols_count
 
-    if rows == 0 or cols == 0 or rows != cols:
+    if rows == 0 or cols == 0:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail=f"Simulation {sim_id} restriction matrix must be square (n x n). Currently: {rows} x {cols}."
+            detail=f"Simulation {sim_id} restriction matrix cannot be empty (0 rows or 0 columns). Currently: {rows} x {cols}."
         )
 
     # Resolve ordered flight IDs and gate IDs

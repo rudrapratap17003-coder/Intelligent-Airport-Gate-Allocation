@@ -116,6 +116,9 @@ class SimulationCreate(BaseModel):
     id: Optional[str] = Field(None, max_length=50)
     name: str = Field(..., min_length=3, max_length=150)
     description: Optional[str] = None
+    category: Optional[str] = Field(default="Normal Operations", max_length=50)
+    date: Optional[str] = Field(default=None, max_length=20)
+    time_window: Optional[str] = Field(default=None, max_length=50)
     selected_flight_ids: List[str] = Field(default_factory=list)
     selected_gate_ids: List[str] = Field(default_factory=list)
     status: Optional[str] = Field(default="Draft")
@@ -124,6 +127,9 @@ class SimulationCreate(BaseModel):
 class SimulationUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=3, max_length=150)
     description: Optional[str] = None
+    category: Optional[str] = Field(None, max_length=50)
+    date: Optional[str] = Field(None, max_length=20)
+    time_window: Optional[str] = Field(None, max_length=50)
     selected_flight_ids: Optional[List[str]] = None
     selected_gate_ids: Optional[List[str]] = None
     status: Optional[str] = None
@@ -133,6 +139,9 @@ class SimulationResponse(BaseModel):
     id: str
     name: str
     description: Optional[str]
+    category: Optional[str] = "Normal Operations"
+    date: Optional[str] = None
+    time_window: Optional[str] = None
     created_at: datetime
     updated_at: datetime
     status: str
@@ -140,6 +149,79 @@ class SimulationResponse(BaseModel):
     selected_gate_ids: List[str]
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class SimulationRunResponse(BaseModel):
+    id: str
+    simulation_id: str
+    run_number: int
+    status: str
+    created_at: datetime
+    duration_ms: float
+    matrix_rows: int
+    matrix_cols: int
+    forbidden_cell_count: int
+    rook_coefficients: List[int]
+    rook_polynomial: str
+    pie_valid_allocations: int
+    pie_total_possible: int
+    feasibility_percentage: float
+    generated_allocations_count: int
+    verification_status: str
+    matrix_snapshot: Optional[List[List[int]]] = None
+    allocations_sample: Optional[List[Dict[str, Any]]] = None
+    notes: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TrafficScenarioGenerateRequest(BaseModel):
+    scenario_name: str = Field(..., min_length=3, max_length=150)
+    category: str = Field(default="Normal Operations")
+    profile: str = Field(default="normal")  # "low", "normal", "high", "peak", "maintenance", "terminal_restricted", "custom"
+    flight_count: Optional[int] = Field(default=6, ge=2, le=12)
+    gate_count: Optional[int] = Field(default=6, ge=2, le=12)
+    target_terminal: Optional[str] = Field(default="ALL")  # "T1", "T2", "ALL"
+    density: Optional[str] = Field(default="moderate")  # "sparse", "moderate", "dense"
+
+
+class WhatIfRequest(BaseModel):
+    disabled_gate_ids: Optional[List[str]] = Field(default_factory=list)
+    additional_restrictions: Optional[List[Dict[str, Any]]] = Field(default_factory=list)  # [{"flight_id": "FL-001", "gate_id": "GT-001"}]
+    modified_matrix: Optional[List[List[int]]] = None
+    added_flight_ids: Optional[List[str]] = Field(default_factory=list)
+    added_gate_ids: Optional[List[str]] = Field(default_factory=list)
+    removed_flight_ids: Optional[List[str]] = Field(default_factory=list)
+    removed_gate_ids: Optional[List[str]] = Field(default_factory=list)
+
+
+class WhatIfResponse(BaseModel):
+    simulation_id: str
+    simulation_name: str
+    baseline: Dict[str, Any]
+    hypothetical: Dict[str, Any]
+    delta_valid_allocations: int
+    percentage_change: float
+    feasibility_delta: float
+    impact_level: str  # "CRITICAL", "MODERATE", "NEGLIGIBLE", "ENHANCED"
+    bottleneck_changes: List[str]
+    explanations: List[str]
+
+
+class BottleneckAnalysisResponse(BaseModel):
+    simulation_id: str
+    matrix_rows: int
+    matrix_cols: int
+    total_forbidden: int
+    restriction_density_pct: Optional[float] = 0.0
+    critical_flights: List[Dict[str, Any]]
+    critical_gates: List[Dict[str, Any]]
+    flight_stats: Optional[List[Dict[str, Any]]] = None
+    gate_stats: Optional[List[Dict[str, Any]]] = None
+    over_constrained: bool
+    zero_allocation_cause: Optional[str] = None
+    bottlenecks: List[Dict[str, Any]]
+    recommendations: List[str]
 
 
 # ==================== RESTRICTION SCHEMAS ====================

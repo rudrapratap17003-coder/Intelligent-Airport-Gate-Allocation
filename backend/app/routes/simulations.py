@@ -1,13 +1,14 @@
 """
 GateWise API v1 — Simulations Router.
-Full CRUD, duplication, and relationship management with SQLite / SQLAlchemy persistence.
+Full CRUD, duplication, traffic generation, simulation pipeline, What-If analysis,
+and relationship management with SQLite / SQLAlchemy persistence.
 """
 
 import time
 import json
 from datetime import datetime, timezone
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List, Optional, Dict, Any
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Body
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
@@ -17,14 +18,24 @@ from app.models.entities import (
     SimulationGate,
     Flight,
     Gate,
-    RestrictionMatrix
+    RestrictionMatrix,
+    SimulationRun
 )
 from app.schemas.api_schemas import (
     SimulationCreate,
     SimulationUpdate,
-    SimulationResponse
+    SimulationResponse,
+    SimulationRunResponse,
+    TrafficScenarioGenerateRequest,
+    WhatIfRequest,
+    WhatIfResponse,
+    BottleneckAnalysisResponse
 )
 from app.services.activity_service import log_activity
+from app.services.traffic_generator_service import TrafficGeneratorService
+from app.services.simulation_pipeline_service import SimulationPipelineService
+from app.services.what_if_service import WhatIfService
+from app.services.bottleneck_analysis_service import BottleneckAnalysisService
 
 router = APIRouter(prefix="/simulations", tags=["Simulations"])
 
@@ -35,6 +46,9 @@ def _format_simulation_response(sim: Simulation) -> SimulationResponse:
         id=sim.id,
         name=sim.name,
         description=sim.description,
+        category=getattr(sim, "category", "Normal Operations") or "Normal Operations",
+        date=getattr(sim, "date", None),
+        time_window=getattr(sim, "time_window", None),
         created_at=sim.created_at,
         updated_at=sim.updated_at,
         status=sim.status,
@@ -43,10 +57,38 @@ def _format_simulation_response(sim: Simulation) -> SimulationResponse:
     )
 
 
+def _format_run_response(run: SimulationRun) -> SimulationRunResponse:
+    """Format ORM SimulationRun into Pydantic response."""
+    return SimulationRunResponse(
+        id=run.id,
+        simulation_id=run.simulation_id,
+        run_number=run.run_number,
+        status=run.status,
+        created_at=run.created_at,
+        duration_ms=run.duration_ms,
+        matrix_rows=run.matrix_rows,
+        matrix_cols=run.matrix_cols,
+        forbidden_cell_count=run.forbidden_cell_count,
+        rook_coefficients=json.loads(run.rook_coefficients) if run.rook_coefficients else [1],
+        rook_polynomial=run.rook_polynomial,
+        pie_valid_allocations=run.pie_valid_allocations,
+        pie_total_possible=run.pie_total_possible,
+        feasibility_percentage=run.feasibility_percentage,
+        generated_allocations_count=run.generated_allocations_count,
+        verification_status=run.verification_status,
+        matrix_snapshot=json.loads(run.matrix_snapshot_json) if run.matrix_snapshot_json else None,
+        allocations_sample=json.loads(run.allocations_json) if run.allocations_json else None,
+        notes=run.notes
+    )
+
+
 @router.get("", response_model=List[SimulationResponse], summary="List all simulations")
-def list_simulations(db: Session = Depends(get_db)):
-    """Return all simulation scenarios."""
-    sims = db.query(Simulation).order_by(Simulation.created_at.desc()).all()
+def list_simulations(category: Optional[str] = None, db: Session = Depends(get_db)):
+    """Return all simulation scenarios, optionally filtered by category."""
+    query = db.query(Simulation)
+    if category:
+        query = query.filter(Simulation.category == category)
+    sims = query.order_by(Simulation.created_at.desc()).all()
     return [_format_simulation_response(s) for s in sims]
 
 
@@ -104,6 +146,9 @@ def create_simulation(payload: SimulationCreate, db: Session = Depends(get_db)):
         id=sim_id,
         name=clean_name,
         description=payload.description,
+        category=payload.category or "Normal Operations",
+        date=payload.date,
+        time_window=payload.time_window,
         status="Ready" if len(flight_ids) == len(gate_ids) else "Draft",
         created_at=now,
         updated_at=now
@@ -167,6 +212,15 @@ def update_simulation(sim_id: str, payload: SimulationUpdate, db: Session = Depe
 
     if payload.description is not None:
         sim.description = payload.description
+
+    if payload.category is not None:
+        sim.category = payload.category
+
+    if payload.date is not None:
+        sim.date = payload.date
+
+    if payload.time_window is not None:
+        sim.time_window = payload.time_window
 
     now = datetime.now(timezone.utc)
     sim.updated_at = now
@@ -236,6 +290,9 @@ def duplicate_simulation(sim_id: str, db: Session = Depends(get_db)):
         id=dup_id,
         name=candidate_name,
         description=sim.description,
+        category=sim.category,
+        date=sim.date,
+        time_window=sim.time_window,
         status=sim.status,
         created_at=now,
         updated_at=now
@@ -301,3 +358,133 @@ def delete_simulation(sim_id: str, db: Session = Depends(get_db)):
     db.delete(sim)
     db.commit()
     return {"success": True, "message": f"Simulation {sim.name} deleted successfully."}
+
+
+@router.post("/generate-traffic", response_model=SimulationResponse, status_code=status.HTTP_201_CREATED, summary="Generate realistic traffic scenario")
+def generate_traffic_scenario(payload: TrafficScenarioGenerateRequest, db: Session = Depends(get_db)):
+    """Generate a reproducible simulated flight/gate scenario with physical airport constraints."""
+    clean_name = payload.scenario_name.strip()
+    if db.query(Simulation).filter(Simulation.name == clean_name).first():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"A simulation named '{clean_name}' already exists."
+        )
+
+    try:
+        sim = TrafficGeneratorService.generate_scenario(
+            db=db,
+            scenario_name=clean_name,
+            category=payload.category,
+            profile=payload.profile,
+            flight_count=payload.flight_count or 6,
+            gate_count=payload.gate_count or 6,
+            target_terminal=payload.target_terminal or "ALL",
+            density=payload.density or "moderate"
+        )
+        return _format_simulation_response(sim)
+    except Exception as err:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(err))
+
+
+@router.post("/{sim_id}/run", summary="Execute unified mathematical simulation pipeline")
+def run_simulation(
+    sim_id: str,
+    max_allocations: int = Query(default=100, ge=1, le=10000),
+    notes: Optional[str] = Body(default=None, embed=True),
+    db: Session = Depends(get_db)
+):
+    """Execute the full 10-step simulation pipeline and save an immutable SimulationRun snapshot."""
+    try:
+        result = SimulationPipelineService.execute_simulation(
+            db=db,
+            simulation_id=sim_id,
+            max_allocations=max_allocations,
+            notes=notes
+        )
+        return result
+    except ValueError as err:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(err))
+    except Exception as err:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(err))
+
+
+@router.get("/{sim_id}/runs", response_model=List[SimulationRunResponse], summary="List execution history runs for a simulation")
+def list_simulation_runs(sim_id: str, db: Session = Depends(get_db)):
+    """Return all historical execution run snapshots for this scenario."""
+    runs = db.query(SimulationRun).filter(SimulationRun.simulation_id == sim_id).order_by(SimulationRun.created_at.desc()).all()
+    return [_format_run_response(r) for r in runs]
+
+
+@router.get("/runs/{run_id}", response_model=SimulationRunResponse, summary="Get simulation run snapshot by ID")
+def get_simulation_run(run_id: str, db: Session = Depends(get_db)):
+    """Retrieve an immutable execution snapshot by ID."""
+    run = db.query(SimulationRun).filter(SimulationRun.id == run_id).first()
+    if not run:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Simulation run {run_id} not found.")
+    return _format_run_response(run)
+
+
+@router.post("/{sim_id}/what-if", response_model=WhatIfResponse, summary="Evaluate hypothetical scenario changes")
+def evaluate_what_if(sim_id: str, payload: WhatIfRequest, db: Session = Depends(get_db)):
+    """Evaluate hypothetical operational changes in isolation without mutating persistent database state."""
+    sim = db.query(Simulation).filter(Simulation.id == sim_id).first()
+    if not sim:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Simulation scenario {sim_id} not found.")
+
+    matrix_record = db.query(RestrictionMatrix).filter(RestrictionMatrix.simulation_id == sim_id).first()
+    if not matrix_record:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Restriction matrix for simulation {sim_id} not found.")
+
+    baseline_matrix = json.loads(matrix_record.matrix_data)
+    flight_ids = [sf.flight_id for sf in sim.selected_flights]
+    gate_ids = [sg.gate_id for sg in sim.selected_gates]
+
+    try:
+        return WhatIfService.evaluate(
+            baseline_matrix=baseline_matrix,
+            flight_ids=flight_ids,
+            gate_ids=gate_ids,
+            disabled_gate_ids=payload.disabled_gate_ids,
+            additional_restrictions=payload.additional_restrictions,
+            modified_matrix=payload.modified_matrix,
+            simulation_id=sim.id,
+            simulation_name=sim.name
+        )
+    except Exception as err:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(err))
+
+
+@router.get("/{sim_id}/bottlenecks", response_model=BottleneckAnalysisResponse, summary="Analyze allocation bottlenecks")
+def analyze_bottlenecks(sim_id: str, db: Session = Depends(get_db)):
+    """Analyze row-and-column restrictions for flight bottlenecks and gate contention."""
+    sim = db.query(Simulation).filter(Simulation.id == sim_id).first()
+    if not sim:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Simulation scenario {sim_id} not found.")
+
+    matrix_record = db.query(RestrictionMatrix).filter(RestrictionMatrix.simulation_id == sim_id).first()
+    if not matrix_record:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Restriction matrix for simulation {sim_id} not found.")
+
+    matrix = json.loads(matrix_record.matrix_data)
+    flights = [sf.flight for sf in sim.selected_flights]
+    gates = [sg.gate for sg in sim.selected_gates]
+    flight_ids = [f.id for f in flights]
+    gate_ids = [g.id for g in gates]
+
+    flights_map = {f.id: f for f in flights}
+    gates_map = {g.id: g for g in gates}
+
+    try:
+        return BottleneckAnalysisService.analyze(
+            matrix=matrix,
+            flight_ids=flight_ids,
+            gate_ids=gate_ids,
+            flights_meta=flights_map,
+            gates_meta=gates_map,
+            simulation_id=sim.id
+        )
+    except Exception as err:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(err))
+

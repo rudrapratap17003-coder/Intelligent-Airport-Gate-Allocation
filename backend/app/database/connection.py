@@ -103,6 +103,19 @@ def upgrade_schema(db_engine):
                     if col_name not in existing_matrix_cols:
                         conn.execute(text(f"ALTER TABLE restriction_matrices ADD COLUMN {col_name} {col_def}"))
 
+            # Check simulations table for Phase 4 category, date, and time_window
+            result = conn.execute(text("PRAGMA table_info(simulations)"))
+            existing_sim_cols = {row[1] for row in result.fetchall()}
+            if existing_sim_cols:
+                sim_cols_to_add = [
+                    ("category", "VARCHAR(50) DEFAULT 'Normal Operations'"),
+                    ("date", "VARCHAR(20) DEFAULT NULL"),
+                    ("time_window", "VARCHAR(50) DEFAULT NULL"),
+                ]
+                for col_name, col_def in sim_cols_to_add:
+                    if col_name not in existing_sim_cols:
+                        conn.execute(text(f"ALTER TABLE simulations ADD COLUMN {col_name} {col_def}"))
+
             conn.commit()
     except Exception as e:
         # Non-fatal if table doesn't exist yet before create_all

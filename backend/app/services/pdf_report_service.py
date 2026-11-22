@@ -158,8 +158,9 @@ class PdfReportService:
         story = []
 
         now_str = datetime.now(timezone.utc).strftime("%B %d, %Y %H:%M:%S UTC")
-        n = len(matrix)
-        total_cells = n * n
+        m = len(matrix)
+        n = len(matrix[0]) if m > 0 else 0
+        total_cells = m * n
         forbidden_count = math_res.get("forbidden_cell_count", 0)
         allowed_count = total_cells - forbidden_count
         density = round((forbidden_count / total_cells) * 100, 2) if total_cells > 0 else 0.0
@@ -211,7 +212,7 @@ class PdfReportService:
         # =========================================================================
         story.append(Paragraph("Section 2 — Restriction Matrix Board B", styles['h1']))
         story.append(Paragraph(
-            f"Matrix Dimensions: <b>{n} × {n}</b> ({total_cells} total cells) | "
+            f"Matrix Dimensions: <b>{m} × {n}</b> ({total_cells} total cells) | "
             f"Permitted Cells: <b>{allowed_count}</b> | Forbidden Cells: <b>{forbidden_count}</b> ({density}% density)",
             styles['body']
         ))
@@ -221,7 +222,7 @@ class PdfReportService:
             Paragraph(f"<b>{g}</b>", styles['code']) for g in gate_ids[:n]
         ]
         matrix_rows = [matrix_header]
-        for r, f_id in enumerate(flight_ids[:n]):
+        for r, f_id in enumerate(flight_ids[:m]):
             row_cells = [Paragraph(f"<b>{f_id}</b>", styles['code'])]
             for c in range(n):
                 val = matrix[r][c] if r < len(matrix) and c < len(matrix[r]) else 0
@@ -231,7 +232,7 @@ class PdfReportService:
                 ))
             matrix_rows.append(row_cells)
 
-        col_w = min(40, int(470 / (n + 1)))
+        col_w = min(40, int(470 / (n + 1))) if n > 0 else 40
         m_table = Table(matrix_rows, colWidths=[62] + [col_w] * n)
         table_styles = [
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#f8fafc")),

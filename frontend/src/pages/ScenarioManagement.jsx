@@ -18,14 +18,16 @@ import {
   Calendar,
   CheckSquare,
   Square,
-  Check,
-  X,
   Plane,
   DoorOpen,
-  Filter,
   Lock,
   Unlock,
-  Archive
+  Sliders,
+  Zap,
+  History,
+  TrendingDown,
+  TrendingUp,
+  Activity
 } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
@@ -34,7 +36,11 @@ import Modal from '../components/ui/Modal'
 import Badge from '../components/ui/Badge'
 import Dropdown from '../components/ui/Dropdown'
 import EmptyState from '../components/ui/EmptyState'
-import simulationService, { isValidDate, isValidTimeWindow } from '../lib/simulationService'
+import simulationService, {
+  SCENARIO_CATEGORIES,
+  isValidDate,
+  isValidTimeWindow
+} from '../lib/simulationService'
 import flightService, { INITIAL_SAMPLE_FLIGHTS } from '../lib/flightService'
 import gateService, { INITIAL_SAMPLE_GATES } from '../lib/gateService'
 import exportService from '../lib/exportService'
@@ -63,6 +69,11 @@ export const ScenarioManagement = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('ALL')
+  const [selectedCategory, setSelectedCategory] = useState('All')
+
+  // Double-click debounce maps
+  const [duplicatingMap, setDuplicatingMap] = useState({})
+  const [runningMap, setRunningMap] = useState({})
 
   // Modals
   const [isFormModalOpen, setIsFormModalOpen] = useState(false)
@@ -72,6 +83,32 @@ export const ScenarioManagement = () => {
   const [simulationToDelete, setSimulationToDelete] = useState(null)
   const [inspectingSim, setInspectingSim] = useState(null)
 
+  // Traffic Generator Modal
+  const [isTrafficModalOpen, setIsTrafficModalOpen] = useState(false)
+  const [trafficForm, setTrafficForm] = useState({
+    name: 'Morning Peak Operations (BLR)',
+    category: 'Normal Operations',
+    profile: 'normal',
+    targetTerminal: 'ALL',
+    density: 'moderate',
+    flightCount: 6,
+    gateCount: 6
+  })
+  const [isGeneratingTraffic, setIsGeneratingTraffic] = useState(false)
+
+  // What-If Analysis Studio Modal
+  const [whatIfSim, setWhatIfSim] = useState(null)
+  const [isWhatIfModalOpen, setIsWhatIfModalOpen] = useState(false)
+  const [whatIfDisabledGates, setWhatIfDisabledGates] = useState([])
+  const [whatIfResult, setWhatIfResult] = useState(null)
+  const [isEvaluatingWhatIf, setIsEvaluatingWhatIf] = useState(false)
+
+  // Simulation Run History Modal
+  const [historySim, setHistorySim] = useState(null)
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false)
+  const [historyRuns, setHistoryRuns] = useState([])
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false)
+
   // Explicit Reopen & Complete Modals (Completed Status Protection)
   const [simToReopen, setSimToReopen] = useState(null)
   const [simToComplete, setSimToComplete] = useState(null)
@@ -80,6 +117,7 @@ export const ScenarioManagement = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
+    category: 'Normal Operations',
     simulationDate: new Date().toISOString().slice(0, 10),
     timeWindow: '08:00 - 12:00',
     status: 'Ready',
@@ -134,6 +172,7 @@ export const ScenarioManagement = () => {
         sim.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (sim.description && sim.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
         sim.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (sim.category && sim.category.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (sim.simulationDate && sim.simulationDate.includes(searchTerm)) ||
         (sim.timeWindow && sim.timeWindow.toLowerCase().includes(searchTerm.toLowerCase()))
 
@@ -141,9 +180,13 @@ export const ScenarioManagement = () => {
         statusFilter === 'ALL' ||
         sim.status === statusFilter
 
-      return matchSearch && matchStatus
+      const matchCategory =
+        selectedCategory === 'All' ||
+        sim.category === selectedCategory
+
+      return matchSearch && matchStatus && matchCategory
     })
-  }, [simulations, searchTerm, statusFilter])
+  }, [simulations, searchTerm, statusFilter, selectedCategory])
 
   // Count summaries
   const readyCount = useMemo(() => simulations.filter((s) => s.status === 'Ready').length, [simulations])
@@ -157,6 +200,7 @@ export const ScenarioManagement = () => {
     setFormData({
       name: '',
       description: '',
+      category: selectedCategory !== 'All' ? selectedCategory : 'Normal Operations',
       simulationDate: new Date().toISOString().slice(0, 10),
       timeWindow: '08:00 - 12:00',
       status: 'Ready',
@@ -182,6 +226,7 @@ export const ScenarioManagement = () => {
     setFormData({
       name: sim.name,
       description: sim.description || '',
+      category: sim.category || 'Normal Operations',
       simulationDate: sim.simulationDate || new Date().toISOString().slice(0, 10),
       timeWindow: sim.timeWindow || '08:00 - 12:00',
       status: sim.status || 'Draft',
@@ -320,14 +365,102 @@ export const ScenarioManagement = () => {
     }
   }
 
-  // Handle Duplicate
+  // Handle Run Simulation Pipeline
+  const handleRunSimulation = async (sim) => {
+    if (runningMap[sim.id]) return
+    setRunningMap((prev) => ({ ...prev, [sim.id]: true }))
+    try {
+      const result = await simulationService.runSimulation(sim.id, 100)
+      toast.success(
+        'Pipeline Run Complete',
+        `N = ${result.pie_valid_allocations.toLocaleString()} valid allocations (${result.feasibility_percentage}% feasible) in ${result.duration_ms}ms.`
+      )
+      loadData()
+    } catch (err) {
+      toast.error('Simulation Failed', err.response?.data?.detail || err.message || 'Execution error.')
+    } finally {
+      setRunningMap((prev) => ({ ...prev, [sim.id]: false }))
+    }
+  }
+
+  // Handle Duplicate with double-click debounce
   const handleDuplicate = async (sim) => {
+    if (duplicatingMap[sim.id]) return
+    setDuplicatingMap((prev) => ({ ...prev, [sim.id]: true }))
     try {
       const cloned = await simulationService.duplicateSimulation(sim.id)
       toast.success('Simulation Duplicated', `Created deep copy "${cloned.name}".`)
       loadData()
     } catch (err) {
       toast.error('Duplication Failed', err.message || 'Failed to duplicate simulation.')
+    } finally {
+      setDuplicatingMap((prev) => ({ ...prev, [sim.id]: false }))
+    }
+  }
+
+  // Handle Open What-If Modal
+  const handleOpenWhatIf = async (sim) => {
+    setWhatIfSim(sim)
+    setWhatIfDisabledGates([])
+    setWhatIfResult(null)
+    setIsWhatIfModalOpen(true)
+    setIsEvaluatingWhatIf(true)
+    try {
+      const initial = await simulationService.evaluateWhatIf(sim.id, { disabledGateIds: [] })
+      setWhatIfResult(initial)
+    } catch (err) {
+      toast.error('What-If Initialization Error', err.response?.data?.detail || err.message)
+    } finally {
+      setIsEvaluatingWhatIf(false)
+    }
+  }
+
+  // Handle Toggle Gate in What-If
+  const handleToggleWhatIfGate = async (gateId) => {
+    if (!whatIfSim) return
+    const nextDisabled = whatIfDisabledGates.includes(gateId)
+      ? whatIfDisabledGates.filter((g) => g !== gateId)
+      : [...whatIfDisabledGates, gateId]
+    setWhatIfDisabledGates(nextDisabled)
+    setIsEvaluatingWhatIf(true)
+    try {
+      const res = await simulationService.evaluateWhatIf(whatIfSim.id, { disabledGateIds: nextDisabled })
+      setWhatIfResult(res)
+    } catch (err) {
+      toast.error('What-If Re-evaluation Error', err.response?.data?.detail || err.message)
+    } finally {
+      setIsEvaluatingWhatIf(false)
+    }
+  }
+
+  // Handle Open History Modal
+  const handleOpenHistory = async (sim) => {
+    setHistorySim(sim)
+    setIsHistoryModalOpen(true)
+    setIsLoadingHistory(true)
+    try {
+      const runs = await simulationService.getSimulationRuns(sim.id)
+      setHistoryRuns(runs)
+    } catch (err) {
+      toast.error('History Load Error', err.message || 'Could not load execution history.')
+    } finally {
+      setIsLoadingHistory(false)
+    }
+  }
+
+  // Handle Generate Traffic Scenario
+  const handleGenerateTraffic = async () => {
+    if (isGeneratingTraffic) return
+    setIsGeneratingTraffic(true)
+    try {
+      const created = await simulationService.generateTrafficScenario(trafficForm)
+      toast.success('Traffic Scenario Generated', `Created "${created.name}" (${created.category}).`)
+      setIsTrafficModalOpen(false)
+      loadData()
+    } catch (err) {
+      toast.error('Traffic Generation Failed', err.response?.data?.detail || err.message)
+    } finally {
+      setIsGeneratingTraffic(false)
     }
   }
 
@@ -454,6 +587,15 @@ export const ScenarioManagement = () => {
             </Button>
           </Link>
           <Button
+            variant="secondary"
+            size="md"
+            icon={Zap}
+            onClick={() => setIsTrafficModalOpen(true)}
+            className="border-sky-500/40 text-sky-400 hover:bg-sky-500/10"
+          >
+            Generate Traffic
+          </Button>
+          <Button
             variant="primary"
             size="md"
             icon={Plus}
@@ -470,7 +612,7 @@ export const ScenarioManagement = () => {
           <div className="sm:col-span-8">
             <Input
               icon={Search}
-              placeholder="Search simulations by name, ID, time window, or description..."
+              placeholder="Search simulations by name, ID, category, or time window..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -484,13 +626,14 @@ export const ScenarioManagement = () => {
                 placeholder="Filter Status"
               />
             </div>
-            {(searchTerm || statusFilter !== 'ALL') && (
+            {(searchTerm || statusFilter !== 'ALL' || selectedCategory !== 'All') && (
               <Button
                 variant="ghost"
                 size="md"
                 onClick={() => {
                   setSearchTerm('')
                   setStatusFilter('ALL')
+                  setSelectedCategory('All')
                 }}
                 className="text-xs text-gw-text-secondary hover:text-gw-text"
               >
@@ -500,6 +643,28 @@ export const ScenarioManagement = () => {
           </div>
         </div>
       </Card>
+
+      {/* -------------------- CATEGORY FILTER CHIPS -------------------- */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+        {SCENARIO_CATEGORIES.map((cat) => {
+          const isSelected = selectedCategory === cat
+          const count = cat === 'All' ? simulations.length : simulations.filter((s) => s.category === cat).length
+          return (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setSelectedCategory(cat)}
+              className={`text-xs px-3 py-1.5 rounded-lg border font-mono whitespace-nowrap transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
+                isSelected
+                  ? 'bg-[#1E2638] text-[#FFFFFF] font-bold border-[#38BDF8]'
+                  : 'bg-[#121826] text-gw-text-secondary border-[#222E42] hover:text-gw-text hover:bg-[#1E2638]'
+              }`}
+            >
+              {cat} <span className="text-[10px] opacity-70">({count})</span>
+            </button>
+          )
+        })}
+      </div>
 
       {/* -------------------- SIMULATION LIST / EMPTY STATES -------------------- */}
       {isLoading ? (
@@ -548,9 +713,16 @@ export const ScenarioManagement = () => {
                   {/* Card Header */}
                   <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-[#222E42]">
                     <div>
-                      <span className="font-mono text-xs font-bold text-[#A3A3A3] block tracking-wider">
-                        {sim.id}
-                      </span>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-mono text-xs font-bold text-[#A3A3A3] block tracking-wider">
+                          {sim.id}
+                        </span>
+                        {sim.category && (
+                          <Badge variant="outline" size="sm" className="text-[10px] py-0 px-1.5 border-[#38BDF8]/40 text-[#38BDF8]">
+                            {sim.category}
+                          </Badge>
+                        )}
+                      </div>
                       <h3 className="font-bold text-base text-gw-text mt-0.5 line-clamp-1 group-hover:text-[#FFFFFF] transition-colors">
                         {sim.name}
                       </h3>
@@ -608,94 +780,134 @@ export const ScenarioManagement = () => {
                 </div>
 
                 {/* Card Actions */}
-                <div className="pt-3 border-t border-[#222E42] flex items-center justify-between gap-1.5 flex-wrap">
-                  <div className="flex items-center gap-1.5">
-                    <Button
-                      size="sm"
-                      variant="primary"
-                      icon={Eye}
-                      className="h-8 text-xs px-2.5"
-                      onClick={() => setInspectingSim(sim)}
-                      title="Inspect scenario details"
-                    >
-                      Inspect
-                    </Button>
+                <div className="pt-3 border-t border-[#222E42] flex flex-col gap-2">
+                  <div className="flex items-center justify-between gap-1.5 flex-wrap">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {/* Run Simulation Button */}
+                      <Button
+                        size="sm"
+                        variant="primary"
+                        icon={PlayCircle}
+                        className="h-8 text-xs px-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold"
+                        onClick={() => handleRunSimulation(sim)}
+                        disabled={runningMap[sim.id]}
+                        title="Execute 10-step mathematical simulation pipeline and record snapshot"
+                      >
+                        {runningMap[sim.id] ? 'Running...' : 'Run'}
+                      </Button>
 
-                    {/* Edit or Reopen Button */}
-                    {isCompleted ? (
+                      {/* What-If Studio Button */}
                       <Button
                         size="sm"
                         variant="secondary"
-                        icon={RotateCcw}
-                        className="h-8 text-xs px-2 text-[#FFFFFF] border-[#222E42] hover:bg-[#1E2638]"
-                        onClick={() => setSimToReopen(sim)}
-                        title="Reopen completed scenario to Draft"
+                        icon={Sliders}
+                        className="h-8 text-xs px-2 border-[#222E42] text-gw-text hover:bg-[#1E2638]"
+                        onClick={() => handleOpenWhatIf(sim)}
+                        title="Open non-destructive What-If Analysis Studio"
                       >
-                        Reopen
+                        What-If
                       </Button>
-                    ) : (
+
+                      {/* Run History Button */}
                       <Button
                         size="sm"
                         variant="ghost"
-                        icon={Edit2}
+                        icon={History}
+                        className="h-8 text-xs px-2 text-gw-text-secondary hover:text-gw-text hover:bg-[#1E2638]"
+                        onClick={() => handleOpenHistory(sim)}
+                        title="View immutable execution run history"
+                      >
+                        History
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        icon={Eye}
                         className="h-8 text-xs px-2 text-gw-text-secondary hover:text-gw-text"
-                        onClick={() => handleOpenEditModal(sim)}
-                        title="Edit scenario parameters"
+                        onClick={() => setInspectingSim(sim)}
+                        title="Inspect scenario details"
                       >
-                        Edit
+                        Inspect
                       </Button>
-                    )}
+                    </div>
 
-                    {/* Complete Button (Only for Ready Scenarios) */}
-                    {isReady && (
+                    <div className="flex items-center gap-1.5">
+                      {/* Edit or Reopen Button */}
+                      {isCompleted ? (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          icon={RotateCcw}
+                          className="h-8 text-xs px-2 text-[#FFFFFF] border-[#222E42] hover:bg-[#1E2638]"
+                          onClick={() => setSimToReopen(sim)}
+                          title="Reopen completed scenario to Draft"
+                        >
+                          Reopen
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          icon={Edit2}
+                          className="h-8 text-xs px-2 text-gw-text-secondary hover:text-gw-text"
+                          onClick={() => handleOpenEditModal(sim)}
+                          title="Edit scenario parameters"
+                        >
+                          Edit
+                        </Button>
+                      )}
+
+                      {/* Complete Button (Only for Ready Scenarios) */}
+                      {isReady && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          icon={CheckCircle2}
+                          className="h-8 text-xs px-2 text-[#FFFFFF] hover:bg-[#1E2638]"
+                          onClick={() => setSimToComplete(sim)}
+                          title="Mark scenario as Completed (Lock)"
+                        >
+                          Complete
+                        </Button>
+                      )}
+
                       <Button
                         size="sm"
                         variant="ghost"
-                        icon={CheckCircle2}
-                        className="h-8 text-xs px-2 text-[#FFFFFF] hover:bg-[#1E2638]"
-                        onClick={() => setSimToComplete(sim)}
-                        title="Mark scenario as Completed (Lock)"
+                        icon={Copy}
+                        className="h-8 text-xs px-2 text-gw-text-secondary hover:text-gw-text"
+                        onClick={() => handleDuplicate(sim)}
+                        disabled={duplicatingMap[sim.id]}
+                        title="Duplicate scenario"
                       >
-                        Complete
+                        {duplicatingMap[sim.id] ? 'Cloning...' : 'Clone'}
                       </Button>
-                    )}
 
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      icon={Copy}
-                      className="h-8 text-xs px-2 text-gw-text-secondary hover:text-gw-text"
-                      onClick={() => handleDuplicate(sim)}
-                      title="Duplicate scenario"
-                    >
-                      Clone
-                    </Button>
-                  </div>
-
-                  <div className="flex items-center gap-1.5">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      icon={Download}
-                      className="h-8 text-xs px-2 text-gw-text-secondary hover:text-[#FFFFFF]"
-                      onClick={() => exportService.downloadScenarioPdf(sim.id)}
-                      title="Export scenario PDF report"
-                    >
-                      PDF
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      icon={Trash2}
-                      className="h-8 text-xs px-2 text-[#A3A3A3] hover:text-white hover:bg-[#1E2638]"
-                      onClick={() => {
-                        setSimulationToDelete(sim)
-                        setIsDeleteModalOpen(true)
-                      }}
-                      title="Delete scenario"
-                    >
-                      Delete
-                    </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        icon={Download}
+                        className="h-8 text-xs px-2 text-gw-text-secondary hover:text-[#FFFFFF]"
+                        onClick={() => exportService.downloadScenarioPdf(sim.id)}
+                        title="Export scenario PDF report"
+                      >
+                        PDF
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        icon={Trash2}
+                        className="h-8 text-xs px-2 text-[#A3A3A3] hover:text-white hover:bg-[#1E2638]"
+                        onClick={() => {
+                          setSimulationToDelete(sim)
+                          setIsDeleteModalOpen(true)
+                        }}
+                        title="Delete scenario"
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -752,6 +964,29 @@ export const ScenarioManagement = () => {
               onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
               error={formErrors.name}
             />
+          </div>
+
+          {/* Category Selection */}
+          <div>
+            <label className="block text-xs font-semibold text-gw-text-secondary uppercase tracking-wider mb-1.5">
+              Scenario Category
+            </label>
+            <div className="flex flex-wrap gap-1.5">
+              {SCENARIO_CATEGORIES.filter((c) => c !== 'All').map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  className={`text-xs px-2.5 py-1 rounded-md border font-mono transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
+                    formData.category === cat
+                      ? 'bg-sky-500 text-slate-950 font-bold border-sky-400'
+                      : 'bg-[#121826] border-[#222E42] text-gw-text-secondary hover:text-gw-text hover:bg-[#1E2638]'
+                  }`}
+                  onClick={() => setFormData((prev) => ({ ...prev, category: cat }))}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Description */}
@@ -1239,6 +1474,329 @@ export const ScenarioManagement = () => {
               Confirm Delete
             </Button>
           </div>
+        </div>
+      </Modal>
+
+      {/* -------------------- TRAFFIC SCENARIO GENERATOR MODAL -------------------- */}
+      <Modal
+        isOpen={isTrafficModalOpen}
+        onClose={() => setIsTrafficModalOpen(false)}
+        title="Generate Operational Traffic Scenario"
+        subtitle="Create realistic simulated flight & gate scenarios with physical BLR airport constraints."
+        maxWidth="max-w-2xl"
+        icon={Zap}
+        footer={
+          <div className="flex items-center justify-between w-full gap-3">
+            <span className="text-xs font-mono text-gw-text-secondary">
+              Profile: <strong className="text-sky-400 capitalize">{trafficForm.profile}</strong> ({trafficForm.flightCount}F × {trafficForm.gateCount}G)
+            </span>
+            <div className="flex items-center gap-2.5">
+              <Button variant="ghost" size="md" onClick={() => setIsTrafficModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                size="md"
+                icon={Zap}
+                onClick={handleGenerateTraffic}
+                disabled={isGeneratingTraffic}
+              >
+                {isGeneratingTraffic ? 'Generating...' : 'Generate Scenario'}
+              </Button>
+            </div>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          {/* Operational Profile Select */}
+          <div>
+            <label className="block text-xs font-semibold text-gw-text-secondary uppercase tracking-wider mb-1.5">
+              Operational Profile
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {[
+                { id: 'low', name: 'Low-Traffic', desc: '4F × 6G, High flexibility', cat: 'Low-Traffic', f: 4, g: 6 },
+                { id: 'normal', name: 'Normal Operations', desc: '6F × 6G, Standard BLR mix', cat: 'Normal Operations', f: 6, g: 6 },
+                { id: 'peak', name: 'Peak-Hour Traffic', desc: '8F × 8G, High capacity', cat: 'Peak-Hour Traffic', f: 8, g: 8 },
+                { id: 'maintenance', name: 'Gate Maintenance', desc: '6F × 6G, G3 & G4 restricted', cat: 'Gate Maintenance', f: 6, g: 6 },
+                { id: 'terminal_restricted', name: 'Terminal Restricted', desc: '6F × 6G, T1/T2 separation', cat: 'Terminal Overload', f: 6, g: 6 },
+                { id: 'emergency', name: 'Emergency Restriction', desc: '5F × 5G, Remote stands closed', cat: 'Emergency Restriction', f: 5, g: 5 }
+              ].map((p) => {
+                const isSelected = trafficForm.profile === p.id
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => {
+                      setTrafficForm((prev) => ({
+                        ...prev,
+                        profile: p.id,
+                        category: p.cat,
+                        flightCount: p.f,
+                        gateCount: p.g,
+                        name: `${p.name} Scenario (${int(Date.now() / 1000) % 1000})`
+                      }))
+                    }}
+                    className={`p-2.5 rounded-lg border text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
+                      isSelected
+                        ? 'bg-[#1E2638] border-[#38BDF8] text-white shadow-xs'
+                        : 'bg-[#121826] border-[#222E42] text-gw-text-secondary hover:text-white hover:bg-[#1E2638]'
+                    }`}
+                  >
+                    <span className="font-bold text-xs block text-gw-text">{p.name}</span>
+                    <span className="text-[10px] text-gw-text-secondary block mt-0.5">{p.desc}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Scenario Name */}
+          <div>
+            <Input
+              label="Generated Scenario Name *"
+              value={trafficForm.name}
+              onChange={(e) => setTrafficForm((prev) => ({ ...prev, name: e.target.value }))}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Target Terminal */}
+            <div>
+              <label className="block text-xs font-semibold text-gw-text-secondary uppercase tracking-wider mb-1.5">
+                Target Terminal
+              </label>
+              <div className="flex rounded-lg overflow-hidden border border-[#222E42] bg-[#121826] p-0.5">
+                {['ALL', 'T1', 'T2'].map((term) => (
+                  <button
+                    key={term}
+                    type="button"
+                    onClick={() => setTrafficForm((prev) => ({ ...prev, targetTerminal: term }))}
+                    className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
+                      trafficForm.targetTerminal === term
+                        ? 'bg-sky-500 text-slate-950 font-bold'
+                        : 'text-gw-text-secondary hover:text-white hover:bg-[#1E2638]'
+                    }`}
+                  >
+                    {term === 'ALL' ? 'Dual (T1 & T2)' : `Terminal ${term.slice(1)}`}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Restriction Density */}
+            <div>
+              <label className="block text-xs font-semibold text-gw-text-secondary uppercase tracking-wider mb-1.5">
+                Restriction Density
+              </label>
+              <div className="flex rounded-lg overflow-hidden border border-[#222E42] bg-[#121826] p-0.5">
+                {['sparse', 'moderate', 'dense'].map((d) => (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => setTrafficForm((prev) => ({ ...prev, density: d }))}
+                    className={`flex-1 py-1.5 text-xs font-semibold capitalize rounded-md transition-all ${
+                      trafficForm.density === d
+                        ? 'bg-sky-500 text-slate-950 font-bold'
+                        : 'text-gw-text-secondary hover:text-white hover:bg-[#1E2638]'
+                    }`}
+                  >
+                    {d}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      {/* -------------------- WHAT-IF ANALYSIS STUDIO MODAL -------------------- */}
+      <Modal
+        isOpen={isWhatIfModalOpen}
+        onClose={() => setIsWhatIfModalOpen(false)}
+        title={whatIfSim ? `What-If Analysis Studio: ${whatIfSim.name}` : 'What-If Analysis Studio'}
+        subtitle="Simulate hypothetical gate closures and constraints in complete isolation without mutating the persistent database state."
+        maxWidth="max-w-3xl"
+        icon={Sliders}
+      >
+        <div className="space-y-5">
+          {/* Isolation Notice Banner */}
+          <div className="p-3 rounded-lg bg-sky-950/40 border border-sky-500/30 text-xs text-sky-300 flex items-start gap-2">
+            <Activity className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+            <div>
+              <strong>Non-Destructive Simulation Environment:</strong> Toggle gate availability below to test operational what-if hypotheses.
+              Your baseline database scenario remains 100% untouched.
+            </div>
+          </div>
+
+          {/* Gate Availability Grid */}
+          <div>
+            <label className="block text-xs font-semibold text-gw-text-secondary uppercase tracking-wider mb-2">
+              Toggle Gate Availability (Click gate to mark as offline / unavailable)
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
+              {(whatIfSim?.selectedGateIds || whatIfSim?.selected_gate_ids || []).map((gid) => {
+                const isDisabled = whatIfDisabledGates.includes(gid)
+                const gateObj = availableGates.find((g) => g.id === gid)
+                return (
+                  <button
+                    key={gid}
+                    type="button"
+                    onClick={() => handleToggleWhatIfGate(gid)}
+                    className={`p-2 rounded-lg border text-center transition-all ${
+                      isDisabled
+                        ? 'bg-red-950/40 border-red-500/50 text-red-400 line-through'
+                        : 'bg-[#121826] border-[#222E42] text-white hover:border-sky-400'
+                    }`}
+                  >
+                    <span className="font-mono text-xs font-bold block">{gateObj?.gateNumber || gid}</span>
+                    <span className="text-[10px] block opacity-75">{isDisabled ? 'OFFLINE' : 'AVAILABLE'}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Results Comparison Grid */}
+          {isEvaluatingWhatIf ? (
+            <div className="py-8 text-center text-xs font-mono text-gw-text-secondary animate-pulse">
+              Computing combinatorial impact via Inclusion-Exclusion engine...
+            </div>
+          ) : whatIfResult ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
+                {/* Baseline Card */}
+                <div className="p-3 rounded-xl bg-[#121826] border border-[#222E42]">
+                  <span className="text-[10px] text-gw-text-secondary uppercase block mb-1">Baseline Config</span>
+                  <div className="text-xl font-bold text-white">
+                    {whatIfResult.baseline.valid_assignments.toLocaleString()}
+                  </div>
+                  <span className="text-xs text-gw-text-secondary block mt-0.5">
+                    Valid Allocations ({whatIfResult.baseline.feasibility_percentage}%)
+                  </span>
+                  <span className="text-[10px] text-gw-text-secondary block mt-2">
+                    Forbidden Cells: {whatIfResult.baseline.forbidden_cell_count}
+                  </span>
+                </div>
+
+                {/* Hypothetical Card */}
+                <div className="p-3 rounded-xl bg-[#121826] border border-[#222E42]">
+                  <span className="text-[10px] text-gw-text-secondary uppercase block mb-1">Hypothetical Result</span>
+                  <div className="text-xl font-bold text-white">
+                    {whatIfResult.hypothetical.valid_assignments.toLocaleString()}
+                  </div>
+                  <span className="text-xs text-gw-text-secondary block mt-0.5">
+                    Valid Allocations ({whatIfResult.hypothetical.feasibility_percentage}%)
+                  </span>
+                  <span className="text-[10px] text-gw-text-secondary block mt-2">
+                    Forbidden Cells: {whatIfResult.hypothetical.forbidden_cell_count}
+                  </span>
+                </div>
+
+                {/* Delta Card */}
+                <div className="p-3 rounded-xl bg-[#121826] border border-[#222E42] flex flex-col justify-between">
+                  <div>
+                    <span className="text-[10px] text-gw-text-secondary uppercase block mb-1">Impact Delta</span>
+                    <div className="flex items-center gap-1.5">
+                      {whatIfResult.delta_valid_allocations < 0 ? (
+                        <TrendingDown className="w-5 h-5 text-red-400" />
+                      ) : whatIfResult.delta_valid_allocations > 0 ? (
+                        <TrendingUp className="w-5 h-5 text-emerald-400" />
+                      ) : null}
+                      <span className={`text-xl font-bold ${
+                        whatIfResult.delta_valid_allocations < 0 ? 'text-red-400' : whatIfResult.delta_valid_allocations > 0 ? 'text-emerald-400' : 'text-white'
+                      }`}>
+                        {whatIfResult.delta_valid_allocations > 0 ? '+' : ''}{whatIfResult.delta_valid_allocations.toLocaleString()}
+                      </span>
+                    </div>
+                    <span className="text-xs text-gw-text-secondary block mt-0.5">
+                      ({whatIfResult.percentage_change > 0 ? '+' : ''}{whatIfResult.percentage_change}% shift)
+                    </span>
+                  </div>
+                  <div className="mt-2">
+                    <Badge
+                      variant="outline"
+                      size="sm"
+                      className={`font-bold uppercase tracking-wider text-[10px] ${
+                        whatIfResult.impact_level === 'CRITICAL'
+                          ? 'border-red-500/50 text-red-400 bg-red-950/30'
+                          : whatIfResult.impact_level === 'MODERATE'
+                          ? 'border-amber-500/50 text-amber-400 bg-amber-950/30'
+                          : whatIfResult.impact_level === 'ENHANCED'
+                          ? 'border-emerald-500/50 text-emerald-400 bg-emerald-950/30'
+                          : 'border-sky-500/50 text-sky-400 bg-sky-950/30'
+                      }`}
+                    >
+                      {whatIfResult.impact_level} IMPACT
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Explanations List */}
+              <div className="p-3 rounded-xl bg-[#121826] border border-[#222E42] text-xs space-y-1.5">
+                <span className="font-bold text-gw-text block uppercase tracking-wider text-[10px]">
+                  Combinatorial Analysis & Operational Diagnostics:
+                </span>
+                {whatIfResult.explanations.map((exp, idx) => (
+                  <p key={idx} className="text-gw-text-secondary leading-relaxed flex items-start gap-1.5">
+                    <span className="text-sky-400 shrink-0">■</span>
+                    <span>{exp}</span>
+                  </p>
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </Modal>
+
+      {/* -------------------- SIMULATION RUN HISTORY MODAL -------------------- */}
+      <Modal
+        isOpen={isHistoryModalOpen}
+        onClose={() => setIsHistoryModalOpen(false)}
+        title={historySim ? `Execution History: ${historySim.name}` : 'Simulation Run History'}
+        subtitle="Immutable point-in-time calculation snapshots recorded for this scenario."
+        maxWidth="max-w-3xl"
+        icon={History}
+      >
+        <div className="space-y-4">
+          {isLoadingHistory ? (
+            <div className="py-12 text-center text-xs font-mono text-gw-text-secondary animate-pulse">
+              Retrieving execution snapshots from database...
+            </div>
+          ) : historyRuns.length === 0 ? (
+            <div className="py-10 text-center text-xs text-gw-text-secondary font-mono">
+              No historical execution runs recorded for this scenario yet. Click "Run" to record an execution snapshot.
+            </div>
+          ) : (
+            <div className="divide-y divide-[#222E42] border border-[#222E42] rounded-xl overflow-hidden bg-[#121826]">
+              {historyRuns.map((run) => (
+                <div key={run.id} className="p-3.5 flex items-center justify-between gap-3 text-xs font-mono">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-white">Run #{run.run_number}</span>
+                      <span className="text-gw-text-secondary">({run.id})</span>
+                      <Badge variant="outline" size="sm" className="text-[10px] py-0 border-emerald-500/40 text-emerald-400">
+                        {run.verification_status}
+                      </Badge>
+                    </div>
+                    <span className="text-[11px] text-gw-text-secondary block mt-1">
+                      {new Date(run.created_at).toLocaleString()} • Execution Time: {run.duration_ms}ms
+                    </span>
+                  </div>
+
+                  <div className="text-right">
+                    <span className="text-sm font-bold text-white block">
+                      {run.pie_valid_allocations.toLocaleString()} Valid (N)
+                    </span>
+                    <span className="text-[11px] text-gw-text-secondary block">
+                      {run.feasibility_percentage}% Feasible ({run.matrix_rows}F × {run.matrix_cols}G)
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </Modal>
     </div>

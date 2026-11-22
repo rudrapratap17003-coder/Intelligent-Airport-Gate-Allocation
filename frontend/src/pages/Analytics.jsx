@@ -36,6 +36,7 @@ import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
 import Counter from '../components/ui/Counter'
 import analyticsService from '../lib/analyticsService'
+import simulationService from '../lib/simulationService'
 import matrixValidationService from '../lib/matrixValidationService'
 import { generateAllocations } from '../lib/backtrackingAllocationService'
 import { ScenarioComparisonView } from '../components/analytics/ScenarioComparisonView'
@@ -57,6 +58,7 @@ export const Analytics = () => {
   const [selectedSimId, setSelectedSimId] = useState('')
   const [detailedSim, setDetailedSim] = useState(null)
   const [detailedValidation, setDetailedValidation] = useState(null)
+  const [detailedBottlenecks, setDetailedBottlenecks] = useState(null)
   const [backtrackingStats, setBacktrackingStats] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -142,11 +144,19 @@ export const Analytics = () => {
         } catch (btErr) {
           console.warn('Backtracking analytics calculation notice:', btErr)
         }
+
+        try {
+          const bn = await simulationService.getBottlenecks(simId)
+          setDetailedBottlenecks(bn)
+        } catch (bnErr) {
+          console.warn('Bottleneck analysis notice:', bnErr)
+        }
       }
     } catch (err) {
       console.error(`Failed to load details for ${simId}:`, err)
       setDetailedSim(null)
       setDetailedValidation(null)
+      setDetailedBottlenecks(null)
       setBacktrackingStats(null)
     } finally {
       setIsLoadingDetails(false)
@@ -1164,6 +1174,103 @@ export const Analytics = () => {
                 </div>
               )}
             </Card>
+
+            {/* Section 4b: Allocation Bottleneck Analysis & Operational Diagnostics */}
+            {detailedBottlenecks && (
+              <Card className="space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#222E42]">
+                  <div>
+                    <h3 className="gw-card-heading flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-amber-400" />
+                      <span>Allocation Bottlenecks & Operational Constraints</span>
+                    </h3>
+                    <p className="text-xs text-gw-text-secondary mt-0.5">
+                      Row-and-column constraint diagnosis, critical flights with restricted stand options, and gate contention.
+                    </p>
+                  </div>
+                  <Badge
+                    variant="outline"
+                    size="sm"
+                    className={`font-mono text-[10px] ${
+                      detailedBottlenecks.over_constrained
+                        ? 'border-red-500/50 text-red-400 bg-red-950/20'
+                        : detailedBottlenecks.critical_flights.length > 0
+                        ? 'border-amber-500/50 text-amber-400 bg-amber-950/20'
+                        : 'border-emerald-500/50 text-emerald-400 bg-emerald-950/20'
+                    }`}
+                  >
+                    {detailedBottlenecks.over_constrained
+                      ? 'OVER-CONSTRAINED'
+                      : detailedBottlenecks.critical_flights.length > 0
+                      ? `${detailedBottlenecks.critical_flights.length} CRITICAL FLIGHTS`
+                      : 'FEASIBLE & BALANCED'}
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Critical Flights */}
+                  <div className="p-3.5 rounded-xl bg-[#121826] border border-[#222E42] space-y-2.5">
+                    <span className="text-[10px] font-bold uppercase font-mono tracking-wider text-gw-text-secondary block">
+                      Flight Alternatives Analysis
+                    </span>
+                    {detailedBottlenecks.flight_stats && detailedBottlenecks.flight_stats.length > 0 ? (
+                      <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                        {detailedBottlenecks.flight_stats.map((fs) => (
+                          <div
+                            key={fs.flight_id}
+                            className="flex items-center justify-between text-xs p-2 rounded-lg bg-[#1E2638] border border-[#222E42] font-mono"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-white">{fs.flight_number}</span>
+                              <span className="text-[10px] text-gw-text-secondary">({fs.flight_type})</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className={`text-[11px] ${fs.available_gates <= 2 ? 'text-amber-400 font-bold' : 'text-gw-text-secondary'}`}>
+                                {fs.available_gates} / {detailedBottlenecks.matrix_cols} Gates ({fs.availability_pct}%)
+                              </span>
+                              {fs.available_gates <= 1 && (
+                                <Badge variant="outline" size="sm" className="text-[9px] py-0 border-red-500/50 text-red-400">
+                                  CRITICAL
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-gw-text-secondary">No flight bottleneck data available.</span>
+                    )}
+                  </div>
+
+                  {/* Recommendations and Over-Constrained Diagnostic */}
+                  <div className="p-3.5 rounded-xl bg-[#121826] border border-[#222E42] space-y-2.5 flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase font-mono tracking-wider text-gw-text-secondary block mb-1">
+                        Operational Recommendations & Causes
+                      </span>
+                      {detailedBottlenecks.zero_allocation_cause && (
+                        <div className="p-2.5 mb-2 rounded-lg bg-red-950/40 border border-red-500/30 text-xs text-red-300">
+                          <strong>Deadlock Cause:</strong> {detailedBottlenecks.zero_allocation_cause}
+                        </div>
+                      )}
+                      <div className="space-y-1.5">
+                        {detailedBottlenecks.recommendations.map((rec, idx) => (
+                          <div key={idx} className="flex items-start gap-1.5 text-xs text-gw-text-secondary leading-relaxed">
+                            <span className="text-sky-400 shrink-0 mt-0.5">■</span>
+                            <span>{rec}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-[#222E42] text-[11px] font-mono text-gw-text-secondary flex justify-between">
+                      <span>Matrix Density: <strong className="text-white">{detailedBottlenecks.restriction_density_pct}%</strong></span>
+                      <span>Total Forbidden: <strong className="text-white">{detailedBottlenecks.total_forbidden}</strong> cells</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            )}
           </div>
         ) : (
           <Card className="p-8 text-center space-y-3">
